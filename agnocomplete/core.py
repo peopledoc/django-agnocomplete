@@ -5,8 +5,14 @@ from copy import copy
 from django.db.models import Q
 from django.utils.encoding import force_text
 
+from .constants import AUTOCOMPLETE_DEFAULT_PAGESIZE
+
 
 class AutocompleteBase(object):
+
+    def __init__(self, page_size=None):
+        self.page_size = page_size or AUTOCOMPLETE_DEFAULT_PAGESIZE
+
     def items(self, query=None):
         raise NotImplementedError(
             "Developer: Your class needs at least a items() method")
@@ -29,7 +35,7 @@ class AutocompleteChoices(AutocompleteBase):
             result = tuple(filter(lambda x: x.startswith(query), result))
 
         result = [dict(value=item, label=item) for item in result]
-        return result
+        return result[:self.page_size]
 
 
 class AutocompleteModel(AutocompleteBase):

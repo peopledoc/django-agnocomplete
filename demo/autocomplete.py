@@ -10,6 +10,10 @@ class AutocompleteColor(AutocompleteChoices):
     choices = ['green', 'gray', 'blue', 'grey']
 
 
+class AutocompleteChoicesPages(AutocompleteChoices):
+    choices = ["choice{}".format(i) for i in range(200)]
+
+
 class AutocompletePerson(AutocompleteModel):
     model = Person
     fields = ['first_name', 'last_name']
@@ -18,3 +22,4 @@ class AutocompletePerson(AutocompleteModel):
 # Registration
 register(AutocompleteColor)
 register(AutocompletePerson)
+register(AutocompleteChoicesPages)

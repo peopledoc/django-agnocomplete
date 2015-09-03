@@ -1,9 +1,13 @@
 from django.test import TestCase
+
+from agnocomplete import constants
+
 from demo.autocomplete import AutocompleteColor
 from demo.autocomplete import AutocompletePerson
+from demo.autocomplete import AutocompleteChoicesPages
 
 
-class AutocompleteChoicesTest(TestCase):
+class AutocompleteColorTest(TestCase):
     def test_items(self):
         instance = AutocompleteColor()
         self.assertEqual(list(instance.items()), [])
@@ -24,6 +28,22 @@ class AutocompleteChoicesTest(TestCase):
         self.assertEqual(
             list(instance.items(query='zzzzz')),
             []
+        )
+
+
+class AutocompleteChoicesPagesTest(TestCase):
+    def test_items_empty(self):
+        instance = AutocompleteChoicesPages()
+        # Empty query -> empty dataset
+        self.assertEqual(list(instance.items()), [])
+
+    def test_items_defaultsize(self):
+        instance = AutocompleteChoicesPages()
+        result = list(instance.items(query='choice'))
+        # item number is greater than the default page size
+        self.assertEqual(
+            len(result),
+            constants.AUTOCOMPLETE_DEFAULT_PAGESIZE
         )
 
 
