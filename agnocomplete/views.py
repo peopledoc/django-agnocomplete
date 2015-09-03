@@ -1,8 +1,27 @@
-import json
-from django.http import HttpResponse, Http404
+from django.http import Http404
 from django.views.generic import View
 from django.utils.functional import cached_property
 from .register import get_autocomplete_registry
+
+try:
+    from django.http import JsonResponse
+except ImportError:
+    # JsonResponse for Django 1.6.
+    # Source: https://gist.github.com/philippeowagner/3179eb475fe1795d6515
+    import json
+    from django.http import HttpResponse
+
+    class JsonResponse(HttpResponse):
+        """
+        JSON response
+        """
+        def __init__(self, content,
+                     mimetype='application/json',
+                     status=None, content_type=None):
+            super(JsonResponse, self).__init__(
+                content=json.dumps(content),
+                mimetype=mimetype,
+                status=status, content_type=content_type)
 
 
 class JSONView(View):
@@ -27,8 +46,8 @@ class JSONView(View):
         raise NotImplementedError("You must implement a `get_dataset` method")
 
     def get(self, *args, **kwargs):
-        return HttpResponse(
-            json.dumps({'data': self.get_dataset()}),
+        return JsonResponse(
+            {'data': self.get_dataset()},
             content_type=self.content_type,
         )
 
