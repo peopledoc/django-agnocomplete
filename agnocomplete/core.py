@@ -22,10 +22,13 @@ class AutocompleteChoices(AutocompleteBase):
     choices = []
 
     def items(self, query=None):
+        if not query:
+            return []
         result = copy(self.choices)
         if query:
             result = tuple(filter(lambda x: x.startswith(query), result))
-        result = zip(result, result)
+
+        result = [dict(value=item, label=item) for item in result]
         return result
 
 
@@ -71,24 +74,31 @@ class AutocompleteModel(AutocompleteBase):
         """
         Return the filtered queryset
         """
+        # Cut this, we don't need no empty query
+        if not query:
+            return self.model.objects.none()
+
         qs = self.get_model_queryset()
-        if query:
-            conditions = Q()
-            for field_name in self.fields:
-                conditions |= Q(**{
-                    self._construct_qs_filter(field_name): query
-                })
-            qs = qs.filter(conditions)
+        conditions = Q()
+        for field_name in self.fields:
+            conditions |= Q(**{
+                self._construct_qs_filter(field_name): query
+            })
+        qs = qs.filter(conditions)
         return qs
 
     def items(self, query=None):
         """
         Return the items to be sent to the client
         """
+        # Cut this, we don't need no empty query
+        if not query:
+            return self.model.objects.none()
         qs = self.get_queryset(query)
         result = []
         for item in qs:
-            result.append(
-                (force_text(item.pk), force_text(item))
-            )
+            result.append({
+                "value": force_text(item.pk),
+                "label": force_text(item)
+            })
         return result

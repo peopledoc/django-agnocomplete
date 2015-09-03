@@ -20,8 +20,8 @@ Roadmap
 
 (incomplete roadmap, but hey, it's better than nothing)
 
-- [ ] Empty query should return an empty dataset.
-- [ ] Returned data should be objects of the form: ```{"value": "my value", "label": "My Label"}```
+- [x] Empty query should return an empty dataset.
+- [x] Returned data should be objects of the form: ```{"value": "my value", "label": "My Label"}```
 - [ ] page_size:
     - [ ] As a backend parameter, it has a minimum value, a max value and a default value.
     - [ ] ``page_size`` as a client argument: ``page_size`` argument to override the default. Although this argument can't be over limits.

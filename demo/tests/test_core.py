@@ -6,30 +6,24 @@ from demo.autocomplete import AutocompletePerson
 class AutocompleteChoicesTest(TestCase):
     def test_items(self):
         instance = AutocompleteColor()
-        self.assertEqual([
-            ('green', 'green'),
-            ('gray', 'gray'),
-            ('blue', 'blue'),
-            ('grey', 'grey'),
-        ],
-            list(instance.items())
+        self.assertEqual(list(instance.items()), [])
+        self.assertEqual(
+            list(instance.items(query='gr')), [
+                {'value': 'green', 'label': 'green'},
+                {'value': 'gray', 'label': 'gray'},
+                {'value': 'grey', 'label': 'grey'},
+            ]
         )
-        self.assertEqual([
-            ('green', 'green'),
-            ('gray', 'gray'),
-            ('grey', 'grey'),
-        ],
-            list(instance.items(query='gr'))
+
+        self.assertEqual(
+            list(instance.items(query='gre')), [
+                {'value': 'green', 'label': 'green'},
+                {'value': 'grey', 'label': 'grey'},
+            ],
         )
-        self.assertEqual([
-            ('green', 'green'),
-            ('grey', 'grey'),
-        ],
-            list(instance.items(query='gre'))
-        )
-        self.assertEqual([
-        ],
-            list(instance.items(query='zzzzz'))
+        self.assertEqual(
+            list(instance.items(query='zzzzz')),
+            []
         )
 
 
@@ -38,7 +32,7 @@ class AutocompletePersonTest(TestCase):
     def test_items(self):
         instance = AutocompletePerson()
         items = instance.items()
-        self.assertEqual(len(items), 3)
+        self.assertEqual(len(items), 0)
         items = instance.items(query="ali")
         self.assertEqual(len(items), 2)
         items = instance.items(query="bob")
@@ -49,7 +43,7 @@ class AutocompletePersonTest(TestCase):
     def test_queryset(self):
         instance = AutocompletePerson()
         items = instance.get_queryset()
-        self.assertEqual(items.count(), 3)
+        self.assertEqual(items.count(), 0)
         items = instance.get_queryset(query="ali")
         self.assertEqual(items.count(), 2)
         items = instance.get_queryset(query="bob")
