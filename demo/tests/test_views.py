@@ -1,6 +1,10 @@
+# -*- coding: utf8 -*-
 import json
-from . import RegistryTestGeneric
+
 from django.core.urlresolvers import reverse
+from django.utils.encoding import force_text
+
+from . import RegistryTestGeneric
 
 
 def get_json(response, key='data'):
@@ -57,6 +61,25 @@ class AutocompleteViewTestGeneric(object):
 class AutocompletePersonViewTest(AutocompleteViewTestGeneric,
                                  RegistryTestGeneric):
     view_key = 'AutocompletePerson'
+
+    def test_autocomplete_person_queries(self):
+        response = self.client.get(
+            reverse('autocomplete:autocomplete', args=['AutocompletePerson']),
+            data={"q": "ali"}
+        )
+        self.assertEquals(response.status_code, 200)
+        data = get_json(response)
+        # No query, the dataset should be empty
+        self.assertTrue(data)
+        self.assertEquals(len(data), 2)
+        self.assertIn(
+            [force_text('1'), force_text('Alice Iñtërnâtiônàlizætiøn')],
+            data
+        )
+        self.assertIn(
+            [force_text('2'), force_text('Alice Inchains')],
+            data
+        )
 
 
 class AutocompleteColorViewTest(AutocompleteViewTestGeneric,

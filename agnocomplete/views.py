@@ -52,7 +52,8 @@ class AutocompleteView(RegistryMixin, JSONView):
         klass = self.registry.get(klass_name, None)
         if not klass:
             raise Http404("Unknown autocomplete `{}`".format(klass_name))
-        query = self.kwargs.get('q', "")
+        query = self.request.REQUEST.get('q', "")
         if not query:
             # Empty dict, no value to complete
-            return {}
+            return []
+        return klass().items(query=query)

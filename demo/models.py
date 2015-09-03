@@ -8,3 +8,4 @@ class Person(models.Model):
 
     def __unicode__(self):
         return " ".join((self.first_name, self.last_name))
+    __str__ = __unicode__
