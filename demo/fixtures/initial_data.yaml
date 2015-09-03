@@ -1,0 +1,20 @@
+- model: demo.person
+  pk: 1
+  fields:
+    first_name: Alice
+    last_name: Iñtërnâtiônàlizætiøn
+    email: alice@example.com
+
+- model: demo.person
+  pk: 2
+  fields:
+    first_name: Alice
+    last_name: Inchains
+    email: alice2@example.com
+
+- model: demo.person
+  pk: 3
+  fields:
+    first_name: Bob
+    last_name: Hope
+    email: bob@example.com
