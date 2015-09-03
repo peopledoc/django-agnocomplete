@@ -25,26 +25,40 @@ class AutocompleteViewTest(RegistryTestGeneric):
             reverse('autocomplete:autocomplete', args=['MEUH']))
         self.assertEquals(response.status_code, 404)
 
-    def test_autocomplete_person(self):
+
+class AutocompleteViewTestGeneric(object):
+    view_key = "PLEASE DEFINE ME"
+
+    def test_url(self):
         response = self.client.get(
-            reverse('autocomplete:autocomplete', args=['AutocompletePerson']))
+            reverse('autocomplete:autocomplete', args=[self.view_key]))
         self.assertEquals(response.status_code, 200)
 
-    def test_autocomplete_person_noquery(self):
+    def test_noquery(self):
         response = self.client.get(
-            reverse('autocomplete:autocomplete', args=['AutocompletePerson']),
+            reverse('autocomplete:autocomplete', args=[self.view_key]),
         )
         self.assertEquals(response.status_code, 200)
         data = get_json(response)
         # No query, the dataset should be empty
         self.assertFalse(data)
 
-    def test_autocomplete_person_empty_query(self):
+    def test_empty_query(self):
         response = self.client.get(
-            reverse('autocomplete:autocomplete', args=['AutocompletePerson']),
+            reverse('autocomplete:autocomplete', args=[self.view_key]),
             data={"q": ""}
         )
         self.assertEquals(response.status_code, 200)
         data = get_json(response)
         # No query, the dataset should be empty
         self.assertFalse(data)
+
+
+class AutocompletePersonViewTest(AutocompleteViewTestGeneric,
+                                 RegistryTestGeneric):
+    view_key = 'AutocompletePerson'
+
+
+class AutocompleteColorViewTest(AutocompleteViewTestGeneric,
+                                RegistryTestGeneric):
+    view_key = 'AutocompleteColor'
