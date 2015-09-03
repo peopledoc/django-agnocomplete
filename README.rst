@@ -10,6 +10,26 @@ It will provide:
 * a REST-like HTTP API to search for results,
 * Fields and widgets that will make the interface between our Django code and *your* Javascript.
 
+Status
+======
+
+Under construction. Warning, fresh paint.
+
+Roadmap
+-------
+
+(incomplete roadmap, but hey, it's better than nothing)
+
+- [ ] Empty query should return an empty dataset.
+- [ ] Returned data should be objects of the form: ```{"value": "my value", "label": "My Label"}```
+- [ ] page_size:
+    - [ ] As a backend parameter, it has a minimum value, a max value and a default value.
+    - [ ] ``page_size`` as a client argument: ``page_size`` argument to override the default. Although this argument can't be over limits.
+- [ ] ``query_size`` :
+    - [ ] as a backend parameter, it has a minimum value, a max value and a default value.
+    - [ ] ``query_size`` as a client argument: ``query_size`` argument to override the default. Although this argument can't be over limits.
+
+
 Install
 =======
 
