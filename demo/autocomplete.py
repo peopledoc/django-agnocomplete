@@ -6,7 +6,7 @@ from agnocomplete.core import AutocompleteChoices, AutocompleteModel
 from demo.models import Person
 
 
-class AutocompleteChoicesExample(AutocompleteChoices):
+class AutocompleteColor(AutocompleteChoices):
     choices = ['green', 'gray', 'blue', 'grey']
 
 
@@ -16,5 +16,5 @@ class AutocompletePerson(AutocompleteModel):
 
 
 # Registration
-register(AutocompleteChoicesExample)
+register(AutocompleteColor)
 register(AutocompletePerson)

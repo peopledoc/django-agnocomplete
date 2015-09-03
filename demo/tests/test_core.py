@@ -1,11 +1,11 @@
 from django.test import TestCase
-from demo.autocomplete import AutocompleteChoicesExample
+from demo.autocomplete import AutocompleteColor
 from demo.autocomplete import AutocompletePerson
 
 
 class AutocompleteChoicesTest(TestCase):
     def test_items(self):
-        instance = AutocompleteChoicesExample()
+        instance = AutocompleteColor()
         self.assertEquals([
             ('green', 'green'),
             ('gray', 'gray'),
