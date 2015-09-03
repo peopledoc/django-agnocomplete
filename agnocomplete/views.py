@@ -54,6 +54,6 @@ class AutocompleteView(RegistryMixin, JSONView):
             raise Http404("Unknown autocomplete `{}`".format(klass_name))
         query = self.request.REQUEST.get('q', "")
         if not query:
-            # Empty dict, no value to complete
+            # Empty set, no value to complete
             return []
         return klass().items(query=query)

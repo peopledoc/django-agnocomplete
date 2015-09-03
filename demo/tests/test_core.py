@@ -14,6 +14,23 @@ class AutocompleteChoicesTest(TestCase):
         ],
             list(instance.items())
         )
+        self.assertEquals([
+            ('green', 'green'),
+            ('gray', 'gray'),
+            ('grey', 'grey'),
+        ],
+            list(instance.items(query='gr'))
+        )
+        self.assertEquals([
+            ('green', 'green'),
+            ('grey', 'grey'),
+        ],
+            list(instance.items(query='gre'))
+        )
+        self.assertEquals([
+        ],
+            list(instance.items(query='zzzzz'))
+        )
 
 
 class AutocompletePersonTest(TestCase):
@@ -22,6 +39,12 @@ class AutocompletePersonTest(TestCase):
         instance = AutocompletePerson()
         items = instance.items()
         self.assertEquals(len(items), 3)
+        items = instance.items(query="ali")
+        self.assertEquals(len(items), 2)
+        items = instance.items(query="bob")
+        self.assertEquals(len(items), 1)
+        items = instance.items(query="zzzzz")
+        self.assertEquals(len(items), 0)
 
     def test_queryset(self):
         instance = AutocompletePerson()
@@ -29,3 +52,7 @@ class AutocompletePersonTest(TestCase):
         self.assertEquals(items.count(), 3)
         items = instance.get_queryset(query="ali")
         self.assertEquals(items.count(), 2)
+        items = instance.get_queryset(query="bob")
+        self.assertEquals(items.count(), 1)
+        items = instance.get_queryset(query="zzzzz")
+        self.assertEquals(items.count(), 0)

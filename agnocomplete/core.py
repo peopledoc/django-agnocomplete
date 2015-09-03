@@ -1,12 +1,13 @@
 """
 The different autocomplete classes to be discovered
 """
+from copy import copy
 from django.db.models import Q
 from django.utils.encoding import force_text
 
 
 class AutocompleteBase(object):
-    def items(self):
+    def items(self, query=None):
         raise NotImplementedError(
             "Developer: Your class needs at least a items() method")
 
@@ -20,8 +21,12 @@ class AutocompleteChoices(AutocompleteBase):
     """
     choices = []
 
-    def items(self):
-        return zip(self.choices, self.choices)
+    def items(self, query=None):
+        result = copy(self.choices)
+        if query:
+            result = tuple(filter(lambda x: x.startswith(query), result))
+        result = zip(result, result)
+        return result
 
 
 class AutocompleteModel(AutocompleteBase):
