@@ -27,7 +27,7 @@ class AutocompleteViewTest(RegistryTestGeneric):
     def test_get_404(self):
         response = self.client.get(
             reverse('autocomplete:autocomplete', args=['MEUH']))
-        self.assertEquals(response.status_code, 404)
+        self.assertEqual(response.status_code, 404)
 
 
 class AutocompleteViewTestGeneric(object):
@@ -36,13 +36,13 @@ class AutocompleteViewTestGeneric(object):
     def test_url(self):
         response = self.client.get(
             reverse('autocomplete:autocomplete', args=[self.view_key]))
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     def test_noquery(self):
         response = self.client.get(
             reverse('autocomplete:autocomplete', args=[self.view_key]),
         )
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         data = get_json(response)
         # No query, the dataset should be empty
         self.assertFalse(data)
@@ -52,7 +52,7 @@ class AutocompleteViewTestGeneric(object):
             reverse('autocomplete:autocomplete', args=[self.view_key]),
             data={"q": ""}
         )
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         data = get_json(response)
         # No query, the dataset should be empty
         self.assertFalse(data)
@@ -67,11 +67,11 @@ class AutocompletePersonViewTest(AutocompleteViewTestGeneric,
             reverse('autocomplete:autocomplete', args=['AutocompletePerson']),
             data={"q": "ali"}
         )
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         data = get_json(response)
         # No query, the dataset should be empty
         self.assertTrue(data)
-        self.assertEquals(len(data), 2)
+        self.assertEqual(len(data), 2)
         self.assertIn(
             [force_text('1'), force_text('Alice Iñtërnâtiônàlizætiøn')],
             data
