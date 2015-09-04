@@ -6,17 +6,22 @@ from django.db.models import Q
 from django.utils.encoding import force_text
 
 from .constants import AUTOCOMPLETE_DEFAULT_PAGESIZE
+from .constants import AUTOCOMPLETE_MIN_PAGESIZE
+from .constants import AUTOCOMPLETE_MAX_PAGESIZE
 
 
 class AutocompleteBase(object):
     page_size = AUTOCOMPLETE_DEFAULT_PAGESIZE
+    page_size_min = AUTOCOMPLETE_MIN_PAGESIZE
+    page_size_max = AUTOCOMPLETE_MAX_PAGESIZE
 
     def __init__(self, page_size=None):
-        self._page_size = page_size or self.page_size
+        page_size = page_size or self.page_size
+        if page_size > self.page_size_max or page_size < self.page_size_min:
+            page_size = self.page_size
+        self._page_size = page_size
 
     def get_page_size(self):
-        if not self._page_size:
-            return AUTOCOMPLETE_DEFAULT_PAGESIZE
         return self._page_size
 
     def items(self, query=None):
