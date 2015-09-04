@@ -109,3 +109,18 @@ class AutocompletePersonTest(TestCase):
         self.assertEqual(items.count(), 1)
         items = instance.get_queryset(query="zzzzz")
         self.assertEqual(items.count(), 0)
+
+    def test_get_page_size(self):
+        instance = AutocompletePerson()
+        self.assertEqual(
+            instance.get_page_size(), constants.AUTOCOMPLETE_DEFAULT_PAGESIZE)
+        # over the limit params, back to default
+        instance = AutocompletePerson(page_size=1000)
+        self.assertEqual(
+            instance.get_page_size(), constants.AUTOCOMPLETE_DEFAULT_PAGESIZE)
+        instance = AutocompletePerson(page_size=1)
+        self.assertEqual(
+            instance.get_page_size(), constants.AUTOCOMPLETE_DEFAULT_PAGESIZE)
+        # Reasonable overriding
+        instance = AutocompletePerson(page_size=7)
+        self.assertEqual(instance.get_page_size(), 7)
