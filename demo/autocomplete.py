@@ -1,5 +1,5 @@
 """
-Core autocomplete
+Autocomplete classes
 """
 from agnocomplete.register import register
 from agnocomplete.core import AutocompleteChoices, AutocompleteModel

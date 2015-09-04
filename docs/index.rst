@@ -16,6 +16,8 @@ It will provide:
 .. toctree::
    :maxdepth: 2
 
+   overview
+
 
 
 Indices and tables
