@@ -15,23 +15,6 @@ Status
 
 Under construction. Warning, fresh paint.
 
-Roadmap
--------
-
-(incomplete roadmap, but hey, it's better than nothing)
-
-- [x] Empty query should return an empty dataset.
-- [x] Returned data should be objects of the form: ```{"value": "my value", "label": "My Label"}```
-- [x] from django.http import JsonResponse YAY!
-- [ ] documentation everywhere
-- [-] page_size:
-    - [ ] As a backend parameter, it has a minimum value, a max value and a default value.
-    - [ ] ``page_size`` as a client argument: ``page_size`` argument to override the default. Although this argument can't be over limits.
-- [ ] ``query_size`` :
-    - [ ] as a backend parameter, it has a minimum value, a max value and a default value.
-    - [ ] ``query_size`` as a client argument: ``query_size`` argument to override the default. Although this argument can't be over limits.
-
-
 Install
 =======
 
