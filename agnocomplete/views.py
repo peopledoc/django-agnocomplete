@@ -69,8 +69,16 @@ class AutocompleteView(RegistryMixin, JSONView):
         klass = self.registry.get(klass_name, None)
         if not klass:
             raise Http404("Unknown autocomplete `{}`".format(klass_name))
+        # Query passed via the argument
         query = self.request.REQUEST.get('q', "")
         if not query:
             # Empty set, no value to complete
             return []
-        return klass().items(query=query)
+
+        # Optional Page size
+        try:
+            page_size = int(self.request.REQUEST.get('page_size', None))
+        except:
+            page_size = None
+
+        return klass(page_size=page_size).items(query=query)

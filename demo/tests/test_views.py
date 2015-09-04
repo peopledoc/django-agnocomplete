@@ -102,6 +102,17 @@ class AutocompletePersonViewTest(AutocompleteViewTestGeneric,
             data
         )
 
+    def test_autocomplete_person_paginated(self):
+        response = self.client.get(
+            reverse('autocomplete:autocomplete', args=['AutocompletePerson']),
+            data={"q": "ali", "page_size": 3}
+        )
+        self.assertEqual(response.status_code, 200)
+        data = get_json(response)
+        # query, the dataset has 4 records
+        self.assertTrue(data)
+        self.assertEqual(len(data), 3)
+
 
 class AutocompleteColorViewTest(AutocompleteViewTestGeneric,
                                 RegistryTestGeneric):
