@@ -1,3 +1,7 @@
+"""
+Agnocomplete, the Agnostic Autocomplete Django app.
+
+"""
 import logging
 logger = logging.getLogger(__name__)
 
@@ -6,7 +10,7 @@ from django.utils.importlib import import_module
 
 
 def autodiscover():
-    """Auto-discover INSTALLED_APPS autocomplete modules."""
+    """Auto-discover INSTALLED_APPS agnocomplete modules."""
     module_name = "autocomplete"
     for app in settings.INSTALLED_APPS:
         # Attempt to import the app's 'routing' module

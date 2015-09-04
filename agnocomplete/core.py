@@ -1,19 +1,19 @@
 """
-The different autocomplete classes to be discovered
+The different agnocomplete classes to be discovered
 """
 from copy import copy
 from django.db.models import Q
 from django.utils.encoding import force_text
 
-from .constants import AUTOCOMPLETE_DEFAULT_PAGESIZE
-from .constants import AUTOCOMPLETE_MIN_PAGESIZE
-from .constants import AUTOCOMPLETE_MAX_PAGESIZE
+from .constants import AGNOCOMPLETE_DEFAULT_PAGESIZE
+from .constants import AGNOCOMPLETE_MIN_PAGESIZE
+from .constants import AGNOCOMPLETE_MAX_PAGESIZE
 
 
-class AutocompleteBase(object):
-    page_size = AUTOCOMPLETE_DEFAULT_PAGESIZE
-    page_size_min = AUTOCOMPLETE_MIN_PAGESIZE
-    page_size_max = AUTOCOMPLETE_MAX_PAGESIZE
+class AgnocompleteBase(object):
+    page_size = AGNOCOMPLETE_DEFAULT_PAGESIZE
+    page_size_min = AGNOCOMPLETE_MIN_PAGESIZE
+    page_size_max = AGNOCOMPLETE_MAX_PAGESIZE
 
     def __init__(self, page_size=None):
         page_size = page_size or self.page_size
@@ -33,12 +33,13 @@ class AutocompleteBase(object):
             "Developer: Your class needs at least a items() method")
 
 
-class AutocompleteChoices(AutocompleteBase):
+class AgnocompleteChoices(AgnocompleteBase):
     """
-    Example::
+    Usage Example::
 
-        class AutocompleteColor(AutocompleteChoices):
+        class AgnocompleteColor(AgnocompleteChoices):
             choices = ['red', 'green', 'blue']
+
     """
     choices = []
 
@@ -56,14 +57,15 @@ class AutocompleteChoices(AutocompleteBase):
         return result[:self.get_page_size()]
 
 
-class AutocompleteModel(AutocompleteBase):
+class AgnocompleteModel(AgnocompleteBase):
     """
 
     Example::
 
-        class AutocompletePeople(AutocompleteModel):
+        class AgnocompletePeople(AgnocompleteModel):
             model = People
             fields = ['first_name', 'last_name']
+
     """
 
     @property

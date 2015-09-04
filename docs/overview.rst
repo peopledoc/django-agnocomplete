@@ -19,8 +19,8 @@ Include the agnocomplete URLs to your urlconf:
     urlpatterns = [
         # Starting here
         url(
-            r'^autocomplete/',
-            include('agnocomplete.urls', namespace='autocomplete')),
+            r'^agnocomplete/',
+            include('agnocomplete.urls', namespace='agnocomplete')),
         # ... Continuing here...
     ]
 
@@ -31,22 +31,22 @@ You'll need to add an ``autocomplete.py`` in your target app. It'll be automatic
 
 These classes should be able to dig data out of your data store. In a Django application, it'll probably be models, but it can also be a long list of strings (let's say: the list of the US States, or the full list of the world countries).
 
-There are two types of classes at the moment: :class:`AutocompleteChoices` and :class:`AutocompleteModel`.
+There are two types of classes at the moment: :class:`AgnocompleteChoices` and :class:`AgnocompleteModel`.
 
 Let's take the demo example to make it clearer:
 
 .. code-block:: python
 
     from agnocomplete.register import register
-    from agnocomplete.core import AutocompleteChoices, AutocompleteModel
+    from agnocomplete.core import AgnocompleteChoices, AgnocompleteModel
     from demo.models import Person
 
 
-    class AutocompleteColor(AutocompleteChoices):
+    class AutocompleteColor(AgnocompleteChoices):
         choices = ['green', 'gray', 'blue', 'grey']
 
 
-    class AutocompletePerson(AutocompleteModel):
+    class AutocompletePerson(AgnocompleteModel):
         model = Person
         fields = ['first_name', 'last_name']
 
@@ -62,8 +62,8 @@ It means that when the client code will try to search for a term, it'll be searc
 
 And that's it! The ``agnocomplete`` app will automatically add these two URLs to your URLs::
 
-    /autocomplete/AutocompleteColor/
-    /autocomplete/AutocompletePerson/
+    /agnocomplete/AutocompleteColor/
+    /agnocomplete/AutocompletePerson/
 
 Want to search for the results? Use `curl` or any other tool to get data.
 
@@ -71,25 +71,25 @@ If the query is empty, it will return no result, for it's not able to know what 
 
 .. code-block:: sh
 
-    curl http://yourserver/autocomplete/AutocompleteColor/
+    curl http://yourserver/agnocomplete/AutocompleteColor/
     {"data": []}
 
 .. code-block:: sh
 
-    curl http://yourserver/autocomplete/AutocompletePerson/
+    curl http://yourserver/agnocomplete/AutocompletePerson/
     {"data": []}
 
 With an interesting search term:
 
 .. code-block:: sh
 
-    curl http://yourserver/autocomplete/AutocompleteColor/?q=gre
+    curl http://yourserver/agnocomplete/AutocompleteColor/?q=gre
     {"data": [
         {"label": "green", "value": "green"},
         {"label": "grey", "value": "grey"}
     ]}
 
-    curl http://yourserver/autocomplete/AutocompletePerson/?q=ali
+    curl http://yourserver/agnocomplete/AutocompletePerson/?q=ali
     {
         "data": [
             {

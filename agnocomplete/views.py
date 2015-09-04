@@ -1,7 +1,7 @@
 from django.http import Http404
 from django.views.generic import View
 from django.utils.functional import cached_property
-from .register import get_autocomplete_registry
+from .register import get_agnocomplete_registry
 
 try:
     from django.http import JsonResponse
@@ -54,7 +54,7 @@ class RegistryMixin(object):
 
     @cached_property
     def registry(self):
-        return get_autocomplete_registry()
+        return get_agnocomplete_registry()
 
 
 class CatalogView(RegistryMixin, JSONView):
@@ -62,13 +62,13 @@ class CatalogView(RegistryMixin, JSONView):
         return tuple(self.registry.keys())
 
 
-class AutocompleteView(RegistryMixin, JSONView):
+class AgnocompleteView(RegistryMixin, JSONView):
 
     def get_dataset(self):
         klass_name = self.kwargs.get('klass', None)
         klass = self.registry.get(klass_name, None)
         if not klass:
-            raise Http404("Unknown autocomplete `{}`".format(klass_name))
+            raise Http404("Unknown autocomplete class `{}`".format(klass_name))
         # Query passed via the argument
         query = self.request.REQUEST.get('q', "")
         if not query:

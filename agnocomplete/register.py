@@ -4,14 +4,15 @@ Registry handling
 import logging
 logger = logging.getLogger(__name__)
 
-AUTOCOMPLETE_REGISTRY = {}
+AGNOCOMPLETE_REGISTRY = {}
 
 
-def register(autocomplete):
-    logger.info("registering {}".format(autocomplete.__name__))
-    AUTOCOMPLETE_REGISTRY[autocomplete.__name__] = autocomplete
+def register(klass):
+    "Register a class into the agnocomplete registry."
+    logger.info("registering {}".format(klass.__name__))
+    AGNOCOMPLETE_REGISTRY[klass.__name__] = klass
 
 
-def get_autocomplete_registry():
-    "Get the registered autocompletes."
-    return AUTOCOMPLETE_REGISTRY
+def get_agnocomplete_registry():
+    "Get the registered agnostic autocompletes."
+    return AGNOCOMPLETE_REGISTRY

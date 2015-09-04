@@ -7,8 +7,9 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(
-        r'^autocomplete/',
-        include('agnocomplete.urls', namespace='autocomplete')),
+        r'^agnocomplete/',
+        # FIXME: the namespace should be a settings var.
+        include('agnocomplete.urls', namespace='agnocomplete')),
 
     # Templated DEMO views
     url(r'^$', 'demo.views.index', name='home'),

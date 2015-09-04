@@ -1,8 +1,12 @@
-"Autocomplete default page size"
-AUTOCOMPLETE_DEFAULT_PAGESIZE = 10
+"""
+Agnocomplete constants
+"""
 
-"Autocomplete maximum page size"
-AUTOCOMPLETE_MAX_PAGESIZE = 100
+"Agnocomplete default page size"
+AGNOCOMPLETE_DEFAULT_PAGESIZE = 10
 
-"Autocomplete minimum page size"
-AUTOCOMPLETE_MIN_PAGESIZE = 3
+"Agnocomplete maximum page size"
+AGNOCOMPLETE_MAX_PAGESIZE = 100
+
+"Agnocomplete minimum page size"
+AGNOCOMPLETE_MIN_PAGESIZE = 3

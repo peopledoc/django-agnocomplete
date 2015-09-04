@@ -1,14 +1,14 @@
 """
-Autocomplete URLS
+Agnostic Autocomplete URLS
 """
 from django.conf.urls import patterns, url
-from .views import AutocompleteView, CatalogView
+from .views import AgnocompleteView, CatalogView
 
 urlpatterns = [
     url(
         r'^(?P<klass>[-_\w]+)/$',
-        AutocompleteView.as_view(),
-        name='autocomplete'),
+        AgnocompleteView.as_view(),
+        name='agnocomplete'),
     url(r'^$', CatalogView.as_view(), name='catalog'),
 ]
 

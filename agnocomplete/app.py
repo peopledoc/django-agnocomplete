@@ -1,3 +1,10 @@
+"""
+Django app definition.
+
+The :class:`AgnocompleteConfig` class should start the agnocomplete
+autodiscover.
+"""
+
 from django.apps import AppConfig
 import logging
 

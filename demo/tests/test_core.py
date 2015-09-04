@@ -34,7 +34,7 @@ class AutocompleteColorTest(TestCase):
         )
 
 
-class AutocompleteChoicesPagesTest(TestCase):
+class AutcompleteChoicesPagesTest(TestCase):
 
     def test_items_defaultsize(self):
         instance = AutocompleteChoicesPages()
@@ -42,20 +42,20 @@ class AutocompleteChoicesPagesTest(TestCase):
         # item number is greater than the default page size
         self.assertEqual(
             len(result),
-            constants.AUTOCOMPLETE_DEFAULT_PAGESIZE
+            constants.AGNOCOMPLETE_DEFAULT_PAGESIZE
         )
 
     def test_get_page_size(self):
         instance = AutocompleteChoicesPages()
         self.assertEqual(
-            instance.get_page_size(), constants.AUTOCOMPLETE_DEFAULT_PAGESIZE)
+            instance.get_page_size(), constants.AGNOCOMPLETE_DEFAULT_PAGESIZE)
         # over the limit params, back to default
         instance = AutocompleteChoicesPages(page_size=1000)
         self.assertEqual(
-            instance.get_page_size(), constants.AUTOCOMPLETE_DEFAULT_PAGESIZE)
+            instance.get_page_size(), constants.AGNOCOMPLETE_DEFAULT_PAGESIZE)
         instance = AutocompleteChoicesPages(page_size=1)
         self.assertEqual(
-            instance.get_page_size(), constants.AUTOCOMPLETE_DEFAULT_PAGESIZE)
+            instance.get_page_size(), constants.AGNOCOMPLETE_DEFAULT_PAGESIZE)
         # Reasonable overriding
         instance = AutocompleteChoicesPages(page_size=7)
         self.assertEqual(instance.get_page_size(), 7)
@@ -69,7 +69,7 @@ class AutocompleteChoicesPagesOverrideTest(TestCase):
         # item number is greater than the default page size
         self.assertNotEqual(
             len(result),
-            constants.AUTOCOMPLETE_DEFAULT_PAGESIZE
+            constants.AGNOCOMPLETE_DEFAULT_PAGESIZE
         )
         self.assertEqual(len(result), 30)
 
@@ -113,14 +113,14 @@ class AutocompletePersonTest(TestCase):
     def test_get_page_size(self):
         instance = AutocompletePerson()
         self.assertEqual(
-            instance.get_page_size(), constants.AUTOCOMPLETE_DEFAULT_PAGESIZE)
+            instance.get_page_size(), constants.AGNOCOMPLETE_DEFAULT_PAGESIZE)
         # over the limit params, back to default
         instance = AutocompletePerson(page_size=1000)
         self.assertEqual(
-            instance.get_page_size(), constants.AUTOCOMPLETE_DEFAULT_PAGESIZE)
+            instance.get_page_size(), constants.AGNOCOMPLETE_DEFAULT_PAGESIZE)
         instance = AutocompletePerson(page_size=1)
         self.assertEqual(
-            instance.get_page_size(), constants.AUTOCOMPLETE_DEFAULT_PAGESIZE)
+            instance.get_page_size(), constants.AGNOCOMPLETE_DEFAULT_PAGESIZE)
         # Reasonable overriding
         instance = AutocompletePerson(page_size=7)
         self.assertEqual(instance.get_page_size(), 7)

@@ -18,7 +18,7 @@ class IndexTest(TestCase):
         url_color = attrs_color['data-url']
         self.assertEqual(
             url_color,
-            reverse('autocomplete:autocomplete', args=['AutocompleteColor']))
+            reverse('agnocomplete:agnocomplete', args=['AutocompleteColor']))
         # Person
         search_person = form.fields['search_person']
         attrs_person = search_person.widget.build_attrs()
@@ -26,4 +26,4 @@ class IndexTest(TestCase):
         url_person = attrs_person['data-url']
         self.assertEqual(
             url_person,
-            reverse('autocomplete:autocomplete', args=['AutocompletePerson']))
+            reverse('agnocomplete:agnocomplete', args=['AutocompletePerson']))

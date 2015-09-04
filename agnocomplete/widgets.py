@@ -11,7 +11,8 @@ class AgnocompleteWidgetMixin(object):
             extra_attrs, **kwargs)
         attrs.update({
             'data-url': reverse(
-                'autocomplete:autocomplete', args=[self.autocomplete_name])
+                # FIXME: the namespace should be a setting variable.
+                'agnocomplete:agnocomplete', args=[self.agnocomplete_name])
         })
         return attrs
 
