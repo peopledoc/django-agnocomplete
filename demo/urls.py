@@ -9,4 +9,7 @@ urlpatterns = [
     url(
         r'^autocomplete/',
         include('agnocomplete.urls', namespace='autocomplete')),
+
+    # Templated DEMO views
+    url(r'^$', 'demo.views.index', name='home'),
 ]

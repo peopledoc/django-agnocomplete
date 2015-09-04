@@ -24,6 +24,10 @@ class AutocompleteBase(object):
     def get_page_size(self):
         return self._page_size
 
+    def get_choices(self):
+        raise NotImplementedError(
+            "Developer: your class needs at least a 'get_choices()' method")
+
     def items(self, query=None):
         raise NotImplementedError(
             "Developer: Your class needs at least a items() method")
@@ -37,6 +41,9 @@ class AutocompleteChoices(AutocompleteBase):
             choices = ['red', 'green', 'blue']
     """
     choices = []
+
+    def get_choices(self):
+        return tuple(zip(self.choices, self.choices))
 
     def items(self, query=None):
         if not query:
@@ -86,6 +93,7 @@ class AutocompleteModel(AutocompleteBase):
 
     def get_model_queryset(self):
         return self.model.objects.all()
+    get_choices = get_model_queryset
 
     def get_queryset(self, query=None):
         """
