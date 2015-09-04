@@ -9,9 +9,15 @@ from .constants import AUTOCOMPLETE_DEFAULT_PAGESIZE
 
 
 class AutocompleteBase(object):
+    page_size = AUTOCOMPLETE_DEFAULT_PAGESIZE
 
     def __init__(self, page_size=None):
-        self.page_size = page_size or AUTOCOMPLETE_DEFAULT_PAGESIZE
+        self._page_size = page_size or self.page_size
+
+    def get_page_size(self):
+        if not self._page_size:
+            return AUTOCOMPLETE_DEFAULT_PAGESIZE
+        return self._page_size
 
     def items(self, query=None):
         raise NotImplementedError(
@@ -35,7 +41,7 @@ class AutocompleteChoices(AutocompleteBase):
             result = tuple(filter(lambda x: x.startswith(query), result))
 
         result = [dict(value=item, label=item) for item in result]
-        return result[:self.page_size]
+        return result[:self.get_page_size()]
 
 
 class AutocompleteModel(AutocompleteBase):

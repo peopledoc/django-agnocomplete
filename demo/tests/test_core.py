@@ -2,9 +2,12 @@ from django.test import TestCase
 
 from agnocomplete import constants
 
-from demo.autocomplete import AutocompleteColor
-from demo.autocomplete import AutocompletePerson
-from demo.autocomplete import AutocompleteChoicesPages
+from demo.autocomplete import (
+    AutocompleteColor,
+    AutocompletePerson,
+    AutocompleteChoicesPages,
+    AutocompleteChoicesPagesOverride
+)
 
 
 class AutocompleteColorTest(TestCase):
@@ -32,16 +35,24 @@ class AutocompleteColorTest(TestCase):
 
 
 class AutocompleteChoicesPagesTest(TestCase):
-    def test_items_empty(self):
-        instance = AutocompleteChoicesPages()
-        # Empty query -> empty dataset
-        self.assertEqual(list(instance.items()), [])
 
     def test_items_defaultsize(self):
         instance = AutocompleteChoicesPages()
         result = list(instance.items(query='choice'))
         # item number is greater than the default page size
         self.assertEqual(
+            len(result),
+            constants.AUTOCOMPLETE_DEFAULT_PAGESIZE
+        )
+
+
+class AutocompleteChoicesPagesOverrideTest(TestCase):
+
+    def test_items_page_size(self):
+        instance = AutocompleteChoicesPagesOverride()
+        result = list(instance.items(query='choice'))
+        # item number is greater than the default page size
+        self.assertNotEqual(
             len(result),
             constants.AUTOCOMPLETE_DEFAULT_PAGESIZE
         )
