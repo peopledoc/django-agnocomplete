@@ -14,6 +14,10 @@ class AutocompleteChoicesPages(AutocompleteChoices):
     choices = ["choice{}".format(i) for i in range(200)]
 
 
+class AutocompleteChoicesPagesOverride(AutocompleteChoicesPages):
+    page_size = 30
+
+
 class AutocompletePerson(AutocompleteModel):
     model = Person
     fields = ['first_name', 'last_name']
@@ -23,3 +27,4 @@ class AutocompletePerson(AutocompleteModel):
 register(AutocompleteColor)
 register(AutocompletePerson)
 register(AutocompleteChoicesPages)
+register(AutocompleteChoicesPagesOverride)
