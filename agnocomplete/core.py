@@ -118,4 +118,4 @@ class AutocompleteModel(AutocompleteBase):
                 "value": force_text(item.pk),
                 "label": force_text(item)
             })
-        return result
+        return result[:self.get_page_size()]

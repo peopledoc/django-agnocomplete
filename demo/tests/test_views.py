@@ -68,6 +68,8 @@ class AutocompletePersonViewTest(AutocompleteViewTestGeneric,
         self.alice1 = Person.objects.get(pk=1)
         self.alice2 = Person.objects.get(pk=2)
         self.bob = Person.objects.get(pk=3)
+        self.alice3 = Person.objects.get(pk=4)
+        self.alice4 = Person.objects.get(pk=5)
 
     def test_autocomplete_person_queries(self):
         response = self.client.get(
@@ -76,9 +78,9 @@ class AutocompletePersonViewTest(AutocompleteViewTestGeneric,
         )
         self.assertEqual(response.status_code, 200)
         data = get_json(response)
-        # No query, the dataset should be empty
+        # query, the dataset has 4 records
         self.assertTrue(data)
-        self.assertEqual(len(data), 2)
+        self.assertEqual(len(data), 4)
         self.assertIn({
             "value": force_text(self.alice1.pk),
             "label": force_text(self.alice1)},
@@ -87,6 +89,16 @@ class AutocompletePersonViewTest(AutocompleteViewTestGeneric,
         self.assertIn({
             "value": force_text(self.alice2.pk),
             "label": force_text(self.alice2)},
+            data
+        )
+        self.assertIn({
+            "value": force_text(self.alice3.pk),
+            "label": force_text(self.alice3)},
+            data
+        )
+        self.assertIn({
+            "value": force_text(self.alice4.pk),
+            "label": force_text(self.alice4)},
             data
         )
 

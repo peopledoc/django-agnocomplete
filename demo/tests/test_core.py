@@ -93,7 +93,7 @@ class AutocompletePersonTest(TestCase):
         items = instance.items()
         self.assertEqual(len(items), 0)
         items = instance.items(query="ali")
-        self.assertEqual(len(items), 2)
+        self.assertEqual(len(items), 4)
         items = instance.items(query="bob")
         self.assertEqual(len(items), 1)
         items = instance.items(query="zzzzz")
@@ -104,7 +104,7 @@ class AutocompletePersonTest(TestCase):
         items = instance.get_queryset()
         self.assertEqual(items.count(), 0)
         items = instance.get_queryset(query="ali")
-        self.assertEqual(items.count(), 2)
+        self.assertEqual(items.count(), 4)
         items = instance.get_queryset(query="bob")
         self.assertEqual(items.count(), 1)
         items = instance.get_queryset(query="zzzzz")
@@ -124,3 +124,12 @@ class AutocompletePersonTest(TestCase):
         # Reasonable overriding
         instance = AutocompletePerson(page_size=7)
         self.assertEqual(instance.get_page_size(), 7)
+
+    def test_paginated_search(self):
+        instance = AutocompletePerson(page_size=3)
+        # The queryset is not paginated.
+        items = instance.get_queryset(query="ali")
+        self.assertEqual(items.count(), 4)
+        # The "items" method returns paginated objects
+        items = instance.items(query="ali")
+        self.assertEqual(len(items), 3)

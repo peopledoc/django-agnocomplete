@@ -18,3 +18,17 @@
     first_name: Bob
     last_name: Hope
     email: bob@example.com
+
+- model: demo.person
+  pk: 4
+  fields:
+    first_name: Alice
+    last_name: Obvious
+    email: alice3@example.com
+
+- model: demo.person
+  pk: 5
+  fields:
+    first_name: Alice
+    last_name: Galactic
+    email: alice4@example.com
