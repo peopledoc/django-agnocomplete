@@ -15,3 +15,6 @@ test:
 
 serve:
 	tox -e serve
+
+docs:
+	tox -e docs

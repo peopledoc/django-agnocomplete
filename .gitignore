@@ -5,3 +5,5 @@ __pycache__/
 .tox/
 *.sqlite3
 *.egg-info/
+# Docs
+docs/_build/
