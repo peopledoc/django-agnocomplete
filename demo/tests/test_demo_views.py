@@ -27,3 +27,8 @@ class IndexTest(TestCase):
         self.assertEqual(
             url_person,
             reverse('agnocomplete:agnocomplete', args=['AutocompletePerson']))
+
+    def test_queries(self):
+        # This view should not trigger any SQL query
+        with self.assertNumQueries(0):
+            self.client.get(reverse('home'))

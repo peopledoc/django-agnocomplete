@@ -4,6 +4,8 @@ Agnocomplete Widgets
 from django.forms import widgets
 from django.core.urlresolvers import reverse
 
+__all__ = ['AgnocompleteInput']
+
 
 class AgnocompleteWidgetMixin(object):
     def build_attrs(self, extra_attrs=None, **kwargs):
@@ -17,5 +19,5 @@ class AgnocompleteWidgetMixin(object):
         return attrs
 
 
-class AgnocompleteSelect(AgnocompleteWidgetMixin, widgets.Select):
+class AgnocompleteInput(AgnocompleteWidgetMixin, widgets.TextInput):
     pass

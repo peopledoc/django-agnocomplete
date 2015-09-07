@@ -4,7 +4,7 @@ Agnocomplete specific form fields.
 """
 from django import forms
 from .core import AgnocompleteBase
-from .widgets import AgnocompleteSelect
+from .widgets import AgnocompleteInput
 
 
 __all__ = ['AgnocompleteField', 'AgnocompleteModelField']
@@ -14,7 +14,7 @@ class AgnocompleteMixin(object):
     """
     Handles the Agnocomplete generic handling for fields.
     """
-    widget = AgnocompleteSelect
+    widget = AgnocompleteInput
 
     def __init__(self, klass_or_instance, *args, **kwargs):
         self.set_agnocomplete(klass_or_instance)
