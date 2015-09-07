@@ -13,4 +13,5 @@ urlpatterns = [
 
     # Templated DEMO views
     url(r'^$', 'demo.views.index', name='home'),
+    url(r'^filled-form/$', 'demo.views.filled_form', name='filled-form'),
 ]
