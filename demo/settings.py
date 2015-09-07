@@ -123,7 +123,8 @@ LOGGING = {
             'propagate': True,
         },
         'django.db.backends': {
-            'level': 'INFO',  # DEBUG for more output
+            'level': 'INFO',
+            # 'level': 'DEBUG',  # for more output
             'handlers': ['console'],
         },
     }
