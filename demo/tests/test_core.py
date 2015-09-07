@@ -1,4 +1,6 @@
+# -*- coding: utf8 -*-
 from django.test import TestCase
+from django.utils.encoding import force_text as text
 try:
     from django.test import override_settings
 except ImportError:
@@ -37,6 +39,15 @@ class AutocompleteColorTest(TestCase):
             list(instance.items(query='zzzzz')),
             []
         )
+
+    def test_selected(self):
+        instance = AutocompleteColor()
+        result = instance.selected([])
+        self.assertEqual(result, [])
+        result = instance.selected(['grey'])
+        self.assertEqual(result, [('grey', 'grey')])
+        result = instance.selected(['MEUH'])
+        self.assertEqual(result, [])
 
 
 # Using the default settings based on constants
@@ -141,6 +152,19 @@ class AutocompletePersonTest(TestCase):
         # The "items" method returns paginated objects
         items = instance.items(query="ali")
         self.assertEqual(len(items), 3)
+
+    def test_selected(self):
+        instance = AutocompletePerson()
+        result = instance.selected([])
+        self.assertEqual(result, [])
+        result = instance.selected([1])
+        self.assertEqual(result, [
+            (text('1'), text('Alice Iñtërnâtiônàlizætiøn'))]
+        )
+        result = instance.selected(['2'])
+        self.assertEqual(result, [(text('2'), text('Alice Inchains'))])
+        result = instance.selected(['MEUH'])
+        self.assertEqual(result, [])
 
 
 class SettingsLoadingTest(TestCase):

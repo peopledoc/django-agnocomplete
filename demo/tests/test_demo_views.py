@@ -30,5 +30,6 @@ class IndexTest(TestCase):
 
     def test_queries(self):
         # This view should not trigger any SQL query
+        # It has no selected value
         with self.assertNumQueries(0):
             self.client.get(reverse('home'))

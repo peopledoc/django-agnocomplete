@@ -2,7 +2,7 @@
 import json
 
 from django.core.urlresolvers import reverse
-from django.utils.encoding import force_text
+from django.utils.encoding import force_text as text
 
 from ..models import Person
 from . import RegistryTestGeneric
@@ -85,23 +85,23 @@ class AutocompletePersonViewTest(AutocompleteViewTestGeneric,
         self.assertTrue(data)
         self.assertEqual(len(data), 4)
         self.assertIn({
-            "value": force_text(self.alice1.pk),
-            "label": force_text(self.alice1)},
+            "value": text(self.alice1.pk),
+            "label": text(self.alice1)},
             data
         )
         self.assertIn({
-            "value": force_text(self.alice2.pk),
-            "label": force_text(self.alice2)},
+            "value": text(self.alice2.pk),
+            "label": text(self.alice2)},
             data
         )
         self.assertIn({
-            "value": force_text(self.alice3.pk),
-            "label": force_text(self.alice3)},
+            "value": text(self.alice3.pk),
+            "label": text(self.alice3)},
             data
         )
         self.assertIn({
-            "value": force_text(self.alice4.pk),
-            "label": force_text(self.alice4)},
+            "value": text(self.alice4.pk),
+            "label": text(self.alice4)},
             data
         )
 

@@ -20,8 +20,8 @@ class AgnocompleteMixin(object):
         self.set_agnocomplete(klass_or_instance)
         super(AgnocompleteMixin, self).__init__(
             self.agnocomplete.get_choices(), *args, **kwargs)
-        # Update the widget with the name of the target agnocomplete
-        self.widget.agnocomplete_name = self.agnocomplete.__class__.__name__
+        # Update the widget with the target agnocomplete
+        self.widget.agnocomplete = self.agnocomplete
 
     def set_agnocomplete(self, klass_or_instance):
         """

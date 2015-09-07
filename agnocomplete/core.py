@@ -4,7 +4,7 @@ The different agnocomplete classes to be discovered
 from copy import copy
 
 from django.db.models import Q
-from django.utils.encoding import force_text
+from django.utils.encoding import force_text as text
 from django.conf import settings
 
 from .constants import AGNOCOMPLETE_DEFAULT_PAGESIZE
@@ -79,6 +79,17 @@ class AgnocompleteBase(object):
         raise NotImplementedError(
             "Developer: Your class needs at least a items() method")
 
+    def selected(self, ids):
+        """
+        Return the values (as a tuple of pairs) for the ids provided
+        """
+        raise NotImplementedError(
+            "Developer: Your class needs at least a selected() method")
+
+    @property
+    def name(self):
+        return self.__class__.__name__
+
 
 class AgnocompleteChoices(AgnocompleteBase):
     """
@@ -102,6 +113,15 @@ class AgnocompleteChoices(AgnocompleteBase):
 
         result = [dict(value=item, label=item) for item in result]
         return result[:self.get_page_size()]
+
+    def selected(self, ids):
+        """
+        Return the selected options as a list of tuples
+        """
+        result = copy(self.choices)
+        result = filter(lambda x: x in ids, result)
+        result = ((item, item) for item in result)
+        return list(result)
 
 
 class AgnocompleteModel(AgnocompleteBase):
@@ -172,7 +192,22 @@ class AgnocompleteModel(AgnocompleteBase):
         result = []
         for item in qs:
             result.append({
-                "value": force_text(item.pk),
-                "label": force_text(item)
+                "value": text(item.pk),
+                "label": text(item)
             })
         return result[:self.get_page_size()]
+
+    def selected(self, ids):
+        """
+        Return the selected options as a list of tuples
+        """
+        # cleanup the id list
+        ids = filter(lambda x: "{}".format(x).isdigit(), copy(ids))
+        # Prepare the QS
+        qs = self.get_model_queryset().filter(pk__in=ids)
+        result = []
+        for item in qs:
+            result.append(
+                (text(item.pk), text(item))
+            )
+        return result
