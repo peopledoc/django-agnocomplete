@@ -2,26 +2,73 @@
 The different agnocomplete classes to be discovered
 """
 from copy import copy
+
 from django.db.models import Q
 from django.utils.encoding import force_text
+from django.conf import settings
 
 from .constants import AGNOCOMPLETE_DEFAULT_PAGESIZE
 from .constants import AGNOCOMPLETE_MIN_PAGESIZE
 from .constants import AGNOCOMPLETE_MAX_PAGESIZE
 
 
-class AgnocompleteBase(object):
+def load_settings_sizes():
+    """
+    Load sizes from settings or fallback to the module constants
+    """
     page_size = AGNOCOMPLETE_DEFAULT_PAGESIZE
+    settings_page_size = getattr(
+        settings, 'AGNOCOMPLETE_DEFAULT_PAGESIZE', None)
+    page_size = settings_page_size or page_size
+
     page_size_min = AGNOCOMPLETE_MIN_PAGESIZE
+    settings_page_size_min = getattr(
+        settings, 'AGNOCOMPLETE_MIN_PAGESIZE', None)
+    page_size_min = settings_page_size_min or page_size_min
+
     page_size_max = AGNOCOMPLETE_MAX_PAGESIZE
+    settings_page_size_max = getattr(
+        settings, 'AGNOCOMPLETE_MAX_PAGESIZE', None)
+    page_size_max = settings_page_size_max or page_size_max
+
+    return (page_size, page_size_min, page_size_max)
+
+
+class AgnocompleteBase(object):
+
+    # To be overridden by settings, or constructor arguments
+    page_size = None
+    page_size_max = None
+    page_size_min = None
 
     def __init__(self, page_size=None):
-        page_size = page_size or self.page_size
-        if page_size > self.page_size_max or page_size < self.page_size_min:
-            page_size = self.page_size
+        # Load from settings or fallback to constants
+        settings_page_size, settings_page_size_min, settings_page_size_max = \
+            load_settings_sizes()
+        # Use the class attributes or fallback to settings
+        self._conf_page_size = self.page_size or settings_page_size
+        self._conf_page_size_min = self.page_size_min or settings_page_size_min
+        self._conf_page_size_max = self.page_size_max or settings_page_size_max
+
+        # Use instance constructor parameters to eventually override defaults
+        page_size = page_size or self._conf_page_size
+        if page_size > self._conf_page_size_max \
+                or page_size < self._conf_page_size_min:
+            page_size = self._conf_page_size
+        # Finally set this as the wanted page_size
         self._page_size = page_size
 
     def get_page_size(self):
+        """
+        Return the computed page_size
+
+        It takes into account:
+
+        * constructor arguments,
+        * settings
+        * fallback to the module constants if needed.
+
+        """
         return self._page_size
 
     def get_choices(self):
