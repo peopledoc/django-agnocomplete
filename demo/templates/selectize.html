@@ -1,0 +1,48 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>{{ title }}</title>
+        <link rel="stylesheet" href="{% static 'css/selectize.css' %}">
+    </head>
+    <body>
+        <h1>{{ title }}</h1>
+        <form action=".">
+            {{ form }}
+        </form>
+
+        <hr>
+
+        {% include 'includes/nav.html' %}
+
+        <script src="{% static 'js/jquery.js' %}" charset="utf-8"></script>
+        <script src="{% static 'js/selectize.js' %}" charset="utf-8"></script>
+        <script type="text/javascript">
+        $(function() {
+            $('select').each(function(index, select) {
+                $(select).selectize({
+                    valueField: 'value',
+                    labelField: 'label',
+                    searchField: 'label',
+                    create: false,
+                    load: function(query, callback) {
+                        if (!query.length) return callback();
+                        $.ajax({
+                            url: $(select).data('url') + '?q=' + encodeURIComponent(query),
+                            type: 'GET',
+                            error: function() {
+                                callback();
+                            },
+                            success: function(res) {
+                                callback(res.data);
+                            }
+                        });
+                    }
+                });
+            });
+        });
+        </script>
+    </body>
+</html>
