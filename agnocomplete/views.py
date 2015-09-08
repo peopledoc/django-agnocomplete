@@ -70,14 +70,14 @@ class AgnocompleteView(RegistryMixin, JSONView):
         if not klass:
             raise Http404("Unknown autocomplete class `{}`".format(klass_name))
         # Query passed via the argument
-        query = self.request.REQUEST.get('q', "")
+        query = self.request.GET.get('q', "")
         if not query:
             # Empty set, no value to complete
             return []
 
         # Optional Page size
         try:
-            page_size = int(self.request.REQUEST.get('page_size', None))
+            page_size = int(self.request.GET.get('page_size', None))
         except:
             page_size = None
 
