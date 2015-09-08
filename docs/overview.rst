@@ -110,3 +110,30 @@ With an interesting search term:
             }
         ]
     }
+
+Forms
+-----
+
+You have two available fields ready for autocompletion. :class:`agnocomplete.fields.AgnocompleteField`, for simple autocompletion lists of choices (static or unrelated to Django models) and :class:`agnocomplete.fields.AgnocompleteModelField`, for Django-related models.
+
+Example:
+
+.. code-block:: python
+
+    from django import forms
+    from agnocomplete import fields
+    from demo.autocomplete import AutocompleteColor, AutocompletePerson
+
+
+    class ColorPersonForm(forms.Form):
+        favorite_color = fields.AgnocompleteField(AutocompleteColor)
+        person = fields.AgnocompleteModelField(AutocompletePerson)
+
+Alternatively, you can pass a full instance to your field definition, or a simple string whuch should be the name of your Agnocomplete class::
+
+.. code-block:: python
+
+    favorite_color = fields.AgnocompleteField(AutocompleteColor(page_size=5))
+    person = fields.AgnocompleteModelField('AutocompletePerson')
+
+If the passed argument is the string or the class object, it'll be instanciated using its default parameters. 
