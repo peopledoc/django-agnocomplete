@@ -17,7 +17,7 @@
   fields:
     first_name: Bob
     last_name: Hope
-    email: bob@example.com
+    email: bob@demo.com
 
 - model: demo.person
   pk: 4

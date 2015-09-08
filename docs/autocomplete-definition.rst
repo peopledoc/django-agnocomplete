@@ -63,7 +63,7 @@ AgnocompleteModel
 
 Choices in this class are related to a Django model. You **must** provide:
 
-* a ``model`` property pointing at a Django model class,
+* a ``model`` property pointing at a Django model class **OR** a ``get_queryset()`` method, returning the raw records, ready to be filtered by the searched terms.,
 * a ``fields`` property listing the fields to be used when searching for a value.
 
 
@@ -72,6 +72,13 @@ Choices in this class are related to a Django model. You **must** provide:
     class AutocompletePerson(AgnocompleteModel):
         model = Person
         fields = ['first_name', 'last_name']
+
+    class AutocompletePersonQueryset(AgnocompleteModel):
+        fields = ['first_name', 'last_name']
+
+        def get_queryset(self):
+            return Person.objects.filter(email__contains='example.com')
+
 
 In this class, when you'll be searching for "alice", the returned results will **contain** this word in the ``first_name`` OR the ``last_name`` field.
 

@@ -23,6 +23,19 @@ class AutocompletePerson(AgnocompleteModel):
     fields = ['first_name', 'last_name']
 
 
+# Special: not integrated into the registry (yet)
+class AutocompletePersonQueryset(AgnocompleteModel):
+    fields = ['first_name', 'last_name']
+
+    def get_queryset(self):
+        return Person.objects.filter(email__contains='example.com')
+
+
+# Special: not integrated into the registry (yet)
+class AutocompletePersonMisconfigured(AgnocompleteModel):
+    fields = ['first_name', 'last_name']
+
+
 # Registration
 register(AutocompleteColor)
 register(AutocompletePerson)

@@ -126,27 +126,41 @@ class AgnocompleteChoices(AgnocompleteBase):
         return list(result)
 
 
-class AgnocompleteModel(AgnocompleteBase):
-    """
-
-    Example::
-
-        class AgnocompletePeople(AgnocompleteModel):
-            model = People
-            fields = ['first_name', 'last_name']
-
-    """
-
+class AgnocompleteModelBase(AgnocompleteBase):
     @property
     def model(self):
         raise NotImplementedError(
-            "Integrator: You must have a `model` property")
+            "Integrator: You must either have a `model` property "
+            "or a `get_queryset()` method"
+        )
+
+    def get_queryset(self):
+        raise NotImplementedError(
+            "Integrator: You must either have a `model` property "
+            "or a `get_queryset()` method"
+        )
 
     @property
     def fields(self):
         raise NotImplementedError(
             "Integrator: You must have a `fields` property")
 
+
+class AgnocompleteModel(AgnocompleteModelBase):
+    """
+    Example::
+
+        class AgnocompletePeople(AgnocompleteModel):
+            model = People
+            fields = ['first_name', 'last_name']
+
+        class AgnocompletePersonQueryset(AgnocompleteModel):
+            fields = ['first_name', 'last_name']
+
+            def get_queryset(self):
+                return People.objects.filter(email__contains='example.com')
+
+    """
     def _construct_qs_filter(self, field_name):
         """
         Using a field name optionnaly prefixed by `^`, `=`, `@`, return a
@@ -162,26 +176,20 @@ class AgnocompleteModel(AgnocompleteBase):
         else:
             return "%s__icontains" % field_name
 
-    def get_model_queryset(self):
+    def get_queryset(self):
         return self.model.objects.all()
-    get_choices = get_model_queryset
+    get_choices = get_queryset
 
-    def get_queryset(self, query=None):
+    def get_queryset_filters(self, query):
         """
         Return the filtered queryset
         """
-        # Cut this, we don't need no empty query
-        if not query:
-            return self.model.objects.none()
-
-        qs = self.get_model_queryset()
         conditions = Q()
         for field_name in self.fields:
             conditions |= Q(**{
                 self._construct_qs_filter(field_name): query
             })
-        qs = qs.filter(conditions)
-        return qs
+        return conditions
 
     def items(self, query=None):
         """
@@ -190,7 +198,10 @@ class AgnocompleteModel(AgnocompleteBase):
         # Cut this, we don't need no empty query
         if not query:
             return self.model.objects.none()
-        qs = self.get_queryset(query)
+        # Take the basic queryset
+        qs = self.get_queryset()
+        # filter it via the query conditions
+        qs = qs.filter(self.get_queryset_filters(query))
         result = []
         for item in qs:
             result.append({
@@ -206,7 +217,7 @@ class AgnocompleteModel(AgnocompleteBase):
         # cleanup the id list
         ids = filter(lambda x: "{}".format(x).isdigit(), copy(ids))
         # Prepare the QS
-        qs = self.get_model_queryset().filter(pk__in=ids)
+        qs = self.get_queryset().filter(pk__in=ids)
         result = []
         for item in qs:
             result.append(

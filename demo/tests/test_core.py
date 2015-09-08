@@ -13,7 +13,9 @@ from demo.autocomplete import (
     AutocompleteColor,
     AutocompletePerson,
     AutocompleteChoicesPages,
-    AutocompleteChoicesPagesOverride
+    AutocompleteChoicesPagesOverride,
+    AutocompletePersonQueryset,
+    AutocompletePersonMisconfigured,
 )
 
 
@@ -105,6 +107,24 @@ class AutocompleteChoicesPagesOverrideTest(TestCase):
         self.assertEqual(instance.get_page_size(), 12)
 
 
+class AutocompleteModelTest(TestCase):
+
+    def test_queryset_by_model(self):
+        instance = AutocompletePerson()
+        items = instance.get_queryset()
+        self.assertEqual(items.count(), 5)
+
+    def test_queryset_by_queryset(self):
+        instance = AutocompletePersonQueryset()
+        items = instance.get_queryset()
+        self.assertEqual(items.count(), 4)
+
+    def test_misconfigured(self):
+        instance = AutocompletePersonMisconfigured()
+        with self.assertRaises(NotImplementedError):
+            instance.get_queryset()
+
+
 class AutocompletePersonTest(TestCase):
 
     def test_items(self):
@@ -117,17 +137,6 @@ class AutocompletePersonTest(TestCase):
         self.assertEqual(len(items), 1)
         items = instance.items(query="zzzzz")
         self.assertEqual(len(items), 0)
-
-    def test_queryset(self):
-        instance = AutocompletePerson()
-        items = instance.get_queryset()
-        self.assertEqual(items.count(), 0)
-        items = instance.get_queryset(query="ali")
-        self.assertEqual(items.count(), 4)
-        items = instance.get_queryset(query="bob")
-        self.assertEqual(items.count(), 1)
-        items = instance.get_queryset(query="zzzzz")
-        self.assertEqual(items.count(), 0)
 
     def test_get_page_size(self):
         instance = AutocompletePerson()
@@ -146,8 +155,10 @@ class AutocompletePersonTest(TestCase):
 
     def test_paginated_search(self):
         instance = AutocompletePerson(page_size=3)
-        # The queryset is not paginated.
-        items = instance.get_queryset(query="ali")
+        # The raw queryset is not paginated.
+        qs = instance.get_queryset()
+        conditions = instance.get_queryset_filters(query="ali")
+        items = qs.filter(conditions)
         self.assertEqual(items.count(), 4)
         # The "items" method returns paginated objects
         items = instance.items(query="ali")
