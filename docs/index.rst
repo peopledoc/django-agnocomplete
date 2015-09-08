@@ -10,6 +10,11 @@ It will provide:
 * a REST-like HTTP API to search for results,
 * Fields and widgets that will make the interface between our Django code and *your* Javascript.
 
+Demo
+====
+
+If you want to see it in action, simply install it as indicated in the README, run ``tox -e serve``, and point at the local devserver. You should be able to click on the "[DEMO]" links and see it in action. Browse the source code that lives in ``demo/templates`` to see how easy it is to interact with ``django-agnocomplete``.
+
 
 .. Contents:
 

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/selectize.css' %}">
+{% endblock %}
+
+{% block extra_body %}
+        <script src="{% static 'js/jquery.js' %}" charset="utf-8"></script>
+        <script src="{% static 'js/selectize.js' %}" charset="utf-8"></script>
+        <script type="text/javascript">
+        $(function() {
+            $('select').each(function(index, select) {
+                $(select).selectize({
+                    valueField: 'value',
+                    labelField: 'label',
+                    searchField: 'label',
+                    create: false,
+                    load: function(query, callback) {
+                        if (!query.length) return callback();
+                        $.ajax({
+                            url: $(select).data('url') + '?q=' + encodeURIComponent(query),
+                            type: 'GET',
+                            error: function() {
+                                callback();
+                            },
+                            success: function(res) {
+                                callback(res.data);
+                            }
+                        });
+                    }
+                });
+            });
+        });
+        </script>
+{% endblock %}

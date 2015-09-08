@@ -1,8 +1,12 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
     <head>
         <meta charset="utf-8">
         <title>{{ title }}</title>
+        {% block extra_head %}
+        <!-- put your extra head elements (scripts, css) here -->
+        {% endblock %}
     </head>
     <body>
         <h1>{{ title }}</h1>
@@ -12,12 +16,10 @@
 
         <hr>
 
-        Demo pages:
-        <ul>
-            <li><a href="{% url 'home' %}">Index</a></li>
-            <li><a href="{% url 'filled-form' %}">Filled form</a></li>
-        </ul>
+        {% include 'includes/nav.html' %}
 
-
+{% block extra_body %}
+<!-- put your extra body (usually scripts) here -->
+{% endblock %}
     </body>
 </html>
