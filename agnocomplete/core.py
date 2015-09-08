@@ -35,7 +35,9 @@ def load_settings_sizes():
 
 
 class AgnocompleteBase(object):
-
+    """
+    Base class for Agnocomplete tools.
+    """
     # To be overridden by settings, or constructor arguments
     page_size = None
     page_size_max = None

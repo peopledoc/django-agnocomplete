@@ -17,7 +17,7 @@ It will provide:
    :maxdepth: 2
 
    overview
-
+   autocomplete-definition
 
 
 Indices and tables
