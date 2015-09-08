@@ -60,7 +60,7 @@ class FilledFormTest(TestCase):
         form = response.context['form']
         self.assertTrue(form.is_valid())
         cleaned_data = form.cleaned_data
-        self.assertEquals(
+        self.assertEqual(
             cleaned_data, {
                 "search_color": "grey",
                 "search_person": self.alice1
