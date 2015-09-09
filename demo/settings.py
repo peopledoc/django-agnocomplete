@@ -75,6 +75,11 @@ DATABASES = {
     }
 }
 
+MIDDLEWARE_CLASSES = (
+    'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+)
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/

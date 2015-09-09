@@ -8,6 +8,7 @@ except ImportError:
     from django.test.utils import override_settings
 
 from agnocomplete import constants
+from agnocomplete.exceptions import AuthenticationRequiredAgnocompleteException
 
 from demo.autocomplete import (
     AutocompleteColor,
@@ -16,8 +17,10 @@ from demo.autocomplete import (
     AutocompleteChoicesPagesOverride,
     AutocompletePersonQueryset,
     AutocompletePersonMisconfigured,
+    AutocompletePersonDomain
 )
 from demo.models import Person
+from demo.tests import MockRequestUser
 
 
 class AutocompleteColorTest(TestCase):
@@ -183,6 +186,34 @@ class AutocompletePersonTest(TestCase):
         self.assertEqual(result, [(text('2'), text('Alice Inchains'))])
         result = instance.selected(['MEUH'])
         self.assertEqual(result, [])
+
+
+class RequiresAuthenticationTest(TestCase):
+
+    def test_does_not_require(self):
+        instance = AutocompletePerson()
+        self.assertTrue(instance.user is None)
+
+    def test_requires(self):
+
+        mock_unauth_user = MockRequestUser('joe@example.com', False)
+        mock_auth_user = MockRequestUser('joe2@example.com', True)
+
+        instance = AutocompletePersonDomain()
+        self.assertTrue(instance.user is None)
+        with self.assertRaises(AuthenticationRequiredAgnocompleteException):
+            instance.items(query="ali")
+
+        instance = AutocompletePersonDomain(mock_unauth_user)
+        self.assertFalse(instance.user is None)
+        # Unauthenticated user
+        with self.assertRaises(AuthenticationRequiredAgnocompleteException):
+            instance.items(query="ali")
+
+        instance = AutocompletePersonDomain(user=mock_auth_user)
+        # Should be fine
+        self.assertFalse(instance.user is None)
+        self.assertTrue(instance.items(query="ali"))
 
 
 class SettingsLoadingTest(TestCase):

@@ -81,4 +81,6 @@ class AgnocompleteView(RegistryMixin, JSONView):
         except:
             page_size = None
 
-        return klass(page_size=page_size).items(query=query)
+        # Agnocomplete instance is ready
+        instance = klass(user=self.request.user, page_size=page_size)
+        return instance.items(query=query)

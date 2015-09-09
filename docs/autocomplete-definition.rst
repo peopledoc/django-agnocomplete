@@ -92,7 +92,6 @@ In this class, when you'll be searching for "alice", the returned results will *
         WHERE first_name ILIKE '%value%' OR last_name ILIKE '%value%'
 
 
-
 Fields definition
 -----------------
 
@@ -103,3 +102,34 @@ You can define fields using a few tricks to refine your search:
 * ``@field_name`` will use the ``__search`` lookup, taking advantage of the full-text search indexes.
 
 Otherwise, the search will be a simple ``ILIKE '%value%'`` SQL statement.
+
+User-dependant querysets
+------------------------
+
+A common usecase: "Please display the items depending on the user context".
+In a multi-site context, you *have* to define a preemptive filter to gather informations based on the current context. That's the reason why the ``django-agnocomplete`` views carry the request user into the Autocomplete class. This instance variable is ``self.user``. If you're using a custom authentication profile, it'll be an instance of your ``AUTH_USER_MODE`` class, hence it'll have access to its properties and methods.
+
+.. code-block:: python
+
+    class AutocompletePersonQueryset(AgnocompleteModel):
+        fields = ['first_name', 'last_name']
+        requires_authentication = True
+        model = Person
+
+        def get_queryset(self):
+            email = self.user.email
+            _, domain = email.split('@')
+            return Person.objects.filter(email__endswith=domain)
+
+    class AutocompletePersonSameSite(AgnocompleteModel):
+        fields = ['first_name', 'last_name']
+        requires_authentication = True
+        model = Person
+
+        def get_queryset(self):
+            return Person.objects.filter(site=self.user.site)
+
+.. important::
+
+    You may have noticed that these two classes have a ``model`` property and a ``requires_authentication`` property set to ``True``. Because we're using a user-based context, the ``requires_authentication`` will allow the general "out-of-context code" (form class creation) to instanciate the Agnocomplete class without the context, but will disallow it to return results based on the ``query``. This way, you can filter out unauthorized uses of the autocomplete, as you could do it with the ``@login_required`` decorator in
+    your views.

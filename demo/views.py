@@ -1,8 +1,9 @@
 from django.views.generic import TemplateView
-from .forms import SearchForm
+from .forms import SearchForm, SearchContextForm
 
 
 class AutoView(TemplateView):
+    template_name = 'base.html'
 
     def get_form(self):
         return SearchForm()
@@ -17,7 +18,6 @@ class AutoView(TemplateView):
 
 
 class IndexView(AutoView):
-    template_name = 'base.html'
     title = "Basic view, no JS"
 
 
@@ -27,12 +27,20 @@ class SelectizeView(AutoView):
 
 
 class FilledFormView(AutoView):
-    template_name = 'base.html'
     title = "Basic view, no JS, filled form"
 
     def get_form(self):
         return SearchForm({'search_color': 'grey', 'search_person': '1'})
 
+
+class SearchContextFormView(AutoView):
+    title = "Form filtering on logged in user context"
+
+    def get_form(self):
+        return SearchContextForm()
+
+
 index = IndexView.as_view()
 selectize = SelectizeView.as_view()
 filled_form = FilledFormView.as_view()
+search_context = SearchContextFormView.as_view()

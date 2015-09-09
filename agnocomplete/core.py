@@ -4,12 +4,14 @@ The different agnocomplete classes to be discovered
 from copy import copy
 
 from django.db.models import Q
+from django.core.exceptions import ImproperlyConfigured
 from django.utils.encoding import force_text as text
 from django.conf import settings
 
 from .constants import AGNOCOMPLETE_DEFAULT_PAGESIZE
 from .constants import AGNOCOMPLETE_MIN_PAGESIZE
 from .constants import AGNOCOMPLETE_MAX_PAGESIZE
+from .exceptions import AuthenticationRequiredAgnocompleteException
 
 
 def load_settings_sizes():
@@ -43,7 +45,10 @@ class AgnocompleteBase(object):
     page_size_max = None
     page_size_min = None
 
-    def __init__(self, page_size=None):
+    def __init__(self, user=None, page_size=None):
+        # Loading the user context
+        self.user = user
+
         # Load from settings or fallback to constants
         settings_page_size, settings_page_size_min, settings_page_size_max = \
             load_settings_sizes()
@@ -128,6 +133,7 @@ class AgnocompleteChoices(AgnocompleteBase):
 
 class AgnocompleteModelBase(AgnocompleteBase):
     model = None
+    requires_authentication = False
 
     def get_queryset(self):
         raise NotImplementedError(
@@ -147,8 +153,13 @@ class AgnocompleteModelBase(AgnocompleteBase):
         if hasattr(self, 'model') and self.model:
             return self.model
         # Give me a "none" queryset
-        none = self.get_queryset().none()
-        return none.model
+        try:
+            none = self.get_queryset().none()
+            return none.model
+        except:
+            raise ImproperlyConfigured(
+                "Integrator: Unable to determine the model with this queryset."
+                " Please add a `model` property")
 
     def get_model_queryset(self):
         """
@@ -215,7 +226,18 @@ class AgnocompleteModel(AgnocompleteModelBase):
         """
         # Cut this, we don't need no empty query
         if not query:
-            return self.model.objects.none()
+            return self.get_model().objects.none()
+
+        if self.requires_authentication:
+            if not self.user:
+                raise AuthenticationRequiredAgnocompleteException(
+                    "Authentication is required to use this autocomplete"
+                )
+            if not self.user.is_authenticated():
+                raise AuthenticationRequiredAgnocompleteException(
+                    "Authentication is required to use this autocomplete"
+                )
+
         # Take the basic queryset
         qs = self.get_queryset()
         # filter it via the query conditions
@@ -235,7 +257,8 @@ class AgnocompleteModel(AgnocompleteModelBase):
         # cleanup the id list
         ids = filter(lambda x: "{}".format(x).isdigit(), copy(ids))
         # Prepare the QS
-        qs = self.get_queryset().filter(pk__in=ids)
+        # TODO: not contextually filtered, check if it's possible at some point
+        qs = self.get_model_queryset().filter(pk__in=ids)
         result = []
         for item in qs:
             result.append(

@@ -15,4 +15,6 @@ urlpatterns = [
     url(r'^$', 'demo.views.index', name='home'),
     url(r'^selectize/$', 'demo.views.selectize', name='selectize'),
     url(r'^filled-form/$', 'demo.views.filled_form', name='filled-form'),
+    url(r'^search-context/$',
+        'demo.views.search_context', name='search-context'),
 ]

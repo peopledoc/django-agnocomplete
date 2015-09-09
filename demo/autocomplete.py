@@ -26,6 +26,7 @@ class AutocompletePerson(AgnocompleteModel):
 # Special: not integrated into the registry (yet)
 class AutocompletePersonQueryset(AgnocompleteModel):
     fields = ['first_name', 'last_name']
+    requires_authentication = False
 
     def get_queryset(self):
         return Person.objects.filter(email__contains='example.com')
@@ -36,8 +37,20 @@ class AutocompletePersonMisconfigured(AgnocompleteModel):
     fields = ['first_name', 'last_name']
 
 
+class AutocompletePersonDomain(AgnocompleteModel):
+    fields = ['first_name', 'last_name']
+    model = Person
+    requires_authentication = True
+
+    def get_queryset(self):
+        email = self.user.email
+        _, domain = email.split('@')
+        return Person.objects.filter(email__endswith=domain)
+
+
 # Registration
 register(AutocompleteColor)
 register(AutocompletePerson)
 register(AutocompleteChoicesPages)
 register(AutocompleteChoicesPagesOverride)
+register(AutocompletePersonDomain)
