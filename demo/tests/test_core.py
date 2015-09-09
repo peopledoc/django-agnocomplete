@@ -17,6 +17,7 @@ from demo.autocomplete import (
     AutocompletePersonQueryset,
     AutocompletePersonMisconfigured,
 )
+from demo.models import Person
 
 
 class AutocompleteColorTest(TestCase):
@@ -123,6 +124,12 @@ class AutocompleteModelTest(TestCase):
         instance = AutocompletePersonMisconfigured()
         with self.assertRaises(NotImplementedError):
             instance.get_queryset()
+
+    def test_get_model(self):
+        instance = AutocompletePerson()
+        self.assertEqual(Person, instance.get_model())
+        instance = AutocompletePersonQueryset()
+        self.assertEqual(Person, instance.get_model())
 
 
 class AutocompletePersonTest(TestCase):

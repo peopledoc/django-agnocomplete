@@ -127,12 +127,7 @@ class AgnocompleteChoices(AgnocompleteBase):
 
 
 class AgnocompleteModelBase(AgnocompleteBase):
-    @property
-    def model(self):
-        raise NotImplementedError(
-            "Integrator: You must either have a `model` property "
-            "or a `get_queryset()` method"
-        )
+    model = None
 
     def get_queryset(self):
         raise NotImplementedError(
@@ -144,6 +139,25 @@ class AgnocompleteModelBase(AgnocompleteBase):
     def fields(self):
         raise NotImplementedError(
             "Integrator: You must have a `fields` property")
+
+    def get_model(self):
+        """
+        Return the class Model used by this Agnocomplete
+        """
+        if hasattr(self, 'model') and self.model:
+            return self.model
+        # Give me a "none" queryset
+        none = self.get_queryset().none()
+        return none.model
+
+    def get_model_queryset(self):
+        """
+        Return an unfiltered complete model queryset.
+
+        To be used for the select Input initialization
+        """
+        return self.get_model().objects.all()
+    get_choices = get_model_queryset
 
 
 class AgnocompleteModel(AgnocompleteModelBase):
@@ -177,8 +191,12 @@ class AgnocompleteModel(AgnocompleteModelBase):
             return "%s__icontains" % field_name
 
     def get_queryset(self):
+        if not hasattr(self, 'model') or not self.model:
+            raise NotImplementedError(
+                "Integrator: You must either have a `model` property "
+                "or a `get_queryset()` method"
+            )
         return self.model.objects.all()
-    get_choices = get_queryset
 
     def get_queryset_filters(self, query):
         """
