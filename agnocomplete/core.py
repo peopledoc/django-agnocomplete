@@ -11,6 +11,8 @@ from django.conf import settings
 from .constants import AGNOCOMPLETE_DEFAULT_PAGESIZE
 from .constants import AGNOCOMPLETE_MIN_PAGESIZE
 from .constants import AGNOCOMPLETE_MAX_PAGESIZE
+from .constants import AGNOCOMPLETE_DEFAULT_QUERYSIZE
+from .constants import AGNOCOMPLETE_MIN_QUERYSIZE
 from .exceptions import AuthenticationRequiredAgnocompleteException
 
 
@@ -33,7 +35,21 @@ def load_settings_sizes():
         settings, 'AGNOCOMPLETE_MAX_PAGESIZE', None)
     page_size_max = settings_page_size_max or page_size_max
 
-    return (page_size, page_size_min, page_size_max)
+    # Query sizes
+    query_size = AGNOCOMPLETE_DEFAULT_QUERYSIZE
+    settings_query_size = getattr(
+        settings, 'AGNOCOMPLETE_DEFAULT_QUERYSIZE', None)
+    query_size = settings_query_size or query_size
+
+    query_size_min = AGNOCOMPLETE_MIN_QUERYSIZE
+    settings_query_size_min = getattr(
+        settings, 'AGNOCOMPLETE_MIN_QUERYSIZE', None)
+    query_size_min = settings_query_size_min or query_size_min
+
+    return (
+        page_size, page_size_min, page_size_max,
+        query_size, query_size_min,
+    )
 
 
 class AgnocompleteBase(object):
@@ -44,14 +60,17 @@ class AgnocompleteBase(object):
     page_size = None
     page_size_max = None
     page_size_min = None
+    query_size = None
+    query_size_min = None
 
     def __init__(self, user=None, page_size=None):
         # Loading the user context
         self.user = user
 
         # Load from settings or fallback to constants
-        settings_page_size, settings_page_size_min, settings_page_size_max = \
-            load_settings_sizes()
+        settings_page_size, settings_page_size_min, settings_page_size_max, \
+            query_size, query_size_min = load_settings_sizes()
+
         # Use the class attributes or fallback to settings
         self._conf_page_size = self.page_size or settings_page_size
         self._conf_page_size_min = self.page_size_min or settings_page_size_min
@@ -65,18 +84,47 @@ class AgnocompleteBase(object):
         # Finally set this as the wanted page_size
         self._page_size = page_size
 
+        # set query sizes
+        self._query_size = self.query_size or query_size
+        self._query_size_min = self.query_size_min or query_size_min
+
     def get_page_size(self):
         """
         Return the computed page_size
 
         It takes into account:
 
+        * class variables
         * constructor arguments,
         * settings
         * fallback to the module constants if needed.
 
         """
         return self._page_size
+
+    def get_query_size(self):
+        """
+        Return the computed default query size
+
+        It takes into account:
+
+        * class variables
+        * settings,
+        * fallback to the module constants
+        """
+        return self._query_size
+
+    def get_query_size_min(self):
+        """
+        Return the computed minimum query size
+
+        It takes into account:
+
+        * class variables
+        * settings,
+        * fallback to the module constants
+        """
+        return self._query_size_min
 
     def get_choices(self):
         raise NotImplementedError(

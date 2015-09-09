@@ -51,6 +51,48 @@ Finally, when the HTTP client (usually a JS script, but it can be a curl-like co
 
     The minimum and maximum page size can't be overridden by the client, to avoid performances issues.
 
+Minimum length of query size
+----------------------------
+
+It's obvious that searching for a one-character-term is not a good idea, both on the backend side (too many pointless calls) or on the frontend (too many unusable results). To limit this, we advise the front-end integration not to call the agnocomplete URL if the search term typed in the search box doesn't meet the minimum length.
+
+This is handled by the ``query_size`` parameter. As for the page size, this parameter can be overridden, but only in the backend.
+
+There are two important settings:
+
+* ``AGNOCOMPLETE_DEFAULT_QUERYSIZE``: the usual default minimum length of the search term to be queried.
+* ``AGNOCOMPLETE_MIN_QUERYSIZE``: the absolute minimum length of a search term.
+
+These variables are set in the ``agnocomplete.constants`` module.
+
+They can be overridden in the django settings, like this:
+
+.. code-block:: python
+
+    AGNOCOMPLETE_DEFAULT_QUERYSIZE = 5
+    AGNOCOMPLETE_MIN_QUERYSIZE = 3
+
+Also, this can be overridden in the autocomplete class definition, like this:
+
+.. code-block:: python
+
+    class AutocompletePerson(AgnocompleteModel):
+        query_size = 6
+        query_size_min = 5
+
+.. note::
+
+    They don't have to be different, you can also force them to be equal:
+
+    .. code-block:: python
+
+        AGNOCOMPLETE_DEFAULT_QUERYSIZE = AGNOCOMPLETE_MIN_QUERYSIZE = 3
+
+
+1. In the input, we're providing a ``data-query-size`` attribute you can fetch to adjust your frontend.
+2. If the AJAX view is called with a search term that is smaller than the Agnocomplete class minimum length, the resultset will be empty.
+
+
 AgnocompleteField
 =================
 

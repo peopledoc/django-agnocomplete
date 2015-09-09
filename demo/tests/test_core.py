@@ -1,4 +1,5 @@
 # -*- coding: utf8 -*-
+from django.conf import settings
 from django.test import TestCase
 from django.utils.encoding import force_text as text
 try:
@@ -109,6 +110,19 @@ class AutocompleteChoicesPagesOverrideTest(TestCase):
         # Reasonable overriding
         instance = AutocompleteChoicesPagesOverride(page_size=12)
         self.assertEqual(instance.get_page_size(), 12)
+
+    def test_get_query_size(self):
+        instance = AutocompleteChoicesPagesOverride()
+        self.assertNotEqual(
+            instance.get_query_size(), settings.AGNOCOMPLETE_DEFAULT_QUERYSIZE)
+        self.assertNotEqual(
+            instance.get_query_size_min(), settings.AGNOCOMPLETE_MIN_QUERYSIZE)
+        self.assertEqual(
+            instance.get_query_size(),
+            AutocompleteChoicesPagesOverride.query_size)
+        self.assertEqual(
+            instance.get_query_size_min(),
+            AutocompleteChoicesPagesOverride.query_size_min)
 
 
 class AutocompleteModelTest(TestCase):
@@ -224,7 +238,7 @@ class SettingsLoadingTest(TestCase):
         AGNOCOMPLETE_MAX_PAGESIZE=None,
         AGNOCOMPLETE_MIN_PAGESIZE=None,
     )
-    def test_no_settings(self):
+    def test_no_settings_pagesize(self):
         instance = AutocompleteColor()
         # These are set by configuration
         self.assertEqual(
@@ -234,9 +248,35 @@ class SettingsLoadingTest(TestCase):
         self.assertEqual(
             instance._conf_page_size_min, constants.AGNOCOMPLETE_MIN_PAGESIZE)
 
-    def test_no_override(self):
+    # Using the default settings based on constants
+    @override_settings(
+        AGNOCOMPLETE_DEFAULT_QUERYSIZE=None,
+        AGNOCOMPLETE_MIN_QUERYSIZE=None,
+    )
+    def test_no_settings_querysize(self):
         instance = AutocompleteColor()
         # These are set by configuration
-        self.assertEqual(instance._page_size, 15)
-        self.assertEqual(instance._conf_page_size_max, 120)
-        self.assertEqual(instance._conf_page_size_min, 2)
+        self.assertEqual(
+            instance.get_query_size(),
+            constants.AGNOCOMPLETE_DEFAULT_QUERYSIZE)
+        self.assertEqual(
+            instance.get_query_size_min(),
+            constants.AGNOCOMPLETE_MIN_QUERYSIZE)
+
+    def test_no_override_pagesize(self):
+        instance = AutocompleteColor()
+        # These are set by configuration
+        self.assertEqual(
+            instance._page_size, settings.AGNOCOMPLETE_DEFAULT_PAGESIZE)
+        self.assertEqual(
+            instance._conf_page_size_max, settings.AGNOCOMPLETE_MAX_PAGESIZE)
+        self.assertEqual(
+            instance._conf_page_size_min, settings.AGNOCOMPLETE_MIN_PAGESIZE)
+
+    def test_no_override_querysize(self):
+        instance = AutocompleteColor()
+        # These are set by configuration
+        self.assertEqual(
+            instance.get_query_size(), settings.AGNOCOMPLETE_DEFAULT_QUERYSIZE)
+        self.assertEqual(
+            instance.get_query_size_min(), settings.AGNOCOMPLETE_MIN_QUERYSIZE)
