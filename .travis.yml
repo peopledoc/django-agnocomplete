@@ -1,0 +1,4 @@
+language: python
+script: tox
+install:
+    - pip install tox
