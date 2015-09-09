@@ -41,6 +41,20 @@ It'll run the tests for all the combinations of the following:
 
 and a ``flake8`` check.
 
+Are you a developper?
+---------------------
+
+To target a specific test case, use the following::
+
+    tox -e py27-django17 --  demo.tests.test_core.AutocompleteChoicesPagesOverrideTest
+
+Everything after the double-dash will be passed to the django-admin.py test command.
+
+If you need to install a debugger (let's say `ipdb`), you can use the ``TOX_EXTRA`` environment variable like this::
+
+    TOX_EXTRA=ipdb tox -e py27-django18
+
+
 Run the demo
 ============
 
