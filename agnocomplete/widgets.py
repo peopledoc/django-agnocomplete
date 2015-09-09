@@ -15,7 +15,8 @@ class AgnocompleteWidgetMixin(object):
         attrs.update({
             'data-url': reverse(
                 # FIXME: the namespace should be a setting variable.
-                'agnocomplete:agnocomplete', args=[self.agnocomplete.name])
+                'agnocomplete:agnocomplete', args=[self.agnocomplete.name]),
+            'data-query-size': self.agnocomplete.get_query_size(),
         })
         return attrs
 
