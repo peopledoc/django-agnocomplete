@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
+<style>
+.ui-autocomplete-loading {
+  background: white url({% static "images/ui-anim_basic_16x16.gif" %}) right center no-repeat;
+}
+</style>
+{% endblock %}
+
+{% block extra_body %}
+        <script src="{% static 'js/jquery.js' %}" charset="utf-8"></script>
+        <script src="{% static 'js/jquery-ui.js' %}"></script>
+        <script type="text/javascript">
+        $(document).ready(
+            function() {
+                $("input,select").autocomplete({
+                    source: function(request, response) {
+                        var element = $(this.element);
+                        var url = $(element).data('url');
+                        $.getJSON(
+                            url,
+                            {q: request.term},
+                            function(data) {
+                                var result = [];
+                                $.each(data.data, function(i, item, key) {
+                                    result.push({label: item.label, value: item.value});
+                                });
+                                response(result);
+                            }
+                        );
+                    },
+                    minLength: 2,
+                });
+            }
+        );
+        </script>
+{% endblock %}
