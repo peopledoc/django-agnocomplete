@@ -3,6 +3,7 @@ import json
 
 from django.core.urlresolvers import reverse
 from django.utils.encoding import force_text as text
+from django.contrib.auth.models import User
 
 from ..models import Person
 from . import RegistryTestGeneric
@@ -120,3 +121,43 @@ class AutocompletePersonViewTest(AutocompleteViewTestGeneric,
 class AutocompleteColorViewTest(AutocompleteViewTestGeneric,
                                 RegistryTestGeneric):
     view_key = 'AutocompleteColor'
+
+
+class SearchContextFormTest(AutocompleteViewTestGeneric,
+                            RegistryTestGeneric):
+    view_key = 'AutocompletePersonDomain'
+
+    def test_search_unauthorized(self):
+        url = reverse(
+            'agnocomplete:agnocomplete', args=[self.view_key],
+        )
+        response = self.client.get(url, data={"q": "ali"})
+        self.assertEqual(response.status_code, 403)
+
+    def test_authorized_empty(self):
+        User.objects.create_user(
+            'john', 'lennon@thebeatles.com', 'johnpassword'
+        )
+        url = reverse(
+            'agnocomplete:agnocomplete', args=[self.view_key],
+        )
+        # Logged in with John
+        self.client.login(username='john', password='johnpassword')
+        response = self.client.get(url, data={"q": "ali"})
+        self.assertEqual(response.status_code, 200)
+        data = get_json(response)
+        self.assertFalse(data)
+
+    def test_authorized_result(self):
+        User.objects.create_user(
+            'bob', 'bob@example.com', 'bobpassword'
+        )
+        url = reverse(
+            'agnocomplete:agnocomplete', args=[self.view_key],
+        )
+        # Logged in with Bob
+        self.client.login(username='bob', password='bobpassword')
+        response = self.client.get(url, data={"q": "ali"})
+        self.assertEqual(response.status_code, 200)
+        data = get_json(response)
+        self.assertTrue(data)

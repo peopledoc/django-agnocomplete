@@ -1,7 +1,11 @@
+from django.core.exceptions import PermissionDenied
 from django.http import Http404
-from django.views.generic import View
 from django.utils.functional import cached_property
+from django.views.generic import View
+
 from .register import get_agnocomplete_registry
+from .exceptions import AuthenticationRequiredAgnocompleteException
+
 
 try:
     from django.http import JsonResponse
@@ -82,5 +86,12 @@ class AgnocompleteView(RegistryMixin, JSONView):
             page_size = None
 
         # Agnocomplete instance is ready
-        instance = klass(user=self.request.user, page_size=page_size)
-        return instance.items(query=query)
+        try:
+            instance = klass(user=self.request.user, page_size=page_size)
+            return instance.items(query=query)
+        except AuthenticationRequiredAgnocompleteException:
+            raise PermissionDenied(
+                "Unauthorized access to this Autocomplete")
+        except:
+            # re-raise the unknown exception
+            raise

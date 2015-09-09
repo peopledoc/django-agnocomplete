@@ -66,15 +66,3 @@ class FilledFormTest(TestCase):
                 "search_person": self.alice1
             }
         )
-
-
-class SearchContextFormTest(TestCase):
-
-    def setUp(self):
-        super(SearchContextFormTest, self).setUp()
-        self.alice = Person.objects.get(email='alice@example.com')
-        self.bob = Person.objects.get(email='bob@demo.com')
-
-    def test_get(self):
-        response = self.client.get(reverse('search-context'))
-        self.assertEqual(response.status_code, 200)
