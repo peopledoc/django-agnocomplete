@@ -31,8 +31,13 @@
                             }
                         );
                     },
-                    minLength: 2,
                 });
+
+                // Setting the query size as the minLength limit
+                $("input,select").each(function() {
+                    $(this).autocomplete("option", "minLength", $(this).data("query-size"));
+                });
+
             }
         );
         </script>
