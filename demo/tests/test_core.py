@@ -24,10 +24,18 @@ from demo.models import Person
 from demo.tests import MockRequestUser
 
 
+# Should work with this query size
+@override_settings(
+    AGNOCOMPLETE_DEFAULT_QUERYSIZE=2,
+    AGNOCOMPLETE_MIN_QUERYSIZE=2,
+)
 class AutocompleteColorTest(TestCase):
     def test_items(self):
         instance = AutocompleteColor()
         self.assertEqual(list(instance.items()), [])
+        # Limit is 2, a 1-char-long query should be empty
+        self.assertEqual(list(instance.items(query='g')), [])
+        # Starting from 2 chars, it's okay
         self.assertEqual(
             list(instance.items(query='gr')), [
                 {'value': 'green', 'label': 'Green'},
@@ -155,6 +163,10 @@ class AutocompletePersonTest(TestCase):
         instance = AutocompletePerson()
         items = instance.items()
         self.assertEqual(len(items), 0)
+        # Limit is "2"
+        items = instance.items(query="a")
+        self.assertEqual(len(items), 0)
+        # Should be okay now
         items = instance.items(query="ali")
         self.assertEqual(len(items), 4)
         items = instance.items(query="bob")

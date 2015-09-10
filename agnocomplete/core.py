@@ -164,8 +164,13 @@ class AgnocompleteChoices(AgnocompleteBase):
         return self.choices
 
     def items(self, query=None):
+        # No query, no item
         if not query:
             return []
+        # Query is too short, no item
+        if len(query) < self.get_query_size_min():
+            return []
+
         result = copy(self.choices)
         if query:
             result = filter(lambda x: x[1].lower().startswith(query), result)
@@ -273,13 +278,25 @@ class AgnocompleteModel(AgnocompleteModelBase):
             })
         return conditions
 
+    def serialize(self, queryset):
+        result = []
+        for item in queryset:
+            result.append({
+                "value": text(item.pk),
+                "label": text(item)
+            })
+        return result[:self.get_page_size()]
+
     def items(self, query=None):
         """
         Return the items to be sent to the client
         """
         # Cut this, we don't need no empty query
         if not query:
-            return self.get_model().objects.none()
+            return self.serialize(self.get_model().objects.none())
+        # Query is too short, no item
+        if len(query) < self.get_query_size_min():
+            return self.serialize(self.get_model().objects.none())
 
         if self.requires_authentication:
             if not self.user:
@@ -295,13 +312,7 @@ class AgnocompleteModel(AgnocompleteModelBase):
         qs = self.get_queryset()
         # filter it via the query conditions
         qs = qs.filter(self.get_queryset_filters(query))
-        result = []
-        for item in qs:
-            result.append({
-                "value": text(item.pk),
-                "label": text(item)
-            })
-        return result[:self.get_page_size()]
+        return self.serialize(qs)
 
     def selected(self, ids):
         """

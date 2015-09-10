@@ -23,13 +23,14 @@ class AutocompleteChoicesPages(AgnocompleteChoices):
 
 class AutocompleteChoicesPagesOverride(AutocompleteChoicesPages):
     page_size = 30
-    query_size = 21
-    query_size_min = 16
+    query_size = 6
+    query_size_min = 5
 
 
 class AutocompletePerson(AgnocompleteModel):
     model = Person
     fields = ['first_name', 'last_name']
+    query_size_min = 2
 
 
 # Special: not integrated into the registry (yet)
@@ -50,6 +51,7 @@ class AutocompletePersonDomain(AgnocompleteModel):
     fields = ['first_name', 'last_name']
     model = Person
     requires_authentication = True
+    query_size_min = 2
 
     def get_queryset(self):
         email = self.user.email
