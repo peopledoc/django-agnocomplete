@@ -7,11 +7,18 @@ from demo.models import Person
 
 
 class AutocompleteColor(AgnocompleteChoices):
-    choices = ['green', 'gray', 'blue', 'grey']
+    choices = (
+        ('green', 'Green'),
+        ('gray', 'Gray'),
+        ('blue', 'Blue'),
+        ('grey', 'Grey'),
+    )
 
 
 class AutocompleteChoicesPages(AgnocompleteChoices):
-    choices = ["choice{}".format(i) for i in range(200)]
+    choices = [
+        ("choice{}".format(i), "choice{}".format(i)) for i in range(200)
+    ]
 
 
 class AutocompleteChoicesPagesOverride(AutocompleteChoicesPages):
