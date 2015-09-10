@@ -16,7 +16,10 @@
                     searchField: 'label',
                     create: false,
                     load: function(query, callback) {
-                        if (!query.length) return callback();
+                        // Using the query size limit to avoid querying too soon.
+                        if (query.length < $(select).data('query-size'))
+                            return callback();
+                        // Query's ready
                         $.ajax({
                             url: $(select).data('url') + '?q=' + encodeURIComponent(query),
                             type: 'GET',
