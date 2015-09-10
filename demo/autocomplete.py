@@ -16,6 +16,8 @@ class AutocompleteChoicesPages(AgnocompleteChoices):
 
 class AutocompleteChoicesPagesOverride(AutocompleteChoicesPages):
     page_size = 30
+    query_size = 21
+    query_size_min = 16
 
 
 class AutocompletePerson(AgnocompleteModel):

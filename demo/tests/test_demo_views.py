@@ -6,17 +6,26 @@ from ..models import Person
 
 class HomeTest(TestCase):
 
-    def test_get(self):
+    def test_widgets(self):
+        # This test will validate the widget/field building
+        # for all Agnocomplete-ready fields.
         response = self.client.get(reverse('home'))
         self.assertEqual(response.status_code, 200)
         self.assertIn('form', response.context)
         form = response.context['form']
         self.assertIn('search_color', form.fields)
         self.assertIn('search_person', form.fields)
-        # Color
         search_color = form.fields['search_color']
         attrs_color = search_color.widget.build_attrs()
         self.assertIn('data-url', attrs_color)
+        self.assertIn('data-query-size', attrs_color)
+
+    def test_get(self):
+        response = self.client.get(reverse('home'))
+        form = response.context['form']
+        # Color
+        search_color = form.fields['search_color']
+        attrs_color = search_color.widget.build_attrs()
         url_color = attrs_color['data-url']
         self.assertEqual(
             url_color,
@@ -24,7 +33,6 @@ class HomeTest(TestCase):
         # Person
         search_person = form.fields['search_person']
         attrs_person = search_person.widget.build_attrs()
-        self.assertIn('data-url', attrs_person)
         url_person = attrs_person['data-url']
         self.assertEqual(
             url_person,
