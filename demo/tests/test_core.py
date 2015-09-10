@@ -30,16 +30,16 @@ class AutocompleteColorTest(TestCase):
         self.assertEqual(list(instance.items()), [])
         self.assertEqual(
             list(instance.items(query='gr')), [
-                {'value': 'green', 'label': 'green'},
-                {'value': 'gray', 'label': 'gray'},
-                {'value': 'grey', 'label': 'grey'},
+                {'value': 'green', 'label': 'Green'},
+                {'value': 'gray', 'label': 'Gray'},
+                {'value': 'grey', 'label': 'Grey'},
             ]
         )
 
         self.assertEqual(
             list(instance.items(query='gre')), [
-                {'value': 'green', 'label': 'green'},
-                {'value': 'grey', 'label': 'grey'},
+                {'value': 'green', 'label': 'Green'},
+                {'value': 'grey', 'label': 'Grey'},
             ],
         )
         self.assertEqual(
@@ -52,7 +52,7 @@ class AutocompleteColorTest(TestCase):
         result = instance.selected([])
         self.assertEqual(result, [])
         result = instance.selected(['grey'])
-        self.assertEqual(result, [('grey', 'grey')])
+        self.assertEqual(result, [('grey', 'Grey')])
         result = instance.selected(['MEUH'])
         self.assertEqual(result, [])
 

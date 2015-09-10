@@ -43,7 +43,12 @@ Let's take the demo example to make it clearer:
 
 
     class AutocompleteColor(AgnocompleteChoices):
-        choices = ['green', 'gray', 'blue', 'grey']
+        choices = (
+            ('green', 'Green'),
+            ('gray', 'Gray'),
+            ('blue', 'Blue'),
+            ('grey', 'Grey'),
+        )
 
 
     class AutocompletePerson(AgnocompleteModel):
@@ -136,4 +141,4 @@ Alternatively, you can pass a full instance to your field definition, or a simpl
     favorite_color = fields.AgnocompleteField(AutocompleteColor(page_size=5))
     person = fields.AgnocompleteModelField('AutocompletePerson')
 
-If the passed argument is the string or the class object, it'll be instanciated using its default parameters. 
+If the passed argument is the string or the class object, it'll be instanciated using its default parameters.

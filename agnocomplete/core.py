@@ -151,22 +151,27 @@ class AgnocompleteChoices(AgnocompleteBase):
     Usage Example::
 
         class AgnocompleteColor(AgnocompleteChoices):
-            choices = ['red', 'green', 'blue']
+            choices = (
+                ('red', 'Red'),
+                ('green', 'Green'),
+                ('blue', 'Blue'),
+            )
 
     """
-    choices = []
+    choices = ()
 
     def get_choices(self):
-        return tuple(zip(self.choices, self.choices))
+        return self.choices
 
     def items(self, query=None):
         if not query:
             return []
         result = copy(self.choices)
         if query:
-            result = tuple(filter(lambda x: x.startswith(query), result))
+            result = filter(lambda x: x[1].lower().startswith(query), result)
+            result = tuple(result)
 
-        result = [dict(value=item, label=item) for item in result]
+        result = [dict(value=value, label=label) for value, label in result]
         return result[:self.get_page_size()]
 
     def selected(self, ids):
@@ -174,8 +179,8 @@ class AgnocompleteChoices(AgnocompleteBase):
         Return the selected options as a list of tuples
         """
         result = copy(self.choices)
-        result = filter(lambda x: x in ids, result)
-        result = ((item, item) for item in result)
+        result = filter(lambda x: x[0] in ids, result)
+        # result = ((item, item) for item in result)
         return list(result)
 
 
