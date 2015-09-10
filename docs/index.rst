@@ -23,7 +23,7 @@ If you want to see it in action, simply install it as indicated in the README, r
 
    overview
    autocomplete-definition
-
+   custom-views
 
 Indices and tables
 ==================

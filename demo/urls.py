@@ -3,13 +3,17 @@ Demo URL Configuration
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from agnocomplete import get_namespace
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(
         r'^agnocomplete/',
-        # FIXME: the namespace should be a settings var.
-        include('agnocomplete.urls', namespace='agnocomplete')),
+        include(
+            'agnocomplete.urls',
+            namespace=get_namespace()
+        )
+    ),
 
     # Templated DEMO views
     url(r'^$', 'demo.views.index', name='home'),

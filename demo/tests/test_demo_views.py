@@ -1,6 +1,8 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
+from agnocomplete import get_namespace
+
 from ..models import Person
 
 
@@ -29,14 +31,22 @@ class HomeTest(TestCase):
         url_color = attrs_color['data-url']
         self.assertEqual(
             url_color,
-            reverse('agnocomplete:agnocomplete', args=['AutocompleteColor']))
+            reverse(
+                get_namespace() + ':agnocomplete',
+                args=['AutocompleteColor']
+            )
+        )
         # Person
         search_person = form.fields['search_person']
         attrs_person = search_person.widget.build_attrs()
         url_person = attrs_person['data-url']
         self.assertEqual(
             url_person,
-            reverse('agnocomplete:agnocomplete', args=['AutocompletePerson']))
+            reverse(
+                get_namespace() + ':agnocomplete',
+                args=['AutocompletePerson']
+            )
+        )
 
     def test_queries(self):
         # This view should not trigger any SQL query

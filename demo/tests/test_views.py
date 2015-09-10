@@ -5,6 +5,8 @@ from django.core.urlresolvers import reverse
 from django.utils.encoding import force_text as text
 from django.contrib.auth.models import User
 
+from agnocomplete import get_namespace
+
 from ..models import Person
 from . import RegistryTestGeneric
 
@@ -16,37 +18,42 @@ def get_json(response, key='data'):
     return data
 
 
-class CatalogViewTest(RegistryTestGeneric):
+class NamespaceGeneric(object):
+
+    def setUp(self):
+        super(NamespaceGeneric, self).setUp()
+        self.catalog_url_name = get_namespace() + ':catalog'
+        self.ac_url_name = get_namespace() + ':agnocomplete'
+
+
+class CatalogViewTest(NamespaceGeneric, RegistryTestGeneric):
 
     def test_get(self):
-        # FIXME: the namespace should be a settings parameter
-        response = self.client.get(reverse('agnocomplete:catalog'))
+        response = self.client.get(reverse(self.catalog_url_name))
         data = get_json(response)
         self._test_registry_keys(data)
 
 
-class AgnocompleteViewTest(RegistryTestGeneric):
+class AgnocompleteViewTest(NamespaceGeneric, RegistryTestGeneric):
 
     def test_get_404(self):
-        # FIXME: the namespace should be a settings parameter
-        response = self.client.get(
-            reverse('agnocomplete:agnocomplete', args=['MEUH']))
+        response = self.client.get(reverse(self.ac_url_name, args=['MEUH']))
         self.assertEqual(response.status_code, 404)
 
 
-class AutocompleteViewTestGeneric(object):
+class AutocompleteViewTestGeneric(NamespaceGeneric):
     view_key = "PLEASE DEFINE ME"
 
+    def setUp(self):
+        super(AutocompleteViewTestGeneric, self).setUp()
+        self.url = reverse(self.ac_url_name, args=[self.view_key])
+
     def test_url(self):
-        # FIXME: the namespace should be a settings parameter
-        response = self.client.get(
-            reverse('agnocomplete:agnocomplete', args=[self.view_key]))
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
 
     def test_noquery(self):
-        response = self.client.get(
-            reverse('agnocomplete:agnocomplete', args=[self.view_key]),
-        )
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         data = get_json(response)
         # No query, the dataset should be empty
@@ -54,7 +61,7 @@ class AutocompleteViewTestGeneric(object):
 
     def test_empty_query(self):
         response = self.client.get(
-            reverse('agnocomplete:agnocomplete', args=[self.view_key]),
+            self.url,
             data={"q": ""}
         )
         self.assertEqual(response.status_code, 200)
@@ -77,7 +84,7 @@ class AutocompletePersonViewTest(AutocompleteViewTestGeneric,
 
     def test_autocomplete_person_queries(self):
         response = self.client.get(
-            reverse('agnocomplete:agnocomplete', args=[self.view_key]),
+            self.url,
             data={"q": "ali"}
         )
         self.assertEqual(response.status_code, 200)
@@ -108,7 +115,7 @@ class AutocompletePersonViewTest(AutocompleteViewTestGeneric,
 
     def test_autocomplete_person_paginated(self):
         response = self.client.get(
-            reverse('agnocomplete:agnocomplete', args=[self.view_key]),
+            self.url,
             data={"q": "ali", "page_size": 3}
         )
         self.assertEqual(response.status_code, 200)
@@ -128,22 +135,16 @@ class SearchContextFormTest(AutocompleteViewTestGeneric,
     view_key = 'AutocompletePersonDomain'
 
     def test_search_unauthorized(self):
-        url = reverse(
-            'agnocomplete:agnocomplete', args=[self.view_key],
-        )
-        response = self.client.get(url, data={"q": "ali"})
+        response = self.client.get(self.url, data={"q": "ali"})
         self.assertEqual(response.status_code, 403)
 
     def test_authorized_empty(self):
         User.objects.create_user(
             'john', 'lennon@thebeatles.com', 'johnpassword'
         )
-        url = reverse(
-            'agnocomplete:agnocomplete', args=[self.view_key],
-        )
         # Logged in with John
         self.client.login(username='john', password='johnpassword')
-        response = self.client.get(url, data={"q": "ali"})
+        response = self.client.get(self.url, data={"q": "ali"})
         self.assertEqual(response.status_code, 200)
         data = get_json(response)
         self.assertFalse(data)
@@ -152,12 +153,9 @@ class SearchContextFormTest(AutocompleteViewTestGeneric,
         User.objects.create_user(
             'bob', 'bob@example.com', 'bobpassword'
         )
-        url = reverse(
-            'agnocomplete:agnocomplete', args=[self.view_key],
-        )
         # Logged in with Bob
         self.client.login(username='bob', password='bobpassword')
-        response = self.client.get(url, data={"q": "ali"})
+        response = self.client.get(self.url, data={"q": "ali"})
         self.assertEqual(response.status_code, 200)
         data = get_json(response)
         self.assertTrue(data)

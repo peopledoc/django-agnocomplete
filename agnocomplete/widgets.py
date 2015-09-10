@@ -5,6 +5,8 @@ from django.forms import widgets
 from django.core.urlresolvers import reverse
 from django.utils.encoding import force_text as text
 
+from . import get_namespace
+
 __all__ = ['AgnocompleteInput']
 
 
@@ -17,8 +19,9 @@ class AgnocompleteWidgetMixin(object):
             extra_attrs, **kwargs)
         attrs.update({
             'data-url': reverse(
-                # FIXME: the namespace should be a setting variable.
-                'agnocomplete:agnocomplete', args=[self.agnocomplete.name]),
+                '{}:agnocomplete'.format(get_namespace()),
+                args=[self.agnocomplete.name]
+            ),
             'data-query-size': self.agnocomplete.get_query_size(),
         })
         return attrs
