@@ -66,3 +66,10 @@ It will run a syncdb (it may ask you questions) and then a runserver with your c
 any runserver options you want using the `tox` positional parameters, like this::
 
     tox -e serve -- 9090  # to change the listening port
+
+----
+
+License
+=======
+
+This piece of software is being published under the terms of the MIT License. Please read the `LICENSE` file for more details.
