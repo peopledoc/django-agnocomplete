@@ -63,6 +63,11 @@ class AutocompletePersonDomain(AgnocompleteModel):
         return Person.objects.filter(email__endswith=domain)
 
 
+# Do not register this, it's for custom view demo
+class HiddenAutocomplete(AutocompleteColor):
+    query_size_min = 2
+
+
 # Registration
 register(AutocompleteColor)
 register(AutocompletePerson)

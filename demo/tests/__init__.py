@@ -13,6 +13,8 @@ class RegistryTestGeneric(TestCase):
         # You're a customized URL
         assert "AutocompleteCustomUrl" not in keys
         assert "my-autocomplete" in keys
+        # Customized views demo
+        assert "HiddenAutocomplete" not in keys
 
 
 class MockRequestUser(object):

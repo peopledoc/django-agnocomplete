@@ -164,3 +164,36 @@ class SearchContextFormTest(AutocompleteViewTestGeneric,
         self.assertEqual(response.status_code, 200)
         data = get_json(response)
         self.assertTrue(data)
+
+
+class CustomizedViewsTest(RegistryTestGeneric):
+
+    @property
+    def url(self):
+        return reverse('hidden-autocomplete')
+
+    def test_get(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        data = get_json(response)
+        # No query, the dataset should be empty
+        self.assertFalse(data)
+
+    def test_empty_query(self):
+        response = self.client.get(
+            self.url,
+            data={"q": ""}
+        )
+        self.assertEqual(response.status_code, 200)
+        data = get_json(response)
+        # No query, the dataset should be empty
+        self.assertFalse(data)
+
+    def test_query_color(self):
+        response = self.client.get(
+            self.url,
+            data={"q": "gre"}
+        )
+        self.assertEqual(response.status_code, 200)
+        data = get_json(response)
+        self.assertTrue(data)

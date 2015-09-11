@@ -7,6 +7,8 @@ from agnocomplete import get_namespace
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
+
+    # Autodiscovered URLs
     url(
         r'^agnocomplete/',
         include(
@@ -14,6 +16,10 @@ urlpatterns = [
             namespace=get_namespace()
         )
     ),
+
+    # Agnocomplete Custom view
+    url(r'^hidden-autocomplete/$', 'demo.views.hidden_autocomplete',
+        name='hidden-autocomplete'),
 
     # Templated DEMO views
     url(r'^$', 'demo.views.index', name='home'),

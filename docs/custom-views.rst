@@ -42,8 +42,8 @@ You can also use the :func:`get_namespace()` function to retrieve your custom UR
     reverse(get_namespace() + ':catalog')
     reverse(get_namespace() + ':agnocomplete', args=['AutocompleteName'])
 
-Custom slugs
-============
+Slugs
+=====
 
 By default, the slugs used for URLs are using the class name. Even though you normally don't have access to this URL by hand, you may want to customize it, simplify it, crypt it in some way. Any ``Agnocomplete`` class can have a slug class or instance property, like this:
 
@@ -66,3 +66,59 @@ So, instead of accessing this using::
 it'll be accessible with this much cooler URL::
 
     /autocomplete/autocomplete/colors
+
+Views
+=====
+
+Let's say you need to check permissions on a specific autocomplete, and you need it to be completely isolated from the automatic registry. Fine, you still can.
+
+Let's consider a simple ``Agnocomplete`` class:
+
+.. code-block:: python
+
+    class HiddenAutocomplete(AgnocompleteChoices):
+        choices = (
+            ('green', 'Green'),
+            ('gray', 'Gray'),
+            ('blue', 'Blue'),
+            ('grey', 'Grey'),
+        )
+
+This class doesn't have to live in an ``autocomplete.py`` module. It doesn't have to be registered.
+
+Then, build an view:
+
+.. code-block:: python
+
+    from agnocomplete.views import AgnocompleteGenericView
+    from arandom.place import HiddenAutocomplete
+
+    class HiddenAutocompleteView(AgnocompleteGenericView):
+        klass = HiddenAutocomplete
+
+    hidden_autocomplete = HiddenAutocompleteView.as_view()
+
+Join this view with a custom URL:
+
+.. code-block:: python
+
+    url(r'^hidden/$',
+        'arandom.views.hidden_autocomplete', name='hidden_autocomplete'),
+
+That's (almost) it. You can already call the URL ``/hidden`` and query it using the ``q`` or ``page_size`` parameter.
+
+To make sure everything is okay, simply run your server (let's say it's talking on ``http://127.0.0.1:8000/``)
+
+.. code-block:: sh
+
+    curl http://127.0.0.1:8000/hidden/
+    {"data": []}
+    curl http://127.0.0.1:8000/hidden/?q=gre
+    {"data": [
+        {"label": "Green", "value": "green"},
+        {"label": "Grey", "value": "grey"}]
+    }
+
+Then you can apply any access control method on your view (login_required, permission_required, etc) ; it's like a normal view.
+
+The only drawback is that, since it's not registered in the ``agnocomplete`` registry, it can't be used as a source for your ``Agnocomplete`` field. You'll have to integrate this by hand.
