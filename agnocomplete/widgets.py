@@ -9,6 +9,9 @@ __all__ = ['AgnocompleteInput']
 
 
 class AgnocompleteWidgetMixin(object):
+    """
+    Generic toolset for building Agnocomplete-ready widgets
+    """
     def build_attrs(self, extra_attrs=None, **kwargs):
         attrs = super(AgnocompleteWidgetMixin, self).build_attrs(
             extra_attrs, **kwargs)
