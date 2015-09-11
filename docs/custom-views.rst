@@ -121,4 +121,6 @@ To make sure everything is okay, simply run your server (let's say it's talking 
 
 Then you can apply any access control method on your view (login_required, permission_required, etc) ; it's like a normal view.
 
-The only drawback is that, since it's not registered in the ``agnocomplete`` registry, it can't be used as a source for your ``Agnocomplete`` field. You'll have to integrate this by hand.
+.. note::
+
+    Since it's not registered in the ``agnocomplete`` registry, it can't be used as a source for your ``Agnocomplete`` field. You'll have to integrate this by hand.
