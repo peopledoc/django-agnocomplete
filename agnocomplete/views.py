@@ -1,3 +1,6 @@
+"""
+Agnocomplete views.
+"""
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.utils.functional import cached_property
@@ -27,6 +30,9 @@ except ImportError:
 
 
 class JSONView(View):
+    """
+    Generic toolbox for JSON-returning views
+    """
 
     @property
     def content_type(self):
@@ -55,14 +61,26 @@ class JSONView(View):
 
 
 class RegistryMixin(object):
-
+    """
+    This mixin is able to return the agnocomplete registry.
+    """
     @cached_property
     def registry(self):
+        """
+        Return the agnocomplete registry (cached)
+        """
         return get_agnocomplete_registry()
 
 
 class CatalogView(RegistryMixin, JSONView):
+    """
+    The catalog view displays every available Agnocomplete slug available in
+    the registry.
+    """
     def get_dataset(self):
+        """
+        Return the registry key set.
+        """
         return tuple(self.registry.keys())
 
 
