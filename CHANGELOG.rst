@@ -2,6 +2,11 @@
 Changelog for django-agnocomplete
 =================================
 
+master (unreleased)
+==================
+
+Nothing happened yet.
+
 v0.1.0 (2015-09-11)
 ===================
 
