@@ -1,6 +1,8 @@
 """
 Autocomplete classes
 """
+from django.core.urlresolvers import reverse_lazy
+
 from agnocomplete.register import register
 from agnocomplete.core import AgnocompleteChoices, AgnocompleteModel
 from demo.models import Person
@@ -13,6 +15,10 @@ class AutocompleteColor(AgnocompleteChoices):
         ('blue', 'Blue'),
         ('grey', 'Grey'),
     )
+
+
+class AutocompleteCustomUrl(AutocompleteColor):
+    slug = 'my-autocomplete'
 
 
 class AutocompleteChoicesPages(AgnocompleteChoices):
@@ -59,9 +65,27 @@ class AutocompletePersonDomain(AgnocompleteModel):
         return Person.objects.filter(email__endswith=domain)
 
 
+# Do not register this, it's for custom view demo
+class HiddenAutocomplete(AutocompleteColor):
+    query_size_min = 2
+
+
+# Do not register this, it's for custom view demo
+class HiddenAutocompleteURL(AutocompleteColor):
+    query_size_min = 2
+    url = '/stuff'
+
+
+# Do not register this, it's for custom view demo
+class HiddenAutocompleteURLReverse(AutocompleteColor):
+    query_size_min = 2
+    url = reverse_lazy('hidden-autocomplete')
+
+
 # Registration
 register(AutocompleteColor)
 register(AutocompletePerson)
 register(AutocompleteChoicesPages)
 register(AutocompleteChoicesPagesOverride)
 register(AutocompletePersonDomain)
+register(AutocompleteCustomUrl)

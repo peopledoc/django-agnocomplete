@@ -16,6 +16,59 @@ from .constants import AGNOCOMPLETE_MIN_QUERYSIZE
 from .exceptions import AuthenticationRequiredAgnocompleteException
 
 
+class ClassPropertyDescriptor(object):
+    """
+    Toolkit class used to instanciate a class property.
+    """
+    def __init__(self, fget, fset=None):
+        self.fget = fget
+        self.fset = fset
+
+    def __get__(self, obj, klass=None):
+        if klass is None:
+            klass = type(obj)
+        return self.fget.__get__(obj, klass)()
+
+    def __set__(self, obj, value):
+        if not self.fset:
+            raise AttributeError("can't set attribute")
+        type_ = type(obj)
+        return self.fset.__get__(obj, type_)(value)
+
+    def setter(self, func):
+        """
+        Setter: the decorated method will become a class property.
+        """
+        if not isinstance(func, (classmethod, staticmethod)):
+            func = classmethod(func)
+        self.fset = func
+        return self
+
+
+def classproperty(func):
+    """
+    Decorator: the given function will become a class property.
+
+    e.g::
+
+        class SafeClass(object):
+
+            @classproperty
+            def safe(cls):
+                return True
+
+        class UnsafeClass(object):
+
+            @classproperty
+            def safe(cls):
+                return False
+
+    """
+    if not isinstance(func, (classmethod, staticmethod)):
+        func = classmethod(func)
+    return ClassPropertyDescriptor(func)
+
+
 def load_settings_sizes():
     """
     Load sizes from settings or fallback to the module constants
@@ -62,8 +115,9 @@ class AgnocompleteBase(object):
     page_size_min = None
     query_size = None
     query_size_min = None
+    url = None
 
-    def __init__(self, user=None, page_size=None):
+    def __init__(self, user=None, page_size=None, url=None):
         # Loading the user context
         self.user = user
 
@@ -87,6 +141,21 @@ class AgnocompleteBase(object):
         # set query sizes
         self._query_size = self.query_size or query_size
         self._query_size_min = self.query_size_min or query_size_min
+
+        # Eventual custom URL
+        self._url = url
+
+    @classproperty
+    def slug(cls):
+        """
+        Return the key used in the register, used as a slug for the URL.
+
+        You can override this by adding a class property.
+        """
+        return cls.__name__
+
+    def get_url(self):
+        return self._url or self.url
 
     def get_page_size(self):
         """
@@ -140,11 +209,6 @@ class AgnocompleteBase(object):
         """
         raise NotImplementedError(
             "Developer: Your class needs at least a selected() method")
-
-    @property
-    def name(self):
-        "Return the name of the Agnocomplete class"
-        return self.__class__.__name__
 
 
 class AgnocompleteChoices(AgnocompleteBase):

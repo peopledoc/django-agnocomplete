@@ -7,7 +7,10 @@ from django.utils.functional import cached_property
 from django.views.generic import View
 
 from .register import get_agnocomplete_registry
-from .exceptions import AuthenticationRequiredAgnocompleteException
+from .exceptions import (
+    AuthenticationRequiredAgnocompleteException,
+    ImproperlyConfiguredView
+)
 
 
 try:
@@ -29,11 +32,10 @@ except ImportError:
                 status=status, content_type=content_type)
 
 
-class JSONView(View):
+class AgnocompleteJSONView(View):
     """
     Generic toolbox for JSON-returning views
     """
-
     @property
     def content_type(self):
         """
@@ -72,7 +74,7 @@ class RegistryMixin(object):
         return get_agnocomplete_registry()
 
 
-class CatalogView(RegistryMixin, JSONView):
+class CatalogView(RegistryMixin, AgnocompleteJSONView):
     """
     The catalog view displays every available Agnocomplete slug available in
     the registry.
@@ -84,13 +86,18 @@ class CatalogView(RegistryMixin, JSONView):
         return tuple(self.registry.keys())
 
 
-class AgnocompleteView(RegistryMixin, JSONView):
+class AgnocompleteGenericView(AgnocompleteJSONView):
+    def get_klass(self):
+        """
+        Return the agnocomplete class to be used with the eventual query.
+        """
+        # Return the instance if it's defined in the class properties
+        if hasattr(self, 'klass') and self.klass:
+            return self.klass
+        raise ImproperlyConfiguredView("Undefined autocomplete class")
 
     def get_dataset(self):
-        klass_name = self.kwargs.get('klass', None)
-        klass = self.registry.get(klass_name, None)
-        if not klass:
-            raise Http404("Unknown autocomplete class `{}`".format(klass_name))
+        klass = self.get_klass()
         # Query passed via the argument
         query = self.request.GET.get('q', "")
         if not query:
@@ -113,3 +120,17 @@ class AgnocompleteView(RegistryMixin, JSONView):
         except:
             # re-raise the unknown exception
             raise
+
+
+class AgnocompleteView(RegistryMixin, AgnocompleteGenericView):
+
+    def get_klass(self):
+        """
+        Return the agnocomplete class to be used with the eventual query.
+        """
+        # Extract the klass name from the URL arguments
+        klass_name = self.kwargs.get('klass', None)
+        klass = self.registry.get(klass_name, None)
+        if not klass:
+            raise Http404("Unknown autocomplete class `{}`".format(klass_name))
+        return klass

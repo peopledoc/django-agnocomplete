@@ -2,8 +2,10 @@
 Agnocomplete Widgets
 """
 from django.forms import widgets
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse_lazy
 from django.utils.encoding import force_text as text
+
+from . import get_namespace
 
 __all__ = ['AgnocompleteInput']
 
@@ -15,10 +17,14 @@ class AgnocompleteWidgetMixin(object):
     def build_attrs(self, extra_attrs=None, **kwargs):
         attrs = super(AgnocompleteWidgetMixin, self).build_attrs(
             extra_attrs, **kwargs)
+        data_url = reverse_lazy(
+            '{}:agnocomplete'.format(get_namespace()),
+            args=[self.agnocomplete.slug]
+        )
+        # Priority to the configurable URL
+        data_url = self.agnocomplete.get_url() or data_url
         attrs.update({
-            'data-url': reverse(
-                # FIXME: the namespace should be a setting variable.
-                'agnocomplete:agnocomplete', args=[self.agnocomplete.name]),
+            'data-url': data_url,
             'data-query-size': self.agnocomplete.get_query_size(),
         })
         return attrs
