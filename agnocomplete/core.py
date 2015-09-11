@@ -143,6 +143,8 @@ class AgnocompleteBase(object):
 
     @property
     def name(self):
+        "Return the name of the Agnocomplete class"
+        raise Exception
         return self.__class__.__name__
 
 
