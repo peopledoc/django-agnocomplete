@@ -12,8 +12,14 @@ logger = logging.getLogger(__name__)
 
 
 class AgnocompleteConfig(AppConfig):
+    """
+    Agnocomplete application configuration class. Runs the autodiscover.
+    """
     name = 'agnocomplete'
 
     def ready(self):
+        """
+        Initialize the autodiscover when ready
+        """
         from . import autodiscover
         autodiscover()
