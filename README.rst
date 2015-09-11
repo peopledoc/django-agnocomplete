@@ -23,9 +23,11 @@ Under construction. Warning, fresh paint.
 Install
 =======
 
-At the moment, it's only a manual install::
+::
 
-    pip install -e ./
+    pip install django-agnocomplete
+
+Or add ``django-agnocomplete`` to your project requirements.
 
 Tests
 =====
