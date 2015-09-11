@@ -15,6 +15,10 @@ class AutocompleteColor(AgnocompleteChoices):
     )
 
 
+class AutocompleteCustomUrl(AutocompleteColor):
+    slug = 'my-autocomplete'
+
+
 class AutocompleteChoicesPages(AgnocompleteChoices):
     choices = [
         ("choice{}".format(i), "choice{}".format(i)) for i in range(200)
@@ -65,3 +69,4 @@ register(AutocompletePerson)
 register(AutocompleteChoicesPages)
 register(AutocompleteChoicesPagesOverride)
 register(AutocompletePersonDomain)
+register(AutocompleteCustomUrl)

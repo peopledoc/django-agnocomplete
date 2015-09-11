@@ -40,6 +40,11 @@ class AgnocompleteViewTest(NamespaceGeneric, RegistryTestGeneric):
         response = self.client.get(reverse(self.ac_url_name, args=['MEUH']))
         self.assertEqual(response.status_code, 404)
 
+    def test_custom_slug(self):
+        response = self.client.get(
+            reverse(self.ac_url_name, args=['my-autocomplete']))
+        self.assertEqual(response.status_code, 200)
+
 
 class AutocompleteViewTestGeneric(NamespaceGeneric):
     view_key = "PLEASE DEFINE ME"
