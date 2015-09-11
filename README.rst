@@ -29,6 +29,12 @@ Install
 
 Or add ``django-agnocomplete`` to your project requirements.
 
+Documentation
+=============
+
+`The full documentation is browsable on RTFD <http://django-agnocomplete.readthedocs.org/en/latest/>`_
+
+
 Tests
 =====
 
