@@ -5,7 +5,10 @@ Changelog for django-agnocomplete
 master (unreleased)
 ==================
 
-Nothing happened yet.
+Minor changes
+-------------
+
+- Post-v0.1 cleanups (#18),
 
 v0.1.0 (2015-09-11)
 ===================
