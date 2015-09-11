@@ -2,7 +2,7 @@ from django.views.generic import TemplateView
 
 from agnocomplete.views import AgnocompleteGenericView
 
-from .forms import SearchForm, SearchContextForm
+from .forms import SearchForm, SearchContextForm, SearchCustom
 from .autocomplete import HiddenAutocomplete
 
 
@@ -44,6 +44,13 @@ class SearchContextFormView(AutoView):
         return SearchContextForm()
 
 
+class SearchCustomView(AutoView):
+    title = "Form using a non-registered Agnocomplete class"
+
+    def get_form(self):
+        return SearchCustom()
+
+
 class HiddenAutocompleteView(AgnocompleteGenericView):
     klass = HiddenAutocomplete
 
@@ -52,4 +59,6 @@ index = IndexView.as_view()
 selectize = SelectizeView.as_view()
 filled_form = FilledFormView.as_view()
 search_context = SearchContextFormView.as_view()
+# Custom search
+search_custom = SearchCustomView.as_view()
 hidden_autocomplete = HiddenAutocompleteView.as_view()

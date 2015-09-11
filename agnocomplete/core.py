@@ -115,8 +115,9 @@ class AgnocompleteBase(object):
     page_size_min = None
     query_size = None
     query_size_min = None
+    url = None
 
-    def __init__(self, user=None, page_size=None):
+    def __init__(self, user=None, page_size=None, url=None):
         # Loading the user context
         self.user = user
 
@@ -141,6 +142,9 @@ class AgnocompleteBase(object):
         self._query_size = self.query_size or query_size
         self._query_size_min = self.query_size_min or query_size_min
 
+        # Eventual custom URL
+        self._url = url
+
     @classproperty
     def slug(cls):
         """
@@ -149,6 +153,9 @@ class AgnocompleteBase(object):
         You can override this by adding a class property.
         """
         return cls.__name__
+
+    def get_url(self):
+        return self._url or self.url
 
     def get_page_size(self):
         """

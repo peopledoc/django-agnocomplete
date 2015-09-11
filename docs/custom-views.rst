@@ -121,6 +121,39 @@ To make sure everything is okay, simply run your server (let's say it's talking 
 
 Then you can apply any access control method on your view (login_required, permission_required, etc) ; it's like a normal view.
 
-.. note::
+Using your custom view with fields
+----------------------------------
 
-    Since it's not registered in the ``agnocomplete`` registry, it can't be used as a source for your ``Agnocomplete`` field. You'll have to integrate this by hand.
+Since your Agnocomplete class is not registered in the ``agnocomplete`` registry, it can't be used like other ``Agnocomplete`` fields, using the automatic registry URL guessing.
+
+Here's how to build a form which is ready to use your custom view:
+
+.. code-block:: python
+
+    from django.core.urlresolvers import reverse_lazy
+
+    class SearchCustom(forms.Form):
+        search_color = fields.AgnocompleteField(
+            HiddenAutocomplete(url=reverse_lazy('hidden_autocomplete')),
+        )
+
+.. important::
+
+    At this point, you **must** use :func:`reverse_lazy` to make sure that this
+    URL will be evaluated when needed, and not before the Django applications are ready.
+
+
+Final customization
+###################
+
+In the previous case, you *have* to use an instance of your Agnocomplete class. Alternatively, you can override the ``url`` class property.
+
+.. code-block:: python
+
+    class HiddenAutocompleteURL(AutocompleteColor):
+        query_size_min = 2
+        url = '/stuff'
+
+    class HiddenAutocompleteReverseURL(AutocompleteColor):
+        query_size_min = 2
+        url = '/stuff'

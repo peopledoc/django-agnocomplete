@@ -84,3 +84,20 @@ class FilledFormTest(TestCase):
                 "search_person": self.alice1
             }
         )
+
+
+class CustomSearchTest(TestCase):
+
+    def test_widgets(self):
+        response = self.client.get(reverse('search-custom'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('form', response.context)
+        form = response.context['form']
+        self.assertIn('search_color', form.fields)
+        search_color = form.fields['search_color']
+        attrs_color = search_color.widget.build_attrs()
+        self.assertIn('data-url', attrs_color)
+        self.assertEqual(
+            attrs_color['data-url'],
+            reverse('hidden-autocomplete')
+        )
