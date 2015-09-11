@@ -203,11 +203,6 @@ class AgnocompleteBase(object):
         raise NotImplementedError(
             "Developer: Your class needs at least a selected() method")
 
-    @property
-    def name(self):
-        "Return the name of the Agnocomplete class"
-        return self.__class__.__name__
-
 
 class AgnocompleteChoices(AgnocompleteBase):
     """

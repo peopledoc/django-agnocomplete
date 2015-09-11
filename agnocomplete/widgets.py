@@ -20,7 +20,7 @@ class AgnocompleteWidgetMixin(object):
         attrs.update({
             'data-url': reverse(
                 '{}:agnocomplete'.format(get_namespace()),
-                args=[self.agnocomplete.name]
+                args=[self.agnocomplete.slug]
             ),
             'data-query-size': self.agnocomplete.get_query_size(),
         })
