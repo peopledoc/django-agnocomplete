@@ -13,7 +13,7 @@ It will provide:
 Demo
 ====
 
-If you want to see it in action, simply install it as indicated in the README, run ``tox -e serve``, and point at the local devserver. You should be able to click on the "[DEMO JS]" links and see it in action. Browse the source code that lives in ``demo/templates`` to see how easy it is to interact with ``django-agnocomplete``.
+If you want to see it in action, simply install it as indicated in the README, run ``tox -e serve``, and point at the local devserver. You should be able to click on the "[JS DEMO]" links and see it in action. Browse the source code that lives in ``demo/templates`` to see how easy it is to interact with ``django-agnocomplete``.
 
 
 .. Contents:
