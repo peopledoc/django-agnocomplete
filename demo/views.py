@@ -2,7 +2,8 @@ from django.views.generic import TemplateView
 
 from agnocomplete.views import AgnocompleteGenericView
 
-from .forms import SearchForm, SearchContextForm, SearchCustom, SearchFormTextInput
+from .forms import (SearchForm, SearchContextForm, SearchCustom,
+                    SearchFormTextInput)
 from .autocomplete import HiddenAutocomplete
 
 
