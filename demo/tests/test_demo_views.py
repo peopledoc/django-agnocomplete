@@ -141,6 +141,10 @@ class JSDemoViews(TestCase):
         response = self.client.get(reverse('selectize'))
         self.assertEqual(response.status_code, 200)
 
+    def test_select2(self):
+        response = self.client.get(reverse('select2'))
+        self.assertEqual(response.status_code, 200)
+
     def test_jquery_autocomplete(self):
         response = self.client.get(reverse('jquery-autocomplete'))
         self.assertEqual(response.status_code, 200)

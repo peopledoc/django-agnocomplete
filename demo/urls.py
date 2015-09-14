@@ -29,6 +29,7 @@ urlpatterns = [
     # Demo Front JS views
     url(r'^selectize/$', 'demo.views.selectize',
         name='selectize'),
+    url(r'^select2/$', 'demo.views.select2', name='select2'),
     url(r'^jquery-autocomplete/$', 'demo.views.jquery_autocomplete',
         name='jquery-autocomplete'),
     url(r'^typeahead/$', 'demo.views.typeahead', name='typeahead'),
