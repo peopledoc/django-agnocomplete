@@ -1,5 +1,10 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
+try:
+    from django.test import override_settings
+except ImportError:
+    # Django 1.6
+    from django.test.utils import override_settings
 
 from agnocomplete import get_namespace
 
@@ -21,6 +26,17 @@ class HomeTest(TestCase):
         attrs_color = search_color.widget.build_attrs()
         self.assertIn('data-url', attrs_color)
         self.assertIn('data-query-size', attrs_color)
+        self.assertIn('data-agnocomplete', attrs_color)
+
+    @override_settings(AGNOCOMPLETE_DATA_ATTRIBUTE='wow')
+    def test_data_attribute(self):
+        response = self.client.get(reverse('home'))
+        form = response.context['form']
+        search_color = form.fields['search_color']
+        attrs_color = search_color.widget.build_attrs()
+        self.assertIn('data-url', attrs_color)
+        self.assertIn('data-query-size', attrs_color)
+        self.assertIn('data-wow', attrs_color)
 
     def test_get(self):
         response = self.client.get(reverse('home'))

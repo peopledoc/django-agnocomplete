@@ -16,3 +16,6 @@ AGNOCOMPLETE_DEFAULT_QUERYSIZE = 3
 
 "Agnocomplete minimum query size"
 AGNOCOMPLETE_MIN_QUERYSIZE = 2
+
+"Default data attribute name for fields"
+AGNOCOMPLETE_DATA_ATTRIBUTE = 'agnocomplete'

@@ -142,3 +142,43 @@ Alternatively, you can pass a full instance to your field definition, or a simpl
     person = fields.AgnocompleteModelField('AutocompletePerson')
 
 If the passed argument is the string or the class object, it'll be instanciated using its default parameters.
+
+
+The JS Side
+===========
+
+After that, the JS side is completely up to your integration choices. JQuery-based library, Vanilla JS, whichever suits you. You don't even have to use the custom fields provided, as long as you respect the API specs, you still can query it and use the results on your One-Page-App the way you want.
+
+Correct targetting
+------------------
+
+Let's imagine for a second that you're using a (fictional) JS lib name "wowcomplete". To add the autocomplete bit to a given control, all you need to do is:
+
+.. code-block:: js
+
+    $(document).ready(function() {
+        $('my-target-id-or-class').wowcomplete();
+    });
+
+The key point here is the target.
+
+* If you use: ``$('select')``, you may target select boxes that don't support agnocomplete AJAX queries,... And you may miss other inputs, like text boxes (jquery-autocomplete doesn't use selects, for example),
+* If you use ``$('select[data-url]')``? It could work also. The only problem here is if you have other select boxes using the same ``data-url`` attribute.
+
+To handle this we've added a ``data-agnocomplete`` data attribute. If this attribute is present, there's a 100% chances that your input is agnocomplete-ready.
+
+As a consequence, the standard way to target your inputs is:
+
+.. code-block:: js
+
+    $(document).ready(function() {
+        $('[data-agnocomplete]').wowcomplete();
+    });
+
+Of course, if you want to use a different attribute, you can override it using the following settings:
+
+.. code-block:: python
+
+    AGNOCOMPLETE_DATA_ATTRIBUTE = 'wowcomplete'
+
+This settings will add a ``data-wowcomplete`` attribute to all your agnocomplete-ready fields.
