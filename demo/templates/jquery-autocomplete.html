@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
 <style>
 .ui-autocomplete-loading {
-  background: white url({% static "images/ui-anim_basic_16x16.gif" %}) right center no-repeat;
+  background: white url({% static "css/images/ui-anim_basic_16x16.gif" %}) right center no-repeat;
 }
 </style>
 {% endblock %}
@@ -13,9 +13,9 @@
         <script src="{% static 'js/jquery.js' %}" charset="utf-8"></script>
         <script src="{% static 'js/jquery-ui.js' %}"></script>
         <script type="text/javascript">
-        $(document).ready(
-            function() {
-                $("input,select").autocomplete({
+        $(document).ready(function() {
+            $('input').each(function(index, input) {
+                $(input).autocomplete({
                     source: function(request, response) {
                         var element = $(this.element);
                         var url = $(element).data('url');
@@ -31,14 +31,17 @@
                             }
                         );
                     },
+                    minLength: $(this).data("query-size"),
+                    select: function(event, ui) {
+                        event.preventDefault();
+                        $(input).val(ui.item.label);
+                    },
+                    focus: function(event, ui) {
+                        event.preventDefault();
+                        $(input).val(ui.item.label);
+                    }
                 });
-
-                // Setting the query size as the minLength limit
-                $("input,select").each(function() {
-                    $(this).autocomplete("option", "minLength", $(this).data("query-size"));
-                });
-
-            }
-        );
+            });
+        });
         </script>
 {% endblock %}
