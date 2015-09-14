@@ -5,6 +5,11 @@ Changelog for django-agnocomplete
 master (unreleased)
 ==================
 
+Feature(s)
+----------
+
+- a more pertinent data attribute to target agnocomplete-ready fields (#22).
+
 Minor changes
 -------------
 

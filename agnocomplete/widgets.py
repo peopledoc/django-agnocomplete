@@ -4,8 +4,11 @@ Agnocomplete Widgets
 from django.forms import widgets
 from django.core.urlresolvers import reverse_lazy
 from django.utils.encoding import force_text as text
+from django.conf import settings
+
 
 from . import get_namespace
+from .constants import AGNOCOMPLETE_DATA_ATTRIBUTE
 
 __all__ = ['AgnocompleteInput']
 
@@ -23,9 +26,15 @@ class AgnocompleteWidgetMixin(object):
         )
         # Priority to the configurable URL
         data_url = self.agnocomplete.get_url() or data_url
+        # Data attribute
+        data_attribute = getattr(
+            settings, 'AGNOCOMPLETE_DATA_ATTRIBUTE',
+            AGNOCOMPLETE_DATA_ATTRIBUTE)
+        data_attribute = 'data-{}'.format(data_attribute)
         attrs.update({
             'data-url': data_url,
             'data-query-size': self.agnocomplete.get_query_size(),
+            data_attribute: 'on',
         })
         return attrs
 
