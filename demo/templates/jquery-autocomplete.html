@@ -14,7 +14,7 @@
         <script src="{% static 'js/jquery-ui.js' %}"></script>
         <script type="text/javascript">
         $(document).ready(function() {
-            $('input').each(function(index, input) {
+            $('[data-agnocomplete]').each(function(index, input) {
                 $(input).autocomplete({
                     source: function(request, response) {
                         var element = $(this.element);
@@ -23,11 +23,7 @@
                             url,
                             {q: request.term},
                             function(data) {
-                                var result = [];
-                                $.each(data.data, function(i, item, key) {
-                                    result.push({label: item.label, value: item.value});
-                                });
-                                response(result);
+                                response(data.data);
                             }
                         );
                     },
