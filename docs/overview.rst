@@ -134,7 +134,7 @@ Example:
         favorite_color = fields.AgnocompleteField(AutocompleteColor)
         person = fields.AgnocompleteModelField(AutocompletePerson)
 
-Alternatively, you can pass a full instance to your field definition, or a simple string whuch should be the name of your Agnocomplete class::
+Alternatively, you can pass a full instance to your field definition, or a simple string whuch should be the name of your Agnocomplete class:
 
 .. code-block:: python
 
