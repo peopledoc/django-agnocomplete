@@ -57,6 +57,11 @@ class SelectizeView(AutoView):
     title = "View using the Selectize autocomplete front library"
 
 
+class Select2View(AutoView):
+    template_name = 'select2.html'
+    title = "View using the Select2 autocomplete front library"
+
+
 class JqueryAutocompleteView(AutoView):
     template_name = 'jquery-autocomplete.html'
     title = "View using the JQuery autocomplete front library"
@@ -81,5 +86,6 @@ search_custom = SearchCustomView.as_view()
 hidden_autocomplete = HiddenAutocompleteView.as_view()
 # JS Demo views
 selectize = SelectizeView.as_view()
+select2 = Select2View.as_view()
 jquery_autocomplete = JqueryAutocompleteView.as_view()
 typeahead = TypeaheadView.as_view()
