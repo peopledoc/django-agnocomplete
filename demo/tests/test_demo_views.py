@@ -144,3 +144,7 @@ class JSDemoViews(TestCase):
     def test_jquery_autocomplete(self):
         response = self.client.get(reverse('jquery-autocomplete'))
         self.assertEqual(response.status_code, 200)
+
+    def test_typeahead(self):
+        response = self.client.get(reverse('typeahead'))
+        self.assertEqual(response.status_code, 200)
