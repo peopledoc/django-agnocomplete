@@ -119,6 +119,7 @@ class CustomSearchTest(TestCase):
         )
 
 
+
 class ABCTestView(TestCase):
 
     def test_AgnocompleteJSONView(self):
@@ -133,3 +134,14 @@ class ABCTestView(TestCase):
             exception,
             """Can't instantiate abstract class WickedAgnocompleteJSONView\
  with abstract methods get_dataset""")
+
+
+class JSDemoViews(TestCase):
+
+    def test_selectize(self):
+        response = self.client.get(reverse('selectize'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_jquery_autocomplete(self):
+        response = self.client.get(reverse('jquery-autocomplete'))
+        self.assertEqual(response.status_code, 200)
