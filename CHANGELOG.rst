@@ -10,6 +10,7 @@ Feature(s)
 
 - a more pertinent data attribute to target agnocomplete-ready fields (#22).
 - New Demo: using ``jquery-autocomplete`` (#10, thx @GreatWizard).
+- New Demo: using twitter's ``typeahead`` (#23, thx @GreatWizard).
 
 Minor changes
 -------------

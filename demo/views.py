@@ -65,6 +65,14 @@ class JqueryAutocompleteView(AutoView):
         return SearchFormTextInput()
 
 
+class TypeaheadView(AutoView):
+    template_name = 'typeahead.html'
+    title = "View using the typeahead.js autocomplete front library"
+
+    def get_form(self):
+        return SearchFormTextInput()
+
+
 index = IndexView.as_view()
 filled_form = FilledFormView.as_view()
 search_context = SearchContextFormView.as_view()
@@ -74,3 +82,4 @@ hidden_autocomplete = HiddenAutocompleteView.as_view()
 # JS Demo views
 selectize = SelectizeView.as_view()
 jquery_autocomplete = JqueryAutocompleteView.as_view()
+typeahead = TypeaheadView.as_view()

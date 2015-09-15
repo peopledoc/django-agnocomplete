@@ -31,4 +31,5 @@ urlpatterns = [
         name='selectize'),
     url(r'^jquery-autocomplete/$', 'demo.views.jquery_autocomplete',
         name='jquery-autocomplete'),
+    url(r'^typeahead/$', 'demo.views.typeahead', name='typeahead'),
 ]

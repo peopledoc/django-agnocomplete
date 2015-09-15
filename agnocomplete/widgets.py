@@ -10,7 +10,7 @@ from django.conf import settings
 from . import get_namespace
 from .constants import AGNOCOMPLETE_DATA_ATTRIBUTE
 
-__all__ = ['AgnocompleteInput', 'AgnocompleteTextInput']
+__all__ = ['AgnocompleteSelect', 'AgnocompleteTextInput']
 
 
 class AgnocompleteWidgetMixin(object):
@@ -47,7 +47,7 @@ class AgnocompleteWidgetMixin(object):
         return '\n'.join(output)
 
 
-class AgnocompleteInput(AgnocompleteWidgetMixin, widgets.Select):
+class AgnocompleteSelect(AgnocompleteWidgetMixin, widgets.Select):
     """
     The default Agnocomplete-ready input is a Select box.
     """
