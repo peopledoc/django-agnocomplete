@@ -2,7 +2,7 @@
 The different agnocomplete classes to be discovered
 """
 from copy import copy
-
+from abc import abstractmethod, ABCMeta
 from django.db.models import Q
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.encoding import force_text as text
@@ -109,6 +109,7 @@ class AgnocompleteBase(object):
     """
     Base class for Agnocomplete tools.
     """
+    __metaclass__ = ABCMeta
     # To be overridden by settings, or constructor arguments
     page_size = None
     page_size_max = None
@@ -195,14 +196,17 @@ class AgnocompleteBase(object):
         """
         return self._query_size_min
 
+    @abstractmethod
     def get_choices(self):
         raise NotImplementedError(
             "Developer: your class needs at least a 'get_choices()' method")
 
+    @abstractmethod
     def items(self, query=None):
         raise NotImplementedError(
             "Developer: Your class needs at least a items() method")
 
+    @abstractmethod
     def selected(self, ids):
         """
         Return the values (as a tuple of pairs) for the ids provided
@@ -255,9 +259,11 @@ class AgnocompleteChoices(AgnocompleteBase):
 
 
 class AgnocompleteModelBase(AgnocompleteBase):
+    __metaclass__ = ABCMeta
     model = None
     requires_authentication = False
 
+    @abstractmethod
     def get_queryset(self):
         raise NotImplementedError(
             "Integrator: You must either have a `model` property "

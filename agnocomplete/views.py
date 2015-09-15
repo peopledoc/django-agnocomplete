@@ -1,6 +1,7 @@
 """
 Agnocomplete views.
 """
+from abc import abstractmethod, ABCMeta
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.utils.functional import cached_property
@@ -36,6 +37,9 @@ class AgnocompleteJSONView(View):
     """
     Generic toolbox for JSON-returning views
     """
+
+    __metaclass__ = ABCMeta
+
     @property
     def content_type(self):
         """
@@ -52,6 +56,7 @@ class AgnocompleteJSONView(View):
         else:
             return "text/html"
 
+    @abstractmethod
     def get_dataset(self):
         raise NotImplementedError("You must implement a `get_dataset` method")
 
