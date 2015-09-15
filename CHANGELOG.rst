@@ -15,6 +15,7 @@ Minor changes
 -------------
 
 - Post-v0.1 cleanups (#18),
+- Introduced interface contract using the ``@abstractmethod`` decorator. This doesn't change anything for the user, but it makes sure that classes that don't implement the right methods can't even be instanciated (#25, thx @boblefrag).
 
 v0.1.0 (2015-09-11)
 ===================
