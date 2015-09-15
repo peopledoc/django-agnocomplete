@@ -7,7 +7,7 @@ except ImportError:
     from django.test.utils import override_settings
 
 from agnocomplete import get_namespace
-
+from agnocomplete.views import AgnocompleteJSONView
 from ..models import Person
 
 
@@ -117,6 +117,22 @@ class CustomSearchTest(TestCase):
             attrs_color['data-url'],
             reverse('hidden-autocomplete')
         )
+
+
+class ABCTestView(TestCase):
+
+    def test_AgnocompleteJSONView(self):
+
+        class WickedAgnocompleteJSONView(AgnocompleteJSONView):
+            pass
+
+        with self.assertRaises(TypeError) as e:
+            WickedAgnocompleteJSONView()
+        exception = e.exception.args[0]
+        self.assertEqual(
+            exception,
+            """Can't instantiate abstract class WickedAgnocompleteJSONView\
+ with abstract methods get_dataset""")
 
 
 class JSDemoViews(TestCase):

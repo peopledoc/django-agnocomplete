@@ -10,5 +10,6 @@ setup(
     license='MIT',
     install_requires=[
         'Django',
+        'six'
     ],
 )
