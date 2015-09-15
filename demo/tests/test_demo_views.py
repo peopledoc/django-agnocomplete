@@ -117,3 +117,14 @@ class CustomSearchTest(TestCase):
             attrs_color['data-url'],
             reverse('hidden-autocomplete')
         )
+
+
+class JSDemoViews(TestCase):
+
+    def test_selectize(self):
+        response = self.client.get(reverse('selectize'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_jquery_autocomplete(self):
+        response = self.client.get(reverse('jquery-autocomplete'))
+        self.assertEqual(response.status_code, 200)

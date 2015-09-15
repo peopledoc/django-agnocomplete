@@ -8,7 +8,7 @@
         <script src="{% static 'js/jquery.js' %}" charset="utf-8"></script>
         <script src="{% static 'js/selectize.js' %}" charset="utf-8"></script>
         <script type="text/javascript">
-        $(function() {
+        $(document).ready(function() {
             $('[data-agnocomplete]').each(function(index, select) {
                 $(select).selectize({
                     valueField: 'value',

@@ -2,7 +2,8 @@ from django.views.generic import TemplateView
 
 from agnocomplete.views import AgnocompleteGenericView
 
-from .forms import SearchForm, SearchContextForm, SearchCustom
+from .forms import (SearchForm, SearchContextForm, SearchCustom,
+                    SearchFormTextInput)
 from .autocomplete import HiddenAutocomplete
 
 
@@ -23,11 +24,6 @@ class AutoView(TemplateView):
 
 class IndexView(AutoView):
     title = "Basic view, no JS"
-
-
-class SelectizeView(AutoView):
-    template_name = 'selectize.html'
-    title = "View using the Selectize autocomplete front library"
 
 
 class FilledFormView(AutoView):
@@ -55,10 +51,26 @@ class HiddenAutocompleteView(AgnocompleteGenericView):
     klass = HiddenAutocomplete
 
 
+# JS Demo views
+class SelectizeView(AutoView):
+    template_name = 'selectize.html'
+    title = "View using the Selectize autocomplete front library"
+
+
+class JqueryAutocompleteView(AutoView):
+    template_name = 'jquery-autocomplete.html'
+    title = "View using the JQuery autocomplete front library"
+
+    def get_form(self):
+        return SearchFormTextInput()
+
+
 index = IndexView.as_view()
-selectize = SelectizeView.as_view()
 filled_form = FilledFormView.as_view()
 search_context = SearchContextFormView.as_view()
 # Custom search
 search_custom = SearchCustomView.as_view()
 hidden_autocomplete = HiddenAutocompleteView.as_view()
+# JS Demo views
+selectize = SelectizeView.as_view()
+jquery_autocomplete = JqueryAutocompleteView.as_view()
