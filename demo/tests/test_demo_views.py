@@ -119,7 +119,6 @@ class CustomSearchTest(TestCase):
         )
 
 
-
 class ABCTestView(TestCase):
 
     def test_AgnocompleteJSONView(self):
