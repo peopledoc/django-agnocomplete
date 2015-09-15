@@ -75,6 +75,9 @@ any runserver options you want using the `tox` positional parameters, like this:
 
     tox -e serve -- 9090  # to change the listening port
 
+
+Here you'll be able to see that ``django-agnocomplete`` has been easily and rapidly integrated with ``selectize.js``, ``select2``, ``jquery-autocomplete`` and ``typeahead``. With the same backend, you can plug the JS front-end you want.
+
 ----
 
 License
