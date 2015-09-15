@@ -1,4 +1,4 @@
-# -*- coding: utf8 -*-
+# -*- coding: utf-8 -*-
 from django.conf import settings
 from django.test import TestCase
 from django.utils.encoding import force_text as text
@@ -9,6 +9,7 @@ except ImportError:
     from django.test.utils import override_settings
 
 from agnocomplete import constants
+from agnocomplete.core import AgnocompleteModelBase, AgnocompleteBase
 from agnocomplete.exceptions import AuthenticationRequiredAgnocompleteException
 
 from demo.autocomplete import (
@@ -292,3 +293,32 @@ class SettingsLoadingTest(TestCase):
             instance.get_query_size(), settings.AGNOCOMPLETE_DEFAULT_QUERYSIZE)
         self.assertEqual(
             instance.get_query_size_min(), settings.AGNOCOMPLETE_MIN_QUERYSIZE)
+
+
+class AgnoCompleteAbstractMethod(TestCase):
+
+    def test_AgnocompleteModel(self):
+        class WickedAgnocompleteModel(AgnocompleteModelBase):
+            pass
+        with self.assertRaises(TypeError) as e:
+            WickedAgnocompleteModel()
+        exception = e.exception.args
+        self.assertEqual(
+            exception,
+            ("""Can't instantiate abstract class WickedAgnocompleteModel\
+ with abstract methods get_queryset, items, selected""",)
+        )
+
+    def test_AgnocompleteBase(self):
+        class WickedAgnocompleteBase(AgnocompleteBase):
+            pass
+
+        with self.assertRaises(TypeError) as e:
+            WickedAgnocompleteBase()
+        exception = e.exception.args[0]
+
+        self.assertEqual(
+            exception,
+            """Can't instantiate abstract class WickedAgnocompleteBase\
+ with abstract methods get_choices, items, selected"""
+        )

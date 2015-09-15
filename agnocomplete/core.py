@@ -2,6 +2,7 @@
 The different agnocomplete classes to be discovered
 """
 from copy import copy
+from six import with_metaclass
 from abc import abstractmethod, ABCMeta
 from django.db.models import Q
 from django.core.exceptions import ImproperlyConfigured
@@ -105,11 +106,11 @@ def load_settings_sizes():
     )
 
 
-class AgnocompleteBase(object):
+class AgnocompleteBase(with_metaclass(ABCMeta, object)):
     """
     Base class for Agnocomplete tools.
     """
-    __metaclass__ = ABCMeta
+
     # To be overridden by settings, or constructor arguments
     page_size = None
     page_size_max = None
@@ -198,21 +199,18 @@ class AgnocompleteBase(object):
 
     @abstractmethod
     def get_choices(self):
-        raise NotImplementedError(
-            "Developer: your class needs at least a 'get_choices()' method")
+        pass
 
     @abstractmethod
     def items(self, query=None):
-        raise NotImplementedError(
-            "Developer: Your class needs at least a items() method")
+        pass
 
     @abstractmethod
     def selected(self, ids):
         """
         Return the values (as a tuple of pairs) for the ids provided
         """
-        raise NotImplementedError(
-            "Developer: Your class needs at least a selected() method")
+        pass
 
 
 class AgnocompleteChoices(AgnocompleteBase):
@@ -258,17 +256,14 @@ class AgnocompleteChoices(AgnocompleteBase):
         return list(result)
 
 
-class AgnocompleteModelBase(AgnocompleteBase):
-    __metaclass__ = ABCMeta
+class AgnocompleteModelBase(with_metaclass(ABCMeta, AgnocompleteBase)):
+
     model = None
     requires_authentication = False
 
     @abstractmethod
     def get_queryset(self):
-        raise NotImplementedError(
-            "Integrator: You must either have a `model` property "
-            "or a `get_queryset()` method"
-        )
+        pass
 
     @property
     def fields(self):
