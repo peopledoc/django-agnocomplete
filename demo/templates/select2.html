@@ -7,32 +7,5 @@
 {% block extra_body %}
         <script src="{% static 'js/jquery.js' %}" charset="utf-8"></script>
         <script src="{% static 'js/select2.js' %}" charset="utf-8"></script>
-        <script type="text/javascript">
-        $(function() {
-            $('[data-agnocomplete]').each(function(index, select) {
-                $(select).select2({
-                    width: '100%',
-                    ajax: {
-                        url: $(select).data('url'),
-                        dataType: 'json',
-                        data: function (params) {
-                            return {
-                                q: params.term
-                            };
-                        },
-                        processResults: function (data) {
-                            var results = [];
-                            $.each(data.data, function(index, item) {
-                                results.push({id: item.value, label: item.label});
-                            });
-                            return { results: results };
-                        }
-                    },
-                    minimumInputLength: $(select).data('query-size'),
-                    templateResult: function(item) { return item.label; },
-                    templateSelection: function(item) { return item.label; }
-                });
-            });
-        });
-        </script>
+        <script src="{% static 'js/demo/select2.js' %}" charset="utf-8"></script>
 {% endblock %}
