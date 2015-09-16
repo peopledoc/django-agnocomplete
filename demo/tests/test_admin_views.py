@@ -2,6 +2,8 @@ from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 
+from ..admin import FavoriteColorModelForm
+
 
 class AdminTest(TestCase):
 
@@ -28,3 +30,15 @@ class AdminTest(TestCase):
         self.assertEqual(response.status_code, 200)
         response = self.client.get(reverse('admin:demo_favoritecolor_add'))
         self.assertEqual(response.status_code, 200)
+
+    def test_demo_color_form(self):
+        response = self.client.get(reverse('admin:demo_favoritecolor_add'))
+        self.assertIn('adminform', response.context)
+        adminform = response.context['adminform']
+        form = adminform.form
+        self.assertTrue(isinstance(form, FavoriteColorModelForm))
+        self.assertIn('media', response.context)
+        media = response.context['media']
+        media = "{}".format(media)
+        self.assertIn('selectize.js', media)
+        self.assertIn('selectize.css', media)
