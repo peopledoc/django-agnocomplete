@@ -5,6 +5,9 @@ Agnocomplete, the Agnostic Autocomplete Django app.
 import logging
 logger = logging.getLogger(__name__)
 
+from distutils.version import StrictVersion
+
+import django
 from django.conf import settings
 from django.utils.importlib import import_module
 
@@ -37,3 +40,10 @@ def autodiscover():
                 raise ImportError(ex)
 
 default_app_config = 'agnocomplete.app.AgnocompleteConfig'
+
+
+if StrictVersion(django.get_version()) < StrictVersion('1.7'):
+    # We need to load the register before the admin site tries to collect it.
+    # It's Django 1.6 specific, because it doesn't handle the Django 1.7+ app
+    # loading.
+    autodiscover()

@@ -12,6 +12,7 @@ Feature(s)
 - New Demo: using ``jquery-autocomplete`` (#10, thx @GreatWizard).
 - New Demo: using twitter's ``typeahead`` (#23, thx @GreatWizard).
 - New Demo: using ``select2`` (#24, thx @GreatWizard).
+- Fixed bad Django 1.6 loading (#29).
 
 Minor changes
 -------------
