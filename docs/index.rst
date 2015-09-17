@@ -32,6 +32,7 @@ So far, we've got it implemented using:
    autocomplete-definition
    custom-views
    demo-site
+   admin-site
 
 Indices and tables
 ==================

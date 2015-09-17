@@ -5,16 +5,12 @@ from django.core.urlresolvers import reverse_lazy
 
 from agnocomplete.register import register
 from agnocomplete.core import AgnocompleteChoices, AgnocompleteModel
-from demo.models import Person
+from .models import Person
+from .common import COLORS
 
 
 class AutocompleteColor(AgnocompleteChoices):
-    choices = (
-        ('green', 'Green'),
-        ('gray', 'Gray'),
-        ('blue', 'Blue'),
-        ('grey', 'Grey'),
-    )
+    choices = COLORS
 
 
 class AutocompleteCustomUrl(AutocompleteColor):
