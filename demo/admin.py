@@ -24,7 +24,7 @@ class FavoriteColorAdmin(admin.ModelAdmin):
 
     class Media:
         css = {
-            'screen': ('css/selectize.css',)
+            'screen': ('css/admin.css','css/selectize.css',)
         }
         js = (
             'js/jquery.js',
