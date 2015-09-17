@@ -53,7 +53,7 @@ class AgnocompleteMixin(object):
             registry = get_agnocomplete_registry()
             if klass_or_instance not in registry:
                 raise UnregisteredAgnocompleteException(
-                    "Unregistered Agnocomplete class: {} is unknown"
+                    "Unregistered Agnocomplete class: {} is unknown".format(klass_or_instance)  # noqa
                 )
             klass_or_instance = registry[klass_or_instance]
         # If not an instance, instanciate this
