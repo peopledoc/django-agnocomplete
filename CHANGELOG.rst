@@ -13,6 +13,7 @@ Feature(s)
 - New Demo: using twitter's ``typeahead`` (#23, thx @GreatWizard).
 - New Demo: using ``select2`` (#24, thx @GreatWizard).
 - Fixed bad Django 1.6 loading (#29).
+- Added the Admin site demo, along with documentation (#27).
 
 Minor changes
 -------------
