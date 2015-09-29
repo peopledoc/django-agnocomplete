@@ -5,7 +5,7 @@ Changelog for django-agnocomplete
 master (unreleased)
 ===================
 
-- Nothing changed yet.
+- Add a new method to have the possibilty to override easily the display label (#34).
 
 0.2.0 (2015-09-17)
 ==================

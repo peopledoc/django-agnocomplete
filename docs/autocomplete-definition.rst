@@ -175,3 +175,28 @@ In a multi-site context, you *have* to define a preemptive filter to gather info
 
     You may have noticed that these two classes have a ``model`` property and a ``requires_authentication`` property set to ``True``. Because we're using a user-based context, the ``requires_authentication`` will allow the general "out-of-context code" (form class creation) to instanciate the Agnocomplete class without the context, but will disallow it to return results based on the ``query``. This way, you can filter out unauthorized uses of the autocomplete, as you could do it with the ``@login_required`` decorator in
     your views.
+
+
+Customize the label
+-------------------
+
+Sometimes, it can be useful to customize the display label. The class provides
+a method that can be overridden.
+
+For example:
+
+.. code-block:: python
+
+    class AutocompletePerson(AgnocompleteModel):
+        model = Person
+        fields = ['first_name', 'last_name']
+        query_size_min = 2
+
+        def item(self, current_item):
+            label = {
+                'value': force_text(current_item.pk),
+                'label': u'{item} {mail}'.format(
+                    item=force_text(current_item), mail=current_item.email)
+            }
+
+            return label
