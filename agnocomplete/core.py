@@ -347,11 +347,23 @@ class AgnocompleteModel(AgnocompleteModelBase):
     def serialize(self, queryset):
         result = []
         for item in queryset:
-            result.append({
-                "value": text(item.pk),
-                "label": text(item)
-            })
+            result.append(self.item(item))
         return result[:self.get_page_size()]
+
+    def item(self, current_item):
+        """
+        Return the current item.
+
+        @param current_item: Current item
+        @type  param: django.models
+
+        @return: Label of the current item
+        @rtype : dict
+        """
+        return {
+            'value': text(current_item.pk),
+            'label': text(current_item)
+        }
 
     def items(self, query=None):
         """

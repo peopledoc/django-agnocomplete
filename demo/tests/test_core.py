@@ -15,6 +15,7 @@ from agnocomplete.exceptions import AuthenticationRequiredAgnocompleteException
 from demo.autocomplete import (
     AutocompleteColor,
     AutocompletePerson,
+    AutocompletePersonLabel,
     AutocompleteChoicesPages,
     AutocompleteChoicesPagesOverride,
     AutocompletePersonQueryset,
@@ -174,6 +175,16 @@ class AutocompletePersonTest(TestCase):
         self.assertEqual(len(items), 1)
         items = instance.items(query="zzzzz")
         self.assertEqual(len(items), 0)
+
+    def test_item(self):
+        instance = AutocompletePersonLabel()
+        qs = instance.get_queryset()
+        condition = instance.get_queryset_filters(query="bob")
+        items = qs.filter(condition)
+        people = Person.objects.get(first_name='Bob')
+        label = u'{item} {mail}'.format(item=text(people), mail=people.email)
+
+        self.assertEqual(instance.item(items.first())['label'], label)
 
     def test_get_page_size(self):
         instance = AutocompletePerson()

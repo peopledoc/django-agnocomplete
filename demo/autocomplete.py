@@ -2,6 +2,7 @@
 Autocomplete classes
 """
 from django.core.urlresolvers import reverse_lazy
+from django.utils.encoding import force_text
 
 from agnocomplete.register import register
 from agnocomplete.core import AgnocompleteChoices, AgnocompleteModel
@@ -33,6 +34,17 @@ class AutocompletePerson(AgnocompleteModel):
     model = Person
     fields = ['first_name', 'last_name']
     query_size_min = 2
+
+
+class AutocompletePersonLabel(AutocompletePerson):
+    def item(self, current_item):
+        label = {
+            'value': force_text(current_item.pk),
+            'label': u'{item} {mail}'.format(
+                item=force_text(current_item), mail=current_item.email)
+        }
+
+        return label
 
 
 # Special: not integrated into the registry (yet)
