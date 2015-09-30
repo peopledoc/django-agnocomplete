@@ -6,6 +6,7 @@ master (unreleased)
 ===================
 
 - Add a new method to have the possibilty to override easily the display label (#34).
+- ``make docs`` is a PHONY makefile target.
 
 0.2.0 (2015-09-17)
 ==================
