@@ -2,8 +2,8 @@
 Changelog for django-agnocomplete
 =================================
 
-master (unreleased)
-===================
+0.2.1 (2015-09-30)
+==================
 
 - Add a new method to have the possibilty to override easily the display label (#34).
 - ``make docs`` is a PHONY makefile target.
