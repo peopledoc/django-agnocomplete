@@ -17,5 +17,6 @@ test:
 serve:
 	tox -e serve
 
+.PHONY: docs
 docs:
 	tox -e docs
