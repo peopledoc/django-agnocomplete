@@ -5,7 +5,7 @@ Changelog for django-agnocomplete
 0.3.0 (unreleased)
 ==================
 
-- Nothing changed yet.
+- Added an `item(current_item)` method to override display label on choices (#37).
 
 
 0.2.1 (2015-09-30)
