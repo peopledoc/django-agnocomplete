@@ -247,8 +247,9 @@ class AgnocompleteChoices(AgnocompleteBase):
             result = filter(lambda x: x[1].lower().startswith(query), result)
             result = tuple(result)
 
-        result = [self.item(item) for item in result]
-        return result[:self.get_page_size()]
+        # Slicing before rendering
+        result = result[:self.get_page_size()]
+        return [self.item(item) for item in result]
 
     def selected(self, ids):
         """
@@ -350,9 +351,9 @@ class AgnocompleteModel(AgnocompleteModelBase):
 
     def serialize(self, queryset):
         result = []
-        for item in queryset:
+        for item in queryset[:self.get_page_size()]:
             result.append(self.item(item))
-        return result[:self.get_page_size()]
+        return result
 
     def item(self, current_item):
         """

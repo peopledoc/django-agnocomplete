@@ -5,6 +5,7 @@ Changelog for django-agnocomplete
 0.3.0 (unreleased)
 ==================
 
+- Improve performances by slicing the resultset before rendering (#36).
 - Added an `item(current_item)` method to override display label on choices (#37).
 
 
