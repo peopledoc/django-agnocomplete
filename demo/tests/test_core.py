@@ -333,3 +333,39 @@ class AgnoCompleteAbstractMethod(TestCase):
             """Can't instantiate abstract class WickedAgnocompleteBase\
  with abstract methods get_choices, items, selected"""
         )
+
+
+class CountItemCalls(object):
+    query_size = 1
+    query_size_min = 1
+
+    def __init__(self, *args, **kwargs):
+        super(CountItemCalls, self).__init__(*args, **kwargs)
+        self._count_item_calls = 0
+
+    def item(self, current_item):
+        self._count_item_calls += 1
+        return super(CountItemCalls, self).item(current_item)
+
+
+class AutocompletePersonPerformance(CountItemCalls, AutocompletePerson):
+    pass
+
+
+class AutocompleteColorPerformance(CountItemCalls, AutocompleteColor):
+    pass
+
+
+class PerformanceTest(TestCase):
+
+    def test_item_calls_core(self):
+        instance = AutocompleteColorPerformance(page_size=2)
+        items = instance.items(query='gr')
+        self.assertEqual(len(items), 2)
+        self.assertEqual(instance._count_item_calls, 2)
+
+    def test_item_calls_model(self):
+        instance = AutocompletePersonPerformance(page_size=2)
+        items = instance.items(query="ali")
+        self.assertEqual(len(items), 2)
+        self.assertEqual(instance._count_item_calls, 2)
