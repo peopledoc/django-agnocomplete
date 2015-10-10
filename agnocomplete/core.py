@@ -230,6 +230,10 @@ class AgnocompleteChoices(AgnocompleteBase):
     def get_choices(self):
         return self.choices
 
+    def item(self, current_item):
+        value, label = current_item
+        return dict(value=value, label=label)
+
     def items(self, query=None):
         # No query, no item
         if not query:
@@ -243,7 +247,7 @@ class AgnocompleteChoices(AgnocompleteBase):
             result = filter(lambda x: x[1].lower().startswith(query), result)
             result = tuple(result)
 
-        result = [dict(value=value, label=label) for value, label in result]
+        result = [self.item(item) for item in result]
         return result[:self.get_page_size()]
 
     def selected(self, ids):
