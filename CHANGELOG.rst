@@ -2,7 +2,7 @@
 Changelog for django-agnocomplete
 =================================
 
-0.3.0 (unreleased)
+0.2.2 (2015-10-12)
 ==================
 
 - Improve performances by slicing the resultset before rendering (#36).
