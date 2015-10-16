@@ -74,8 +74,15 @@ class AgnocompleteModelField(AgnocompleteMixin, forms.ModelChoiceField):
     """
     Agnocomplete Field class for Choice fields based on models / querysets.
     """
-
     def clean(self, *args, **kwargs):
+        """
+        Potentially, these fields should validate against context-based
+        queries.
+
+        If a context variable has been transmitted to the field, it's being
+        used to 'reset' the queryset and make sure the chosen item fits to
+        the user context.
+        """
         if hasattr(self, AGNOCOMPLETE_USER_ATTRIBUTE):
             user = getattr(self, AGNOCOMPLETE_USER_ATTRIBUTE, None)
             if user:
