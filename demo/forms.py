@@ -5,6 +5,8 @@ from django import forms
 from django.core.urlresolvers import reverse_lazy
 
 from agnocomplete import fields, widgets
+from agnocomplete.forms import UserContextForm
+
 from demo.autocomplete import AutocompleteColor, AutocompletePerson
 from demo.autocomplete import HiddenAutocomplete
 
@@ -25,7 +27,7 @@ class SearchFormTextInput(forms.Form):
         AutocompletePerson, widget=widgets.AgnocompleteTextInput)
 
 
-class SearchContextForm(forms.Form):
+class SearchContextForm(UserContextForm):
     search_person = fields.AgnocompleteModelField('AutocompletePersonDomain')
 
 
