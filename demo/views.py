@@ -1,4 +1,4 @@
-from django.views.generic import TemplateView
+from django.views.generic import FormView
 
 from agnocomplete.views import AgnocompleteGenericView
 
@@ -7,16 +7,13 @@ from .forms import (SearchForm, SearchContextForm, SearchCustom,
 from .autocomplete import HiddenAutocomplete
 
 
-class AutoView(TemplateView):
+class AutoView(FormView):
     template_name = 'base.html'
+    form_class = SearchForm
 
-    def get_form(self):
-        return SearchForm()
-
-    def get_context_data(self):
-        data = super(AutoView, self).get_context_data()
+    def get_context_data(self, **kwargs):
+        data = super(AutoView, self).get_context_data(**kwargs)
         data.update({
-            "form": self.get_form(),
             "title": self.title,
         })
         return data
@@ -29,22 +26,22 @@ class IndexView(AutoView):
 class FilledFormView(AutoView):
     title = "Basic view, no JS, filled form"
 
-    def get_form(self):
-        return SearchForm({'search_color': 'grey', 'search_person': '1'})
+    def get_form_kwargs(self):
+        data = super(FilledFormView, self).get_form_kwargs()
+        data.update({
+            "data": {'search_color': 'grey', 'search_person': '1'}
+        })
+        return data
 
 
 class SearchContextFormView(AutoView):
     title = "Form filtering on logged in user context"
-
-    def get_form(self):
-        return SearchContextForm()
+    form_class = SearchContextForm
 
 
 class SearchCustomView(AutoView):
     title = "Form using a non-registered Agnocomplete class"
-
-    def get_form(self):
-        return SearchCustom()
+    form_class = SearchCustom
 
 
 class HiddenAutocompleteView(AgnocompleteGenericView):
@@ -65,17 +62,13 @@ class Select2View(AutoView):
 class JqueryAutocompleteView(AutoView):
     template_name = 'jquery-autocomplete.html'
     title = "View using the JQuery autocomplete front library"
-
-    def get_form(self):
-        return SearchFormTextInput()
+    form_class = SearchFormTextInput
 
 
 class TypeaheadView(AutoView):
     template_name = 'typeahead.html'
     title = "View using the typeahead.js autocomplete front library"
-
-    def get_form(self):
-        return SearchFormTextInput()
+    form_class = SearchFormTextInput
 
 
 index = IndexView.as_view()
