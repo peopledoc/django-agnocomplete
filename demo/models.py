@@ -11,6 +11,19 @@ class Person(models.Model):
         return " ".join((self.first_name, self.last_name))
     __str__ = __unicode__
 
+    @property
+    def is_active(self):
+        # Property needed by the authentication backend
+        return True
+
+    def save(self, *args, **kwargs):
+        # Last login is a Django User model specific field,
+        # no need to handle it
+        if "update_fields" in kwargs:
+            if 'last_login' in kwargs['update_fields']:
+                kwargs['update_fields'].remove('last_login')
+        return super(Person, self).save(*args, **kwargs)
+
 
 class FavoriteColor(models.Model):
     person = models.ForeignKey(Person)

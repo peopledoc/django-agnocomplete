@@ -14,7 +14,7 @@ class UserContextForm(forms.Form):
     autocomplete fields that are using context-based querysets
     (e.g.: :class:`AgnocompleteModelField`).
     """
-    def __init__(self, user=None, *args, **kwargs):
+    def __init__(self, user, *args, **kwargs):
         self.user = user
         super(UserContextForm, self).__init__(*args, **kwargs)
         if self.user:

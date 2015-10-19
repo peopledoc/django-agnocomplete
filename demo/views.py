@@ -1,6 +1,7 @@
 from django.views.generic import FormView
+from django.http import HttpResponse, HttpResponseBadRequest
 
-from agnocomplete.views import AgnocompleteGenericView
+from agnocomplete.views import AgnocompleteGenericView, UserContextFormMixin
 
 from .forms import (SearchForm, SearchContextForm, SearchCustom,
                     SearchFormTextInput)
@@ -34,9 +35,16 @@ class FilledFormView(AutoView):
         return data
 
 
-class SearchContextFormView(AutoView):
+class SearchContextFormView(UserContextFormMixin, AutoView):
     title = "Form filtering on logged in user context"
     form_class = SearchContextForm
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form(form_class=self.form_class)
+        if form.is_valid():
+            return HttpResponse("OK")
+        else:
+            return HttpResponseBadRequest("KO")
 
 
 class SearchCustomView(AutoView):

@@ -136,6 +136,10 @@ LOGGING = {
     }
 }
 
+AUTHENTICATION_BACKENDS = (
+    'demo.authentication.PersonBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 # AGNOCOMPLETE specifics
 # 1. Page size

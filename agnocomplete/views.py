@@ -78,6 +78,34 @@ class RegistryMixin(object):
         return get_agnocomplete_registry()
 
 
+class UserContextFormMixin(object):
+    """
+    This mixin is injecting the context variable into the form kwargs
+    """
+
+    def get_agnocomplete_context(self):
+        """
+        Return the view current user.
+
+        You may want to change this value by overrding this method.
+        """
+        return self.request.user
+
+    def get_form_kwargs(self):
+        """
+        Return the form kwargs.
+
+        This method injects the context variable, defined in
+        :meth:`get_agnocomplete_context`. Override this method to adjust it to
+        your needs.
+        """
+        data = super(UserContextFormMixin, self).get_form_kwargs()
+        data.update({
+            'user': self.get_agnocomplete_context(),
+        })
+        return data
+
+
 class CatalogView(RegistryMixin, AgnocompleteJSONView):
     """
     The catalog view displays every available Agnocomplete slug available in
