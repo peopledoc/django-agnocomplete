@@ -148,34 +148,9 @@ Otherwise, the search will be a simple ``ILIKE '%value%'`` SQL statement.
 User-dependant querysets
 ------------------------
 
-A common usecase: "Please display the items depending on the user context".
-In a multi-site context, you *have* to define a preemptive filter to gather informations based on the current context. That's the reason why the ``django-agnocomplete`` views carry the request user into the Autocomplete class. This instance variable is ``self.user``. If you're using a custom authentication profile, it'll be an instance of your ``AUTH_USER_MODE`` class, hence it'll have access to its properties and methods.
+This section is now handled in the following dedicated document.
 
-.. code-block:: python
-
-    class AutocompletePersonQueryset(AgnocompleteModel):
-        fields = ['first_name', 'last_name']
-        requires_authentication = True
-        model = Person
-
-        def get_queryset(self):
-            email = self.user.email
-            _, domain = email.split('@')
-            return Person.objects.filter(email__endswith=domain)
-
-    class AutocompletePersonSameSite(AgnocompleteModel):
-        fields = ['first_name', 'last_name']
-        requires_authentication = True
-        model = Person
-
-        def get_queryset(self):
-            return Person.objects.filter(site=self.user.site)
-
-.. important::
-
-    You may have noticed that these two classes have a ``model`` property and a ``requires_authentication`` property set to ``True``. Because we're using a user-based context, the ``requires_authentication`` will allow the general "out-of-context code" (form class creation) to instanciate the Agnocomplete class without the context, but will disallow it to return results based on the ``query``. This way, you can filter out unauthorized uses of the autocomplete, as you could do it with the ``@login_required`` decorator in
-    your views.
-
+see: :doc:`context-dependant-completions`
 
 Customize the label
 -------------------
