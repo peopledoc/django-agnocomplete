@@ -2,10 +2,10 @@
 Changelog for django-agnocomplete
 =================================
 
-0.3.0 (unreleased)
+0.2.3 (2015-11-05)
 ==================
 
-- Expose a ``_final_queryset`` property that receives the actual queryset executed right before serialization.
+- Expose a ``_final_queryset`` property that receives the actual queryset executed right before serialization (#40).
 
 
 0.2.2 (2015-10-12)
