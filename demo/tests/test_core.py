@@ -158,6 +158,52 @@ class AutocompleteModelTest(TestCase):
         instance = AutocompletePersonQueryset()
         self.assertEqual(Person, instance.get_model())
 
+    def test_final_queryset_person(self):
+        instance = AutocompletePerson()
+        # No items() called, None
+        self.assertTrue(instance._final_queryset is None)
+
+        # Called items(), empty queryset
+        items = instance.items()
+        self.assertFalse(instance._final_queryset is None)
+        self.assertEqual(instance._final_queryset.count(), 0)
+
+        # Regular search, normal queryset
+        items = instance.items(query="ali")
+        self.assertEqual(len(items), 4)
+        self.assertTrue(instance._final_queryset)
+        self.assertEqual(instance._final_queryset.count(), 4)
+
+        # Paginated queryset
+        instance = AutocompletePerson(page_size=2)
+        items = instance.items(query="ali")
+        self.assertEqual(len(items), 2)
+        self.assertTrue(instance._final_queryset)
+        self.assertEqual(instance._final_queryset.count(), 2)
+
+    def test_final_queryset_personqueryset(self):
+        instance = AutocompletePersonQueryset()
+        # No items() called, None
+        self.assertTrue(instance._final_queryset is None)
+
+        # Called items(), empty queryset
+        items = instance.items()
+        self.assertFalse(instance._final_queryset is None)
+        self.assertEqual(instance._final_queryset.count(), 0)
+
+        # Regular search, normal queryset
+        items = instance.items(query="alice")
+        self.assertEqual(len(items), 4)
+        self.assertTrue(instance._final_queryset)
+        self.assertEqual(instance._final_queryset.count(), 4)
+
+        # Paginated queryset
+        instance = AutocompletePersonQueryset(page_size=2)
+        items = instance.items(query="alice")
+        self.assertEqual(len(items), 2)
+        self.assertTrue(instance._final_queryset)
+        self.assertEqual(instance._final_queryset.count(), 2)
+
 
 class AutocompletePersonTest(TestCase):
 

@@ -315,6 +315,11 @@ class AgnocompleteModel(AgnocompleteModelBase):
                 return People.objects.filter(email__contains='example.com')
 
     """
+
+    def __init__(self, *args, **kwargs):
+        super(AgnocompleteModel, self).__init__(*args, **kwargs)
+        self.__final_queryset = None
+
     def _construct_qs_filter(self, field_name):
         """
         Using a field name optionnaly prefixed by `^`, `=`, `@`, return a
@@ -349,6 +354,15 @@ class AgnocompleteModel(AgnocompleteModelBase):
             })
         return conditions
 
+    @property
+    def _final_queryset(self):
+        """
+        Paginated final queryset
+        """
+        if self.__final_queryset is None:
+            return None
+        return self.__final_queryset[:self.get_page_size()]
+
     def serialize(self, queryset):
         result = []
         for item in queryset[:self.get_page_size()]:
@@ -376,10 +390,12 @@ class AgnocompleteModel(AgnocompleteModelBase):
         """
         # Cut this, we don't need no empty query
         if not query:
-            return self.serialize(self.get_model().objects.none())
+            self.__final_queryset = self.get_model().objects.none()
+            return self.serialize(self.__final_queryset)
         # Query is too short, no item
         if len(query) < self.get_query_size_min():
-            return self.serialize(self.get_model().objects.none())
+            self.__final_queryset = self.get_model().objects.none()
+            return self.serialize(self.__final_queryset)
 
         if self.requires_authentication:
             if not self.user:
@@ -395,6 +411,8 @@ class AgnocompleteModel(AgnocompleteModelBase):
         qs = self.get_queryset()
         # filter it via the query conditions
         qs = qs.filter(self.get_queryset_filters(query))
+        # The final queryset is the paginated queryset
+        self.__final_queryset = qs
         return self.serialize(qs)
 
     def selected(self, ids):
