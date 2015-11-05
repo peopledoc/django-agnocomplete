@@ -200,3 +200,37 @@ For example:
             }
 
             return label
+
+
+Extract extra-information
+-------------------------
+
+You may want to add extra fields to your returned records, fields that belong to another table (e.g. the count of friends each one has). For performance reasons, it's not safe to extract this out of the raw :meth:`get_queryset()` method. Use the `_final_queryset` property instead, or, better, using the result of the :meth:`items()` serialization.
+
+
+.. code-block:: python
+
+    from django.utils.functional import cached_property
+
+    class AutocompletePerson(AgnocompleteModel):
+        model = Person
+        fields = ['first_name', 'last_name']
+
+        @cached_property
+        def friends(self):
+            queryset = self._final_queryset
+            # This returns a dict of friends count, the keys being the PKs
+            return count_friends([item.pk for item in queryset])
+
+        def item(self, current_item):
+            friends = self.friends
+            label = {
+                'value': force_text(current_item.pk),
+                'label': u'{item} {mail} ({friends})'.format(
+                    item=force_text(current_item),
+                    mail=current_item.email,
+                    friends=friends.get(current_item.pk, 0)
+                )
+            }
+
+            return label
