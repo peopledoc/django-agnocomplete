@@ -318,7 +318,7 @@ class AgnocompleteModel(AgnocompleteModelBase):
 
     def __init__(self, *args, **kwargs):
         super(AgnocompleteModel, self).__init__(*args, **kwargs)
-        self._final_queryset = None
+        self.__final_queryset = None
 
     def _construct_qs_filter(self, field_name):
         """
@@ -354,6 +354,15 @@ class AgnocompleteModel(AgnocompleteModelBase):
             })
         return conditions
 
+    @property
+    def _final_queryset(self):
+        """
+        Paginated final queryset
+        """
+        if self.__final_queryset is None:
+            return None
+        return self.__final_queryset[:self.get_page_size()]
+
     def serialize(self, queryset):
         result = []
         for item in queryset[:self.get_page_size()]:
@@ -381,12 +390,12 @@ class AgnocompleteModel(AgnocompleteModelBase):
         """
         # Cut this, we don't need no empty query
         if not query:
-            self._final_queryset = self.get_model().objects.none()
-            return self.serialize(self._final_queryset)
+            self.__final_queryset = self.get_model().objects.none()
+            return self.serialize(self.__final_queryset)
         # Query is too short, no item
         if len(query) < self.get_query_size_min():
-            self._final_queryset = self.get_model().objects.none()
-            return self.serialize(self._final_queryset)
+            self.__final_queryset = self.get_model().objects.none()
+            return self.serialize(self.__final_queryset)
 
         if self.requires_authentication:
             if not self.user:
@@ -402,8 +411,9 @@ class AgnocompleteModel(AgnocompleteModelBase):
         qs = self.get_queryset()
         # filter it via the query conditions
         qs = qs.filter(self.get_queryset_filters(query))
-        self._final_queryset = qs
-        return self.serialize(self._final_queryset)
+        # The final queryset is the paginated queryset
+        self.__final_queryset = qs
+        return self.serialize(qs)
 
     def selected(self, ids):
         """

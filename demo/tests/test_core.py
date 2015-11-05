@@ -174,6 +174,13 @@ class AutocompleteModelTest(TestCase):
         self.assertTrue(instance._final_queryset)
         self.assertEqual(instance._final_queryset.count(), 4)
 
+        # Paginated queryset
+        instance = AutocompletePerson(page_size=2)
+        items = instance.items(query="ali")
+        self.assertEqual(len(items), 2)
+        self.assertTrue(instance._final_queryset)
+        self.assertEqual(instance._final_queryset.count(), 2)
+
     def test_final_queryset_personqueryset(self):
         instance = AutocompletePersonQueryset()
         # No items() called, None
@@ -189,6 +196,13 @@ class AutocompleteModelTest(TestCase):
         self.assertEqual(len(items), 4)
         self.assertTrue(instance._final_queryset)
         self.assertEqual(instance._final_queryset.count(), 4)
+
+        # Paginated queryset
+        instance = AutocompletePersonQueryset(page_size=2)
+        items = instance.items(query="alice")
+        self.assertEqual(len(items), 2)
+        self.assertTrue(instance._final_queryset)
+        self.assertEqual(instance._final_queryset.count(), 2)
 
 
 class AutocompletePersonTest(TestCase):
