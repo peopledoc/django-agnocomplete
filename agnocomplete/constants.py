@@ -19,3 +19,6 @@ AGNOCOMPLETE_MIN_QUERYSIZE = 2
 
 "Default data attribute name for fields"
 AGNOCOMPLETE_DATA_ATTRIBUTE = 'agnocomplete'
+
+"The context attribute name given to fields"
+AGNOCOMPLETE_USER_ATTRIBUTE = '__user'

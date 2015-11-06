@@ -5,7 +5,7 @@ Changelog for django-agnocomplete
 0.3.0 (unreleased)
 ==================
 
-- Nothing changed yet.
+- Stronger validation of context-based agnocomplete fields (#39).
 
 
 0.2.3 (2015-11-05)

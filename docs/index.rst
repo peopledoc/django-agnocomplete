@@ -30,6 +30,7 @@ So far, we've got it implemented using:
 
    overview
    autocomplete-definition
+   context-dependant-completions
    custom-views
    demo-site
    admin-site

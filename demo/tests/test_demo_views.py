@@ -152,3 +152,30 @@ class JSDemoViews(TestCase):
     def test_typeahead(self):
         response = self.client.get(reverse('typeahead'))
         self.assertEqual(response.status_code, 200)
+
+    def test_context_search(self):
+        response = self.client.get(reverse('search-context'))
+        self.assertEqual(response.status_code, 200)
+
+
+class FormValidationViewTest(TestCase):
+
+    def setUp(self):
+        super(FormValidationViewTest, self).setUp()
+        self.alice = Person.objects.get(pk=1)
+        self.bob = Person.objects.get(email__endswith='demo.com')
+        self.client.login(email=self.alice.email)
+
+    def test_post_valid(self):
+        response = self.client.post(
+            reverse('search-context'),
+            data={'search_person': self.alice.pk}
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_post_invalid(self):
+        response = self.client.post(
+            reverse('search-context'),
+            data={'search_person': self.bob.pk}
+        )
+        self.assertNotEqual(response.status_code, 200)

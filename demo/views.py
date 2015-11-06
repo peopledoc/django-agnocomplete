@@ -1,22 +1,20 @@
-from django.views.generic import TemplateView
+from django.views.generic import FormView
+from django.http import HttpResponse, HttpResponseBadRequest
 
-from agnocomplete.views import AgnocompleteGenericView
+from agnocomplete.views import AgnocompleteGenericView, UserContextFormMixin
 
 from .forms import (SearchForm, SearchContextForm, SearchCustom,
                     SearchFormTextInput)
 from .autocomplete import HiddenAutocomplete
 
 
-class AutoView(TemplateView):
+class AutoView(FormView):
     template_name = 'base.html'
+    form_class = SearchForm
 
-    def get_form(self):
-        return SearchForm()
-
-    def get_context_data(self):
-        data = super(AutoView, self).get_context_data()
+    def get_context_data(self, **kwargs):
+        data = super(AutoView, self).get_context_data(**kwargs)
         data.update({
-            "form": self.get_form(),
             "title": self.title,
         })
         return data
@@ -29,22 +27,29 @@ class IndexView(AutoView):
 class FilledFormView(AutoView):
     title = "Basic view, no JS, filled form"
 
-    def get_form(self):
-        return SearchForm({'search_color': 'grey', 'search_person': '1'})
+    def get_form_kwargs(self):
+        data = super(FilledFormView, self).get_form_kwargs()
+        data.update({
+            "data": {'search_color': 'grey', 'search_person': '1'}
+        })
+        return data
 
 
-class SearchContextFormView(AutoView):
+class SearchContextFormView(UserContextFormMixin, AutoView):
     title = "Form filtering on logged in user context"
+    form_class = SearchContextForm
 
-    def get_form(self):
-        return SearchContextForm()
+    def post(self, request, *args, **kwargs):
+        form = self.get_form(form_class=self.form_class)
+        if form.is_valid():
+            return HttpResponse("OK")
+        else:
+            return HttpResponseBadRequest("KO")
 
 
 class SearchCustomView(AutoView):
     title = "Form using a non-registered Agnocomplete class"
-
-    def get_form(self):
-        return SearchCustom()
+    form_class = SearchCustom
 
 
 class HiddenAutocompleteView(AgnocompleteGenericView):
@@ -65,17 +70,13 @@ class Select2View(AutoView):
 class JqueryAutocompleteView(AutoView):
     template_name = 'jquery-autocomplete.html'
     title = "View using the JQuery autocomplete front library"
-
-    def get_form(self):
-        return SearchFormTextInput()
+    form_class = SearchFormTextInput
 
 
 class TypeaheadView(AutoView):
     template_name = 'typeahead.html'
     title = "View using the typeahead.js autocomplete front library"
-
-    def get_form(self):
-        return SearchFormTextInput()
+    form_class = SearchFormTextInput
 
 
 index = IndexView.as_view()

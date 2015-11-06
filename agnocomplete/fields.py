@@ -5,6 +5,7 @@ Agnocomplete specific form fields.
 from django import forms
 
 from .core import AgnocompleteBase
+from .constants import AGNOCOMPLETE_USER_ATTRIBUTE
 from .widgets import AgnocompleteSelect
 from .register import get_agnocomplete_registry
 from .exceptions import UnregisteredAgnocompleteException
@@ -19,14 +20,14 @@ class AgnocompleteMixin(object):
     """
     widget = AgnocompleteSelect
 
-    def __init__(self, klass_or_instance, *args, **kwargs):
-        self.set_agnocomplete(klass_or_instance)
+    def __init__(self, klass_or_instance, user=None, *args, **kwargs):
+        self.set_agnocomplete(klass_or_instance, user)
         super(AgnocompleteMixin, self).__init__(
             self.agnocomplete.get_choices(), *args, **kwargs)
         # Update the widget with the target agnocomplete
         self.widget.agnocomplete = self.agnocomplete
 
-    def set_agnocomplete(self, klass_or_instance):
+    def set_agnocomplete(self, klass_or_instance, user):
         """
         Handling the assignation of the agnocomplete object inside the field.
         A developer may want to use a class or an instance of an
@@ -58,7 +59,7 @@ class AgnocompleteMixin(object):
             klass_or_instance = registry[klass_or_instance]
         # If not an instance, instanciate this
         if not isinstance(klass_or_instance, AgnocompleteBase):
-            klass_or_instance = klass_or_instance()
+            klass_or_instance = klass_or_instance(user=user)
         # Store it in the instance
         self.agnocomplete = klass_or_instance
 
@@ -73,3 +74,18 @@ class AgnocompleteModelField(AgnocompleteMixin, forms.ModelChoiceField):
     """
     Agnocomplete Field class for Choice fields based on models / querysets.
     """
+    def clean(self, *args, **kwargs):
+        """
+        Potentially, these fields should validate against context-based
+        queries.
+
+        If a context variable has been transmitted to the field, it's being
+        used to 'reset' the queryset and make sure the chosen item fits to
+        the user context.
+        """
+        if hasattr(self, AGNOCOMPLETE_USER_ATTRIBUTE):
+            user = getattr(self, AGNOCOMPLETE_USER_ATTRIBUTE, None)
+            if user:
+                self.agnocomplete.user = user
+                self.queryset = self.agnocomplete.get_queryset()
+        return super(AgnocompleteModelField, self).clean(*args, **kwargs)
