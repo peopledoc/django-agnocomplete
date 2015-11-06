@@ -215,8 +215,13 @@ You may want to add extra fields to your returned records, fields that belong to
 
     The :attr:`final_queryset` property is **paginated**, which means that you won't be able to re-paginate it again. For example, this won't work:
 
-    ```python
-    queryset = self.final_queryset.filter(field="something")[:2]
-    ```
+    .. code-block:: python
+
+        queryset = self.final_queryset.filter(field="something")[:2]
 
     If you need to feed your extra-information with paginated or re-written queries out of the actual one, use :attr:`final_raw_queryset` instead.
+
+    .. code-block:: python
+
+        queryset = self.final_raw_queryset.filter(field="something")
+        queryset = queryset[:2]
