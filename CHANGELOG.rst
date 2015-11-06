@@ -6,6 +6,7 @@ Changelog for django-agnocomplete
 ==================
 
 - Stronger validation of context-based agnocomplete fields (#39).
+- Expose a ``final_queryset`` (aliasing the ``_final_queryset`` property) *and* a ``final_raw_queryset`` property that recieves the actual *unpaginated* queryset on which the search is based (#40).
 
 
 0.2.3 (2015-11-05)

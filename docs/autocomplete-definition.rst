@@ -180,7 +180,7 @@ For example:
 Extract extra-information
 -------------------------
 
-You may want to add extra fields to your returned records, fields that belong to another table (e.g. the count of friends each one has). For performance reasons, it's not safe to extract this out of the raw :meth:`get_queryset()` method. Use the `_final_queryset` property instead, or, better, using the result of the :meth:`items()` serialization.
+You may want to add extra fields to your returned records, fields that belong to another table (e.g. the count of friends each one has). For performance reasons, it's not safe to extract this out of the raw :meth:`get_queryset()` method. Use the :attr:`final_queryset` property instead, or, better, using the result of the :meth:`items()` serialization.
 
 
 .. code-block:: python
@@ -193,7 +193,7 @@ You may want to add extra fields to your returned records, fields that belong to
 
         @cached_property
         def friends(self):
-            queryset = self._final_queryset
+            queryset = self.final_queryset
             # This returns a dict of friends count, the keys being the PKs
             return count_friends([item.pk for item in queryset])
 
@@ -209,3 +209,14 @@ You may want to add extra fields to your returned records, fields that belong to
             }
 
             return label
+
+
+.. important::
+
+    The :attr:`final_queryset` property is **paginated**, which means that you won't be able to re-paginate it again. For example, this won't work:
+
+    ```python
+    queryset = self.final_queryset.filter(field="something")[:2]
+    ```
+
+    If you need to feed your extra-information with paginated or re-written queries out of the actual one, use :attr:`final_raw_queryset` instead.

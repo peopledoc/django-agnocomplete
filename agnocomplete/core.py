@@ -354,6 +354,12 @@ class AgnocompleteModel(AgnocompleteModelBase):
             })
         return conditions
 
+    def paginate(self, qs):
+        """
+        Paginate a given Queryset
+        """
+        return qs[:self.get_page_size()]
+
     @property
     def _final_queryset(self):
         """
@@ -361,11 +367,17 @@ class AgnocompleteModel(AgnocompleteModelBase):
         """
         if self.__final_queryset is None:
             return None
-        return self.__final_queryset[:self.get_page_size()]
+        return self.paginate(self.__final_queryset)
+    # final_queryset alias
+    final_queryset = _final_queryset
+
+    @property
+    def final_raw_queryset(self):
+        return self.__final_queryset
 
     def serialize(self, queryset):
         result = []
-        for item in queryset[:self.get_page_size()]:
+        for item in self.paginate(queryset):
             result.append(self.item(item))
         return result
 
