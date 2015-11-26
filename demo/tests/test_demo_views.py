@@ -27,6 +27,8 @@ class HomeTest(TestCase):
         self.assertIn('data-url', attrs_color)
         self.assertIn('data-query-size', attrs_color)
         self.assertIn('data-agnocomplete', attrs_color)
+        # Not a multi
+        self.assertFalse(search_color.widget.allow_multiple_selected)
 
     @override_settings(AGNOCOMPLETE_DATA_ATTRIBUTE='wow')
     def test_data_attribute(self):
@@ -119,6 +121,36 @@ class CustomSearchTest(TestCase):
         )
 
 
+class MultiSearchTest(TestCase):
+
+    def test_widgets_multi_create(self):
+        response = self.client.get(reverse('selectize-multi'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('form', response.context)
+        form = response.context['form']
+        self.assertIn('search_color_create', form.fields)
+        search_color = form.fields['search_color_create']
+        # Specific: this is a multi
+        self.assertTrue(search_color.widget.allow_multiple_selected)
+        # But it's also a "create-enabled"
+        attrs_color = search_color.widget.build_attrs()
+        self.assertIn('data-create', attrs_color)
+        self.assertTrue(attrs_color['data-create'])
+
+    def test_widgets_multi_no_create(self):
+        response = self.client.get(reverse('selectize-multi'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('form', response.context)
+        form = response.context['form']
+        self.assertIn('search_color_no_create', form.fields)
+        search_color = form.fields['search_color_no_create']
+        # Specific: this is a multi
+        self.assertTrue(search_color.widget.allow_multiple_selected)
+        # But it's not "create-enabled"
+        attrs_color = search_color.widget.build_attrs()
+        self.assertNotIn('data-create', attrs_color)
+
+
 class ABCTestView(TestCase):
 
     def test_AgnocompleteJSONView(self):
@@ -139,6 +171,10 @@ class JSDemoViews(TestCase):
 
     def test_selectize(self):
         response = self.client.get(reverse('selectize'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_selectize_multi(self):
+        response = self.client.get(reverse('selectize-multi'))
         self.assertEqual(response.status_code, 200)
 
     def test_select2(self):
