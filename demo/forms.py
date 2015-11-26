@@ -7,8 +7,12 @@ from django.core.urlresolvers import reverse_lazy
 from agnocomplete import fields, widgets
 from agnocomplete.forms import UserContextForm
 
-from demo.autocomplete import AutocompleteColor, AutocompletePerson
-from demo.autocomplete import HiddenAutocomplete
+from demo.autocomplete import (
+    AutocompleteColor,
+    AutocompleteColorShort,
+    AutocompletePerson,
+    HiddenAutocomplete
+)
 
 
 class SearchForm(forms.Form):
@@ -34,4 +38,15 @@ class SearchContextForm(UserContextForm):
 class SearchCustom(forms.Form):
     search_color = fields.AgnocompleteField(
         HiddenAutocomplete(url=reverse_lazy('hidden-autocomplete')),
+    )
+
+
+class SearchColorMulti(forms.Form):
+    search_color_create = fields.AgnocompleteField(
+        AutocompleteColorShort,
+        widget=widgets.AgnocompleteMultiSelect(create=True)
+    )
+    search_color_no_create = fields.AgnocompleteField(
+        AutocompleteColorShort,
+        widget=widgets.AgnocompleteMultiSelect
     )

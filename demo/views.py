@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from agnocomplete.views import AgnocompleteGenericView, UserContextFormMixin
 
 from .forms import (SearchForm, SearchContextForm, SearchCustom,
-                    SearchFormTextInput)
+                    SearchFormTextInput, SearchColorMulti)
 from .autocomplete import HiddenAutocomplete
 
 
@@ -62,6 +62,12 @@ class SelectizeView(AutoView):
     title = "View using the Selectize autocomplete front library"
 
 
+class SelectizeMultiView(AutoView):
+    template_name = "selectize.html"
+    title = "View using Selectize for a multi-select (tags)"
+    form_class = SearchColorMulti
+
+
 class Select2View(AutoView):
     template_name = 'select2.html'
     title = "View using the Select2 autocomplete front library"
@@ -87,6 +93,7 @@ search_custom = SearchCustomView.as_view()
 hidden_autocomplete = HiddenAutocompleteView.as_view()
 # JS Demo views
 selectize = SelectizeView.as_view()
+selectize_multi = SelectizeMultiView.as_view()
 select2 = Select2View.as_view()
 jquery_autocomplete = JqueryAutocompleteView.as_view()
 typeahead = TypeaheadView.as_view()

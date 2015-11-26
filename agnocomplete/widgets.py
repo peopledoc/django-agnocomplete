@@ -10,7 +10,11 @@ from django.conf import settings
 from . import get_namespace
 from .constants import AGNOCOMPLETE_DATA_ATTRIBUTE
 
-__all__ = ['AgnocompleteSelect', 'AgnocompleteTextInput']
+__all__ = [
+    'AgnocompleteSelect',
+    'AgnocompleteTextInput',
+    'AgnocompleteMultiSelect'
+]
 
 
 class AgnocompleteWidgetMixin(object):
@@ -61,3 +65,19 @@ class AgnocompleteTextInput(AgnocompleteWidgetMixin, widgets.TextInput):
     This widget is needed for front librairies which want a text input.
     """
     pass
+
+
+class AgnocompleteMultiSelect(AgnocompleteWidgetMixin, widgets.SelectMultiple):
+    """
+    A multi-selection-ready Select widget Mixin
+    """
+    def __init__(self, create=False, *args, **kwargs):
+        super(AgnocompleteMultiSelect, self).__init__(*args, **kwargs)
+        self.create = create
+
+    def build_attrs(self, extra_attrs=None, **kwargs):
+        attrs = super(AgnocompleteMultiSelect, self).build_attrs(
+            extra_attrs, **kwargs)
+        if self.create:
+            attrs.update({'data-create': 'on'})
+        return attrs

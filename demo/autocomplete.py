@@ -14,6 +14,11 @@ class AutocompleteColor(AgnocompleteChoices):
     choices = COLORS
 
 
+class AutocompleteColorShort(AutocompleteColor):
+    query_size = 2
+    query_size_min = 2
+
+
 class AutocompleteCustomUrl(AutocompleteColor):
     slug = 'my-autocomplete'
 
@@ -92,6 +97,7 @@ class HiddenAutocompleteURLReverse(AutocompleteColor):
 
 # Registration
 register(AutocompleteColor)
+register(AutocompleteColorShort)
 register(AutocompletePerson)
 register(AutocompleteChoicesPages)
 register(AutocompleteChoicesPagesOverride)
