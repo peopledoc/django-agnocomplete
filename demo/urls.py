@@ -36,8 +36,8 @@ urlpatterns = [
     url(r'^search-context/$', 'demo.views.search_context', name='search-context'),  # noqa
     url(r'^custom/$', 'demo.views.search_custom', name='search-custom'),
     # Demo Front JS views
-    url(r'^selectize/$', 'demo.views.selectize',
-        name='selectize'),
+    url(r'^selectize/$', 'demo.views.selectize', name='selectize'),
+    url(r'^selectize-multi/$', 'demo.views.selectize_multi', name='selectize-multi'),  # noqa
     url(r'^select2/$', 'demo.views.select2', name='select2'),
     url(r'^jquery-autocomplete/$', 'demo.views.jquery_autocomplete',
         name='jquery-autocomplete'),
