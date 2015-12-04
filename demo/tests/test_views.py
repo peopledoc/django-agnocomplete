@@ -34,6 +34,25 @@ class CatalogViewTest(NamespaceGeneric, RegistryTestGeneric):
         self._test_registry_keys(data)
 
 
+class ResponseHeaderTest(NamespaceGeneric, RegistryTestGeneric):
+
+    def test_get_ajax(self):
+        response = self.client.get(
+            reverse(self.catalog_url_name),
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+        )
+        content_type = response.get('content-type')
+        self.assertEqual(
+            content_type,
+            'application/json;charset=utf-8'
+        )
+
+    def test_get_ajax_ie8(self):
+        response = self.client.get(reverse(self.catalog_url_name))
+        content_type = response.get('content-type')
+        self.assertEqual(content_type, 'text/html')
+
+
 class AgnocompleteViewTest(NamespaceGeneric, RegistryTestGeneric):
 
     def test_get_404(self):
