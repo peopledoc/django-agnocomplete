@@ -2,7 +2,7 @@
 Changelog for django-agnocomplete
 =================================
 
-master (unreleased)
+0.3.1 (2015-12-04)
 ==================
 
 - Fix IE8/9 bug for AJAX response headers (#45)
