@@ -51,7 +51,7 @@ class AgnocompleteJSONView(with_metaclass(ABCMeta, View)):
         content-type header instead.
         """
         if 'HTTP_X_REQUESTED_WITH' in self.request.META:
-            return "application/json;charset UTF-8"
+            return "application/json;charset=utf-8"
         else:
             return "text/html"
 
