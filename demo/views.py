@@ -1,3 +1,5 @@
+import logging
+
 from django.views.generic import FormView
 from django.http import HttpResponse, HttpResponseBadRequest
 
@@ -6,6 +8,8 @@ from agnocomplete.views import AgnocompleteGenericView, UserContextFormMixin
 from .forms import (SearchForm, SearchContextForm, SearchCustom,
                     SearchFormTextInput, SearchColorMulti)
 from .autocomplete import HiddenAutocomplete
+
+logger = logging.getLogger(__name__)
 
 
 class AutoView(FormView):
@@ -18,6 +22,10 @@ class AutoView(FormView):
             "title": self.title,
         })
         return data
+
+    def post(self, request, **kwargs):
+        logger.info(request.POST)
+        return HttpResponse("POST request {}".format(dict(request.POST)))
 
 
 class IndexView(AutoView):
