@@ -8,7 +8,7 @@ except ImportError:
 
 from agnocomplete import get_namespace
 from agnocomplete.views import AgnocompleteJSONView
-from ..models import Person
+from ..models import Person, Friendship
 
 
 class HomeTest(TestCase):
@@ -158,6 +158,14 @@ class MultiSearchTest(TestCase):
         self.assertIn('person', form.fields)
         self.assertIn('friends', form.fields)
 
+    def test_friendship_multi_modelforms(self):
+        response = self.client.get(reverse('selectize-model-friendship'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('form', response.context)
+        form = response.context['form']
+        self.assertIn('person', form.fields)
+        self.assertIn('friends', form.fields)
+
 
 class ABCTestView(TestCase):
 
@@ -223,3 +231,29 @@ class FormValidationViewTest(TestCase):
             data={'search_person': self.bob.pk}
         )
         self.assertNotEqual(response.status_code, 200)
+
+
+class MultipleModelSelectTest(TestCase):
+
+    def setUp(self):
+        super(MultipleModelSelectTest, self).setUp()
+        self.alice = Person.objects.get(pk=1)
+        self.random = Person.objects.exclude(pk=self.alice.pk)\
+            .order_by('?').first()
+        self.random2 = Person.objects\
+            .exclude(pk__in=(self.alice.pk, self.random.pk))\
+            .order_by('?').first()
+
+    def test_friendship_post(self):
+        count = Friendship.objects.count()
+        response = self.client.get(reverse('selectize-model-friendship'))
+        self.assertEqual(response.status_code, 200)
+        response = self.client.post(
+            reverse('selectize-model-friendship'),
+            data={
+                u'person': self.alice.pk,
+                u'friends': [self.random.pk, self.random2.pk],
+            }
+        )
+        self.assertRedirects(response, reverse('home'))
+        self.assertEqual(Friendship.objects.count(), count + 1)

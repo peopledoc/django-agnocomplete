@@ -7,13 +7,14 @@ from django.core.urlresolvers import reverse_lazy
 from agnocomplete import fields, widgets
 from agnocomplete.forms import UserContextForm
 
-from demo.autocomplete import (
+from .autocomplete import (
     AutocompleteColor,
     AutocompleteColorShort,
     AutocompletePerson,
     AutocompletePersonShort,
     HiddenAutocomplete
 )
+from .models import Friendship
 
 
 class SearchForm(forms.Form):
@@ -54,3 +55,12 @@ class SearchColorMulti(forms.Form):
 class FriendshipForm(forms.Form):
     person = fields.AgnocompleteModelField(AutocompletePersonShort)
     friends = fields.AgnocompleteModelMultipleField(AutocompletePersonShort)
+
+
+class FriendshipModelForm(forms.ModelForm):
+    person = fields.AgnocompleteModelField(AutocompletePersonShort)
+    friends = fields.AgnocompleteModelMultipleField(AutocompletePersonShort)
+
+    class Meta:
+        model = Friendship
+        fields = '__all__'
