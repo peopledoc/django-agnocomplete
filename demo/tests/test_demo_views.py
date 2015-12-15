@@ -150,6 +150,14 @@ class MultiSearchTest(TestCase):
         attrs_color = search_color.widget.build_attrs()
         self.assertNotIn('data-create', attrs_color)
 
+    def test_friendship_multi(self):
+        response = self.client.get(reverse('selectize-friendship'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('form', response.context)
+        form = response.context['form']
+        self.assertIn('person', form.fields)
+        self.assertIn('friends', form.fields)
+
 
 class ABCTestView(TestCase):
 

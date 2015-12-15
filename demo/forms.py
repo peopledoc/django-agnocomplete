@@ -11,6 +11,7 @@ from demo.autocomplete import (
     AutocompleteColor,
     AutocompleteColorShort,
     AutocompletePerson,
+    AutocompletePersonShort,
     HiddenAutocomplete
 )
 
@@ -48,3 +49,8 @@ class SearchColorMulti(forms.Form):
         AutocompleteColorShort,
         create=True,
     )
+
+
+class FriendshipForm(forms.Form):
+    person = fields.AgnocompleteModelField(AutocompletePersonShort)
+    friends = fields.AgnocompleteModelMultipleField(AutocompletePersonShort)
