@@ -6,12 +6,17 @@ from django import forms
 
 from .core import AgnocompleteBase
 from .constants import AGNOCOMPLETE_USER_ATTRIBUTE
-from .widgets import AgnocompleteSelect
+from .widgets import AgnocompleteSelect, AgnocompleteMultiSelect
 from .register import get_agnocomplete_registry
 from .exceptions import UnregisteredAgnocompleteException
 
 
-__all__ = ['AgnocompleteField', 'AgnocompleteModelField']
+__all__ = [
+    'AgnocompleteField',
+    'AgnocompleteModelField',
+    'AgnocompleteMultipleField',
+    'AgnocompleteModelMultipleField',
+]
 
 
 class AgnocompleteMixin(object):
@@ -89,3 +94,30 @@ class AgnocompleteModelField(AgnocompleteMixin, forms.ModelChoiceField):
                 self.agnocomplete.user = user
                 self.queryset = self.agnocomplete.get_queryset()
         return super(AgnocompleteModelField, self).clean(*args, **kwargs)
+
+
+class AgnocompleteMultipleMixin(AgnocompleteMixin):
+    """
+    Core mixin for multiple-selection enabled fields
+    """
+    widget = AgnocompleteMultiSelect
+
+    def __init__(self, *args, **kwargs):
+        create = kwargs.pop('create', False)
+        super(AgnocompleteMultipleMixin, self).__init__(*args, **kwargs)
+        # self.widget is a thing here
+        self.widget.create = create
+
+
+class AgnocompleteMultipleField(AgnocompleteMultipleMixin,
+                                forms.MultipleChoiceField):
+    """
+    Agnocomplete Field class for multiple Choice fields.
+    """
+
+
+class AgnocompleteModelMultipleField(AgnocompleteMultipleMixin,
+                                     forms.ModelMultipleChoiceField):
+    """
+    Field class for multiple selection on Django models.
+    """

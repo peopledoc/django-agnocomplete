@@ -42,11 +42,9 @@ class SearchCustom(forms.Form):
 
 
 class SearchColorMulti(forms.Form):
-    search_color_create = fields.AgnocompleteField(
+    search_multi_color = fields.AgnocompleteMultipleField(
+        AutocompleteColorShort)
+    search_multi_color_create = fields.AgnocompleteMultipleField(
         AutocompleteColorShort,
-        widget=widgets.AgnocompleteMultiSelect(create=True)
-    )
-    search_color_no_create = fields.AgnocompleteField(
-        AutocompleteColorShort,
-        widget=widgets.AgnocompleteMultiSelect
+        create=True,
     )
