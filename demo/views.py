@@ -1,29 +1,34 @@
 import logging
 
-from django.views.generic import FormView
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseBadRequest
+from django.views.generic import CreateView, FormView
 
 from agnocomplete.views import AgnocompleteGenericView, UserContextFormMixin
 
 from .forms import (
     SearchForm, SearchContextForm, SearchCustom,
-    SearchFormTextInput, SearchColorMulti, FriendshipForm,
+    SearchFormTextInput, SearchColorMulti,
+    FriendshipForm, FriendshipModelForm,
 )
 from .autocomplete import HiddenAutocomplete
 
 logger = logging.getLogger(__name__)
 
 
-class AutoView(FormView):
-    template_name = 'base.html'
-    form_class = SearchForm
+class AutoTitleMixin(object):
 
     def get_context_data(self, **kwargs):
-        data = super(AutoView, self).get_context_data(**kwargs)
+        data = super(AutoTitleMixin, self).get_context_data(**kwargs)
         data.update({
             "title": self.title,
         })
         return data
+
+
+class AutoView(AutoTitleMixin, FormView):
+    template_name = 'base.html'
+    form_class = SearchForm
 
     def post(self, request, **kwargs):
         logger.info(request.POST)
@@ -101,6 +106,15 @@ class FriendshipView(AutoView):
     form_class = FriendshipForm
 
 
+class FriendshipModelView(AutoTitleMixin, CreateView):
+    template_name = "selectize.html"
+    title = "Multi select with Models & Modelforms (Create View)"
+    form_class = FriendshipModelForm
+
+    def get_success_url(self):
+        return reverse('home')
+
+
 index = IndexView.as_view()
 filled_form = FilledFormView.as_view()
 search_context = SearchContextFormView.as_view()
@@ -115,3 +129,4 @@ jquery_autocomplete = JqueryAutocompleteView.as_view()
 typeahead = TypeaheadView.as_view()
 # Multi-select with models
 selectize_friendship = FriendshipView.as_view()
+selectize_model_friendship = FriendshipModelView.as_view()
