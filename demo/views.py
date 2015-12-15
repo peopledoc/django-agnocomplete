@@ -5,8 +5,10 @@ from django.http import HttpResponse, HttpResponseBadRequest
 
 from agnocomplete.views import AgnocompleteGenericView, UserContextFormMixin
 
-from .forms import (SearchForm, SearchContextForm, SearchCustom,
-                    SearchFormTextInput, SearchColorMulti)
+from .forms import (
+    SearchForm, SearchContextForm, SearchCustom,
+    SearchFormTextInput, SearchColorMulti, FriendshipForm,
+)
 from .autocomplete import HiddenAutocomplete
 
 logger = logging.getLogger(__name__)
@@ -93,6 +95,12 @@ class TypeaheadView(AutoView):
     form_class = SearchFormTextInput
 
 
+class FriendshipView(AutoView):
+    template_name = "selectize.html"
+    title = "Multi select with Models"
+    form_class = FriendshipForm
+
+
 index = IndexView.as_view()
 filled_form = FilledFormView.as_view()
 search_context = SearchContextFormView.as_view()
@@ -105,3 +113,5 @@ selectize_multi = SelectizeMultiView.as_view()
 select2 = Select2View.as_view()
 jquery_autocomplete = JqueryAutocompleteView.as_view()
 typeahead = TypeaheadView.as_view()
+# Multi-select with models
+selectize_friendship = FriendshipView.as_view()

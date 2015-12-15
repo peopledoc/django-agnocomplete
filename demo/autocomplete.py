@@ -41,6 +41,10 @@ class AutocompletePerson(AgnocompleteModel):
     query_size_min = 2
 
 
+class AutocompletePersonShort(AutocompletePerson):
+    query_size = 2
+
+
 class AutocompletePersonLabel(AutocompletePerson):
     def item(self, current_item):
         label = {
@@ -99,6 +103,7 @@ class HiddenAutocompleteURLReverse(AutocompleteColor):
 register(AutocompleteColor)
 register(AutocompleteColorShort)
 register(AutocompletePerson)
+register(AutocompletePersonShort)
 register(AutocompleteChoicesPages)
 register(AutocompleteChoicesPagesOverride)
 register(AutocompletePersonDomain)

@@ -140,12 +140,12 @@ class AutocompleteModelTest(TestCase):
     def test_queryset_by_model(self):
         instance = AutocompletePerson()
         items = instance.get_queryset()
-        self.assertEqual(items.count(), 5)
+        self.assertEqual(items.count(), 6)
 
     def test_queryset_by_queryset(self):
         instance = AutocompletePersonQueryset()
         items = instance.get_queryset()
-        self.assertEqual(items.count(), 4)
+        self.assertEqual(items.count(), 5)
 
     def test_misconfigured(self):
         instance = AutocompletePersonMisconfigured()

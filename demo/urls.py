@@ -38,6 +38,7 @@ urlpatterns = [
     # Demo Front JS views
     url(r'^selectize/$', 'demo.views.selectize', name='selectize'),
     url(r'^selectize-multi/$', 'demo.views.selectize_multi', name='selectize-multi'),  # noqa
+    url(r'^selectize-friendship/$', 'demo.views.selectize_friendship', name='selectize-friendship'),  # noqa
     url(r'^select2/$', 'demo.views.select2', name='select2'),
     url(r'^jquery-autocomplete/$', 'demo.views.jquery_autocomplete',
         name='jquery-autocomplete'),

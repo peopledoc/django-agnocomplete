@@ -32,3 +32,15 @@ class FavoriteColor(models.Model):
     def __unicode__(self):
         return "{}'s favorite color is {}".format(self.person, self.color)
     __str__ = __unicode__
+
+
+class Friendship(models.Model):
+    person = models.ForeignKey(Person, related_name="person")
+    friends = models.ManyToManyField(Person, related_name="friend")
+
+    def __unicode__(self):
+        return u"{} is friend with {}".format(
+            self.person,
+            u", ".join([unicode(f) for f in self.friends.all()]) or u"Nobody"
+        )
+    __str__ = __unicode__

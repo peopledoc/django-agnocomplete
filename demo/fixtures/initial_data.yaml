@@ -32,3 +32,22 @@
     first_name: Alice
     last_name: Galactic
     email: alice4@example.com
+
+- model: demo.person
+  pk: 6
+  fields:
+    first_name: Luke
+    last_name: Skywalker
+    email: luke@example.com
+
+# Friendship
+- model: demo.friendship
+  pk: 1
+  fields:
+    person: 1
+    friends: [2, 3, 4]
+- model: demo.friendship
+  pk: 2
+  fields:
+    person: 3
+    friends: [4]
