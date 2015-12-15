@@ -128,8 +128,8 @@ class MultiSearchTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn('form', response.context)
         form = response.context['form']
-        self.assertIn('search_color_create', form.fields)
-        search_color = form.fields['search_color_create']
+        self.assertIn('search_multi_color_create', form.fields)
+        search_color = form.fields['search_multi_color_create']
         # Specific: this is a multi
         self.assertTrue(search_color.widget.allow_multiple_selected)
         # But it's also a "create-enabled"
@@ -142,8 +142,8 @@ class MultiSearchTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn('form', response.context)
         form = response.context['form']
-        self.assertIn('search_color_no_create', form.fields)
-        search_color = form.fields['search_color_no_create']
+        self.assertIn('search_multi_color', form.fields)
+        search_color = form.fields['search_multi_color']
         # Specific: this is a multi
         self.assertTrue(search_color.widget.allow_multiple_selected)
         # But it's not "create-enabled"

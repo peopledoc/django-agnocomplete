@@ -1,6 +1,6 @@
-=======
-Widgets
-=======
+==================
+Fields and Widgets
+==================
 
 If you're using the "stock" agnocomplete fields, they'll cover your general usage. The default autocomplete widget is :class:`agnocomplete.widgets.AgnocompleteSelect`. It's a normal Select widget, with autocomplete-super-powers.
 
@@ -24,7 +24,7 @@ Multiple selection
 
 You may need to implement a multiple selection with autocompletion (one common case is for tagging documents, articles, etc).
 
-The designated widget for this feature is :class:`agnocomplete.widgets.AgnocompleteMultiSelect`. It has to modes: with or without "create".
+The designated field for this feature is :class:`agnocomplete.fields.AgnocompleteMultipleField`. It has to modes: with or without "create".
 
 If you allow the user to add *new* values in the autocomplete, you should provide the ``create`` argument set to ``True``. Otherwise, all the values to be selected are bound to the list of source values.
 
@@ -33,13 +33,11 @@ Usage example:
 .. code-block:: python
 
     class SearchColorMulti(forms.Form):
-        search_color_no_create = fields.AgnocompleteField(
+        search_multi_color = fields.AgnocompleteMultipleField(
+            AutocompleteColorShort)
+        search_multi_color_create = fields.AgnocompleteMultipleField(
             AutocompleteColorShort,
-            widget=widgets.AgnocompleteMultiSelect
-        )
-        search_color_create = fields.AgnocompleteField(
-            AutocompleteColorShort,
-            widget=widgets.AgnocompleteMultiSelect(create=True)
+            create=True,
         )
 
 In the first field, the user can type ahead *"gre"* to see suggestions like *"green"* or *"grey"*, but won't be able to add "green yellow" suggestion, since it's not in the ``demo.common.COLORS`` list.
