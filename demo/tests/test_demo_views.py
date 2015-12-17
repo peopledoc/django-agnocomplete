@@ -244,7 +244,7 @@ class MultipleModelSelectTest(TestCase):
             .exclude(pk__in=(self.alice.pk, self.random.pk))\
             .order_by('?').first()
 
-    def test_friendship_post(self):
+    def test_friendship_create(self):
         count = Friendship.objects.count()
         response = self.client.get(reverse('selectize-model-friendship'))
         self.assertEqual(response.status_code, 200)
@@ -257,3 +257,37 @@ class MultipleModelSelectTest(TestCase):
         )
         self.assertRedirects(response, reverse('home'))
         self.assertEqual(Friendship.objects.count(), count + 1)
+
+    def test_friendship_edit(self):
+        count = Friendship.objects.count()
+        friendship = Friendship.objects.first()
+
+        # Checks on this friendship
+        all_people = set([p.pk for p in Person.objects.all()])
+        friends = set([f.pk for f in friendship.friends.all()])
+        self.assertNotEqual(all_people, friends)
+        self.assertEqual(self.alice, friendship.person)
+
+        # Check the edit page as a GET
+        response = self.client.get(
+            reverse('selectize-model-friendship-edit', args=[friendship.pk]),
+        )
+        self.assertEqual(response.status_code, 200)
+
+        # It's fine, let's edit it now
+        response = self.client.post(
+            reverse('selectize-model-friendship-edit', args=[friendship.pk]),
+            data={
+                u'person': self.random.pk,
+                u'friends': list(all_people),
+            }
+        )
+        self.assertRedirects(response, reverse('home'))
+        # No new Friendship
+        self.assertEqual(Friendship.objects.count(), count)
+        # Reload
+        friendship = Friendship.objects.get(pk=friendship.pk)
+        # Check that the object has been modified
+        friends = set([f.pk for f in friendship.friends.all()])
+        self.assertEqual(all_people, friends)
+        self.assertEqual(self.random, friendship.person)
