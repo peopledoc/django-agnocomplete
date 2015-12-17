@@ -2,7 +2,7 @@ import logging
 
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseBadRequest
-from django.views.generic import CreateView, FormView
+from django.views.generic import CreateView, FormView, UpdateView
 
 from agnocomplete.views import AgnocompleteGenericView, UserContextFormMixin
 
@@ -12,6 +12,7 @@ from .forms import (
     FriendshipForm, FriendshipModelForm,
 )
 from .autocomplete import HiddenAutocomplete
+from .models import Friendship
 
 logger = logging.getLogger(__name__)
 
@@ -115,6 +116,16 @@ class FriendshipModelView(AutoTitleMixin, CreateView):
         return reverse('home')
 
 
+class FriendshipModelViewEdit(AutoTitleMixin, UpdateView):
+    template_name = "selectize.html"
+    title = "Multi select with Models & Modelforms (Create View)"
+    form_class = FriendshipModelForm
+    model = Friendship
+
+    def get_success_url(self):
+        return reverse('home')
+
+
 index = IndexView.as_view()
 filled_form = FilledFormView.as_view()
 search_context = SearchContextFormView.as_view()
@@ -130,3 +141,4 @@ typeahead = TypeaheadView.as_view()
 # Multi-select with models
 selectize_friendship = FriendshipView.as_view()
 selectize_model_friendship = FriendshipModelView.as_view()
+selectize_model_friendship_edit = FriendshipModelViewEdit.as_view()

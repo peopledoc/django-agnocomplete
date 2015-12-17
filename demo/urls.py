@@ -40,6 +40,10 @@ urlpatterns = [
     url(r'^selectize-multi/$', 'demo.views.selectize_multi', name='selectize-multi'),  # noqa
     url(r'^selectize-friendship/$', 'demo.views.selectize_friendship', name='selectize-friendship'),  # noqa
     url(r'^selectize-model-friendship/$', 'demo.views.selectize_model_friendship', name='selectize-model-friendship'),  # noqa
+    url(r'^selectize-model-friendship/edit/(?P<pk>\d+)/$',
+        'demo.views.selectize_model_friendship_edit',
+        name='selectize-model-friendship-edit'),  # noqa
+    # Select 2, jquery-autocomplete, typeahead
     url(r'^select2/$', 'demo.views.select2', name='select2'),
     url(r'^jquery-autocomplete/$', 'demo.views.jquery_autocomplete',
         name='jquery-autocomplete'),
