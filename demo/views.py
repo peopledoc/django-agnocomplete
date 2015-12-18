@@ -9,10 +9,10 @@ from agnocomplete.views import AgnocompleteGenericView, UserContextFormMixin
 from .forms import (
     SearchForm, SearchContextForm, SearchCustom,
     SearchFormTextInput, SearchColorMulti,
-    FriendshipForm, FriendshipModelForm,
+    PersonTagForm, PersonTagModelForm,
 )
 from .autocomplete import HiddenAutocomplete
-from .models import Friendship
+from .models import PersonTag
 
 logger = logging.getLogger(__name__)
 
@@ -101,26 +101,26 @@ class TypeaheadView(AutoView):
     form_class = SearchFormTextInput
 
 
-class FriendshipView(AutoView):
+class PersonTagView(AutoView):
     template_name = "selectize.html"
     title = "Multi select with Models"
-    form_class = FriendshipForm
+    form_class = PersonTagForm
 
 
-class FriendshipModelView(AutoTitleMixin, CreateView):
+class PersonTagModelView(AutoTitleMixin, CreateView):
     template_name = "selectize.html"
     title = "Multi select with Models & Modelforms (Create View)"
-    form_class = FriendshipModelForm
+    form_class = PersonTagModelForm
 
     def get_success_url(self):
         return reverse('home')
 
 
-class FriendshipModelViewEdit(AutoTitleMixin, UpdateView):
+class PersonTagModelViewEdit(AutoTitleMixin, UpdateView):
     template_name = "selectize.html"
     title = "Multi select with Models & Modelforms (Create View)"
-    form_class = FriendshipModelForm
-    model = Friendship
+    form_class = PersonTagModelForm
+    model = PersonTag
 
     def get_success_url(self):
         return reverse('home')
@@ -139,6 +139,6 @@ select2 = Select2View.as_view()
 jquery_autocomplete = JqueryAutocompleteView.as_view()
 typeahead = TypeaheadView.as_view()
 # Multi-select with models
-selectize_friendship = FriendshipView.as_view()
-selectize_model_friendship = FriendshipModelView.as_view()
-selectize_model_friendship_edit = FriendshipModelViewEdit.as_view()
+selectize_tag = PersonTagView.as_view()
+selectize_model_tag = PersonTagModelView.as_view()
+selectize_model_tag_edit = PersonTagModelViewEdit.as_view()

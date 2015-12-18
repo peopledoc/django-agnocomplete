@@ -34,13 +34,21 @@ class FavoriteColor(models.Model):
     __str__ = __unicode__
 
 
-class Friendship(models.Model):
-    person = models.ForeignKey(Person, related_name="person")
-    friends = models.ManyToManyField(Person, related_name="friend")
+class Tag(models.Model):
+    name = models.CharField(max_length=50)
 
     def __unicode__(self):
-        return u"{} is friend with {}".format(
+        return self.name
+    __str__ = __unicode__
+
+
+class PersonTag(models.Model):
+    person = models.ForeignKey(Person)
+    tags = models.ManyToManyField(Tag)
+
+    def __unicode__(self):
+        return u"{} is tagged: {}".format(
             self.person,
-            u", ".join([unicode(f) for f in self.friends.all()]) or u"Nobody"
+            u", ".join([unicode(t) for t in self.tags.all()]) or u"Nothing"
         )
     __str__ = __unicode__
