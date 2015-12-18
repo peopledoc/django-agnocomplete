@@ -45,3 +45,20 @@ In the first field, the user can type ahead *"gre"* to see suggestions like *"gr
 In the second field, the users can use the search feature to look after "green" or "grey" suggestions, but also can add values of their own ; values that will be transmitted when the form is submitted.
 
 It's the backend responsability to handle these values when the view will receive the submitted form.
+
+Model Multiple Selection
+========================
+
+The field :class:`agnocomplete.fields.AgnocompleteModelMultipleField` supports the multiselection based on models, like this:
+
+.. code-block:: python
+
+    class TagModelForm(forms.ModelForm):
+        person = fields.AgnocompleteModelField(AutocompletePersonShort)
+        tags = fields.AgnocompleteModelMultipleField(AutocompleteTag)
+
+        class Meta:
+            model = PersonTag
+            fields = '__all__'
+
+In this example, you're not allowed to create new "tag" values. You would only be able to select previously created tag items.

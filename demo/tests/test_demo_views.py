@@ -8,7 +8,7 @@ except ImportError:
 
 from agnocomplete import get_namespace
 from agnocomplete.views import AgnocompleteJSONView
-from ..models import Person, Friendship
+from ..models import Person, PersonTag, Tag
 
 
 class HomeTest(TestCase):
@@ -150,21 +150,21 @@ class MultiSearchTest(TestCase):
         attrs_color = search_color.widget.build_attrs()
         self.assertNotIn('data-create', attrs_color)
 
-    def test_friendship_multi(self):
-        response = self.client.get(reverse('selectize-friendship'))
+    def test_tag_multi(self):
+        response = self.client.get(reverse('selectize-tag'))
         self.assertEqual(response.status_code, 200)
         self.assertIn('form', response.context)
         form = response.context['form']
         self.assertIn('person', form.fields)
-        self.assertIn('friends', form.fields)
+        self.assertIn('tags', form.fields)
 
-    def test_friendship_multi_modelforms(self):
-        response = self.client.get(reverse('selectize-model-friendship'))
+    def test_tag_multi_modelforms(self):
+        response = self.client.get(reverse('selectize-model-tag'))
         self.assertEqual(response.status_code, 200)
         self.assertIn('form', response.context)
         form = response.context['form']
         self.assertIn('person', form.fields)
-        self.assertIn('friends', form.fields)
+        self.assertIn('tags', form.fields)
 
 
 class ABCTestView(TestCase):
@@ -238,56 +238,55 @@ class MultipleModelSelectTest(TestCase):
     def setUp(self):
         super(MultipleModelSelectTest, self).setUp()
         self.alice = Person.objects.get(pk=1)
-        self.random = Person.objects.exclude(pk=self.alice.pk)\
+        self.other_person = Person.objects.exclude(pk=self.alice.pk)\
             .order_by('?').first()
-        self.random2 = Person.objects\
-            .exclude(pk__in=(self.alice.pk, self.random.pk))\
-            .order_by('?').first()
+        self.random = Tag.objects.first()
+        self.random2 = Tag.objects.exclude(pk=self.random.pk).first()
 
-    def test_friendship_create(self):
-        count = Friendship.objects.count()
-        response = self.client.get(reverse('selectize-model-friendship'))
+    def test_tag_create(self):
+        count = PersonTag.objects.count()
+        response = self.client.get(reverse('selectize-model-tag'))
         self.assertEqual(response.status_code, 200)
         response = self.client.post(
-            reverse('selectize-model-friendship'),
+            reverse('selectize-model-tag'),
             data={
                 u'person': self.alice.pk,
-                u'friends': [self.random.pk, self.random2.pk],
+                u'tags': [self.random.pk, self.random2.pk],
             }
         )
         self.assertRedirects(response, reverse('home'))
-        self.assertEqual(Friendship.objects.count(), count + 1)
+        self.assertEqual(PersonTag.objects.count(), count + 1)
 
-    def test_friendship_edit(self):
-        count = Friendship.objects.count()
-        friendship = Friendship.objects.first()
+    def test_tag_edit(self):
+        count = PersonTag.objects.count()
+        person_tag = PersonTag.objects.first()
 
-        # Checks on this friendship
-        all_people = set([p.pk for p in Person.objects.all()])
-        friends = set([f.pk for f in friendship.friends.all()])
-        self.assertNotEqual(all_people, friends)
-        self.assertEqual(self.alice, friendship.person)
+        # Checks on this tags
+        all_tags = set([p.pk for p in Tag.objects.all()])
+        tags = set([t.pk for t in person_tag.tags.all()])
+        self.assertNotEqual(all_tags, tags)
+        self.assertEqual(self.alice, person_tag.person)
 
         # Check the edit page as a GET
         response = self.client.get(
-            reverse('selectize-model-friendship-edit', args=[friendship.pk]),
+            reverse('selectize-model-tag-edit', args=[person_tag.pk]),
         )
         self.assertEqual(response.status_code, 200)
 
         # It's fine, let's edit it now
         response = self.client.post(
-            reverse('selectize-model-friendship-edit', args=[friendship.pk]),
+            reverse('selectize-model-tag-edit', args=[person_tag.pk]),
             data={
-                u'person': self.random.pk,
-                u'friends': list(all_people),
+                u'person': self.other_person.pk,
+                u'tags': list(all_tags),
             }
         )
         self.assertRedirects(response, reverse('home'))
-        # No new Friendship
-        self.assertEqual(Friendship.objects.count(), count)
+        # No new PersonTag
+        self.assertEqual(PersonTag.objects.count(), count)
         # Reload
-        friendship = Friendship.objects.get(pk=friendship.pk)
+        person_tag = PersonTag.objects.get(pk=person_tag.pk)
         # Check that the object has been modified
-        friends = set([f.pk for f in friendship.friends.all()])
-        self.assertEqual(all_people, friends)
-        self.assertEqual(self.random, friendship.person)
+        tags = set([t.pk for t in person_tag.tags.all()])
+        self.assertEqual(all_tags, tags)
+        self.assertEqual(self.other_person, person_tag.person)

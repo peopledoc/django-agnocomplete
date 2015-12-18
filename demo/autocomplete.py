@@ -6,7 +6,7 @@ from django.utils.encoding import force_text
 
 from agnocomplete.register import register
 from agnocomplete.core import AgnocompleteChoices, AgnocompleteModel
-from .models import Person
+from .models import Person, Tag
 from .common import COLORS
 
 
@@ -99,6 +99,13 @@ class HiddenAutocompleteURLReverse(AutocompleteColor):
     url = reverse_lazy('hidden-autocomplete')
 
 
+class AutocompleteTag(AgnocompleteModel):
+    model = Tag
+    fields = ['name']
+    query_size_min = 2
+    query_size = 2
+
+
 # Registration
 register(AutocompleteColor)
 register(AutocompleteColorShort)
@@ -108,3 +115,4 @@ register(AutocompleteChoicesPages)
 register(AutocompleteChoicesPagesOverride)
 register(AutocompletePersonDomain)
 register(AutocompleteCustomUrl)
+register(AutocompleteTag)

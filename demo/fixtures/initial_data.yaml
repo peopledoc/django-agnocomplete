@@ -40,14 +40,28 @@
     last_name: Skywalker
     email: luke@example.com
 
-# Friendship
-- model: demo.friendship
+# Tags
+- model: demo.tag
+  pk: 1
+  fields:
+    name: linux
+- model: demo.tag
+  pk: 2
+  fields:
+    name: python
+- model: demo.tag
+  pk: 3
+  fields:
+    name: javascript
+
+# Tag a few persons
+- model: demo.persontag
   pk: 1
   fields:
     person: 1
-    friends: [2, 3, 4]
-- model: demo.friendship
+    tags: [1, 2]
+- model: demo.persontag
   pk: 2
   fields:
     person: 3
-    friends: [4]
+    tags: [3, 2]

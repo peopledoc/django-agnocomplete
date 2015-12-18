@@ -4,20 +4,21 @@ from django.test import TestCase
 class RegistryTestGeneric(TestCase):
 
     def _test_registry_keys(self, keys):
-        assert len(keys) == 8
-        assert "AutocompleteColor" in keys
-        assert "AutocompletePerson" in keys
-        assert "AutocompletePersonShort" in keys
-        assert "AutocompleteChoicesPages" in keys
-        assert "AutocompleteChoicesPagesOverride" in keys
-        assert "AutocompletePersonDomain" in keys
+        self.assertEqual(len(keys), 9)
+        self.assertIn("AutocompleteColor", keys)
+        self.assertIn("AutocompletePerson", keys)
+        self.assertIn("AutocompletePersonShort", keys)
+        self.assertIn("AutocompleteChoicesPages", keys)
+        self.assertIn("AutocompleteChoicesPagesOverride", keys)
+        self.assertIn("AutocompletePersonDomain", keys)
+        self.assertIn("AutocompleteTag", keys)
         # Multiselect
-        assert "AutocompleteColorShort" in keys
+        self.assertIn("AutocompleteColorShort", keys)
         # You're a customized URL
-        assert "AutocompleteCustomUrl" not in keys
-        assert "my-autocomplete" in keys
+        self.assertNotIn("AutocompleteCustomUrl", keys)
+        self.assertIn("my-autocomplete", keys)
         # Customized views demo
-        assert "HiddenAutocomplete" not in keys
+        self.assertNotIn("HiddenAutocomplete", keys)
 
 
 class MockRequestUser(object):
