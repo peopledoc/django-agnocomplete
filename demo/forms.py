@@ -12,9 +12,10 @@ from .autocomplete import (
     AutocompleteColorShort,
     AutocompletePerson,
     AutocompletePersonShort,
-    HiddenAutocomplete
+    HiddenAutocomplete,
+    AutocompleteTag,
 )
-from .models import Friendship
+from .models import PersonTag
 
 
 class SearchForm(forms.Form):
@@ -52,15 +53,15 @@ class SearchColorMulti(forms.Form):
     )
 
 
-class FriendshipForm(forms.Form):
+class PersonTagForm(forms.Form):
     person = fields.AgnocompleteModelField(AutocompletePersonShort)
-    friends = fields.AgnocompleteModelMultipleField(AutocompletePersonShort)
+    tags = fields.AgnocompleteModelMultipleField(AutocompleteTag)
 
 
-class FriendshipModelForm(forms.ModelForm):
+class PersonTagModelForm(forms.ModelForm):
     person = fields.AgnocompleteModelField(AutocompletePersonShort)
-    friends = fields.AgnocompleteModelMultipleField(AutocompletePersonShort)
+    tags = fields.AgnocompleteModelMultipleField(AutocompleteTag)
 
     class Meta:
-        model = Friendship
+        model = PersonTag
         fields = '__all__'
