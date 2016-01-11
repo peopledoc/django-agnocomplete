@@ -1,14 +1,20 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
-from agnocomplete.fields import AgnocompleteField
+from agnocomplete.fields import (
+    AgnocompleteField,
+    AgnocompleteMultipleField,
+    AgnocompleteModelMultipleField,
+)
 from agnocomplete.exceptions import UnregisteredAgnocompleteException
 
 from demo.autocomplete import (
     AutocompleteColor,
     HiddenAutocompleteURL,
-    HiddenAutocompleteURLReverse
+    HiddenAutocompleteURLReverse,
+    AutocompleteTag,
 )
+from demo.models import Tag
 
 
 class AgnocompleteInstanceTest(TestCase):
@@ -55,3 +61,29 @@ class AgnocompleteInstanceTest(TestCase):
             "{}".format(field.agnocomplete.get_url()),
             reverse('hidden-autocomplete')
         )
+
+
+class MultipleSelectTest(TestCase):
+
+    def test_empty(self):
+        field = AgnocompleteMultipleField(
+            AutocompleteTag,
+            required=False
+        )
+        self.assertEqual(field.clean(""), [])
+        self.assertEqual(field.clean([]), [])
+        self.assertEqual(field.clean([""]), [])
+
+
+class MultipleModelSelectTest(TestCase):
+
+    def test_empty_list(self):
+        field = AgnocompleteModelMultipleField(
+            AutocompleteTag,
+            create_field="name",
+            required=False
+        )
+        empty_qs = Tag.objects.none()
+        self.assertQuerysetEqual(field.clean(""), empty_qs)
+        self.assertQuerysetEqual(field.clean([]), empty_qs)
+        self.assertQuerysetEqual(field.clean([""]), empty_qs)

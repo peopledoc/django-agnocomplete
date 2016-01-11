@@ -101,12 +101,39 @@ class AgnocompleteMultipleMixin(AgnocompleteMixin):
     Core mixin for multiple-selection enabled fields
     """
     widget = AgnocompleteMultiSelect
+    clean_empty = True
 
     def __init__(self, *args, **kwargs):
-        create = kwargs.pop('create', False)
+        create_arg = kwargs.pop('create', False)
+        self.create_field = kwargs.pop('create_field', False)
+        self.create = bool(self.create_field) or create_arg
         super(AgnocompleteMultipleMixin, self).__init__(*args, **kwargs)
         # self.widget is a thing here
-        self.widget.create = create
+        self.widget.create = self.create
+        self._new_values = []
+
+    @property
+    def empty_value(self):
+        return []
+
+    def pre_clean(self, value):
+        """
+        Clean the argument value to eliminate None or Falsy values if needed.
+        """
+        # Don't go any further: this value is empty.
+        if not value:
+            return self.empty_value
+        # Clean empty items if wanted
+        if self.clean_empty:
+            value = [v for v in value if v]
+        # return the new cleaned value or the default empty_value
+        return value or self.empty_value
+
+    def clean(self, value, pre_clean=True):
+        if pre_clean:
+            # Transform value to drop empty values
+            value = self.pre_clean(value)
+        return super(AgnocompleteMultipleMixin, self).clean(value)
 
 
 class AgnocompleteMultipleField(AgnocompleteMultipleMixin,
@@ -121,3 +148,31 @@ class AgnocompleteModelMultipleField(AgnocompleteMultipleMixin,
     """
     Field class for multiple selection on Django models.
     """
+
+    @property
+    def empty_value(self):
+        return self.queryset.model.objects.none()
+
+    def create_new_values(self):
+        model = self.queryset.model
+        pks = []
+        for value in self._new_values:
+            new_item = model.objects.create(**{self.create_field: value})
+            pks.append(new_item.pk)
+        return model.objects.filter(pk__in=pks)
+
+    def clean(self, value):
+        if not self.create:
+            # No new value can be created, use the regular clean field
+            return super(AgnocompleteModelMultipleField, self).clean(value)
+
+        value = self.pre_clean(value)
+        # Split the actual values with the potential new values
+        # Numeric values will always be considered as PKs
+        pks = [v for v in value if v.isdigit()]
+        self._new_values = [v for v in value if not v.isdigit()]
+
+        qs = super(AgnocompleteModelMultipleField, self).clean(
+            pks, pre_clean=False)
+
+        return qs
