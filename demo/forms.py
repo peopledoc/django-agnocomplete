@@ -65,3 +65,11 @@ class PersonTagModelForm(forms.ModelForm):
     class Meta:
         model = PersonTag
         fields = '__all__'
+
+
+class PersonTagModelFormWithCreate(PersonTagModelForm):
+    tags = fields.AgnocompleteModelMultipleField(
+        AutocompleteTag,
+        create_field="name",
+        required=False
+    )
