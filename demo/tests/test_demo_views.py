@@ -166,6 +166,14 @@ class MultiSearchTest(TestCase):
         self.assertIn('person', form.fields)
         self.assertIn('tags', form.fields)
 
+    def test_tag_multi_with_create_modelforms(self):
+        response = self.client.get(reverse('selectize-model-tag-with-create'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('form', response.context)
+        form = response.context['form']
+        self.assertIn('person', form.fields)
+        self.assertIn('tags', form.fields)
+
 
 class ABCTestView(TestCase):
 
@@ -233,20 +241,49 @@ class FormValidationViewTest(TestCase):
         self.assertNotEqual(response.status_code, 200)
 
 
-class MultipleModelSelectTest(TestCase):
+class MultipleModelSelectGeneric(TestCase):
 
     def setUp(self):
-        super(MultipleModelSelectTest, self).setUp()
+        super(MultipleModelSelectGeneric, self).setUp()
         self.alice = Person.objects.get(pk=1)
         self.other_person = Person.objects.exclude(pk=self.alice.pk)\
             .order_by('?').first()
         self.random = Tag.objects.first()
         self.random2 = Tag.objects.exclude(pk=self.random.pk).first()
 
+
+class MultipleModelSelectTest(MultipleModelSelectGeneric):
+
+    def test_no_tag_empty_string(self):
+        # Empty string is an error: required field
+        count = PersonTag.objects.count()
+        response = self.client.post(
+            reverse('selectize-model-tag'),
+            data={
+                u'person': self.alice.pk,
+                u'tags': '',
+            }
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['form'].errors)
+        self.assertEqual(PersonTag.objects.count(), count)
+
+    def test_no_tag_empty_list(self):
+        # Empty list is an error: required field
+        count = PersonTag.objects.count()
+        response = self.client.post(
+            reverse('selectize-model-tag'),
+            data={
+                u'person': self.alice.pk,
+                u'tags': [],
+            }
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['form'].errors)
+        self.assertEqual(PersonTag.objects.count(), count)
+
     def test_tag_create(self):
         count = PersonTag.objects.count()
-        response = self.client.get(reverse('selectize-model-tag'))
-        self.assertEqual(response.status_code, 200)
         response = self.client.post(
             reverse('selectize-model-tag'),
             data={
@@ -256,6 +293,8 @@ class MultipleModelSelectTest(TestCase):
         )
         self.assertRedirects(response, reverse('home'))
         self.assertEqual(PersonTag.objects.count(), count + 1)
+        new_person_tag = PersonTag.objects.order_by('pk').last()
+        self.assertEqual(new_person_tag.tags.count(), 2)
 
     def test_tag_edit(self):
         count = PersonTag.objects.count()
@@ -290,3 +329,60 @@ class MultipleModelSelectTest(TestCase):
         tags = set([t.pk for t in person_tag.tags.all()])
         self.assertEqual(all_tags, tags)
         self.assertEqual(self.other_person, person_tag.person)
+
+
+class MultipleModelSelectWithCreateTest(MultipleModelSelectGeneric):
+
+    def test_no_tag_empty_string(self):
+        # Empty string means empty tag list, no error
+        count = PersonTag.objects.count()
+        response = self.client.post(
+            reverse('selectize-model-tag-with-create'),
+            data={
+                u'person': self.alice.pk,
+                u'tags': '',
+            }
+        )
+        self.assertRedirects(response, reverse('home'))
+        self.assertEqual(PersonTag.objects.count(), count + 1)
+        new_person_tag = PersonTag.objects.order_by('pk').last()
+        self.assertEqual(new_person_tag.tags.count(), 0)
+
+    def test_no_tag_empty_list(self):
+        # Empty list is means empty tag list, no error
+        count = PersonTag.objects.count()
+        response = self.client.post(
+            reverse('selectize-model-tag-with-create'),
+            data={
+                u'person': self.alice.pk,
+                u'tags': [],
+            }
+        )
+        self.assertRedirects(response, reverse('home'))
+        self.assertEqual(PersonTag.objects.count(), count + 1)
+        new_person_tag = PersonTag.objects.order_by('pk').last()
+        self.assertEqual(new_person_tag.tags.count(), 0)
+
+    def test_tag_with_create(self):
+        count = PersonTag.objects.count()
+        count_tag = Tag.objects.count()
+        response = self.client.get(reverse('selectize-model-tag-with-create'))
+        self.assertEqual(response.status_code, 200)
+        response = self.client.post(
+            reverse('selectize-model-tag-with-create'),
+            data={
+                u'person': self.alice.pk,
+                u'tags': [
+                    self.random.pk,
+                    self.random2.pk,
+                    'newtag1',
+                    'newtag2',
+                ],
+            }
+        )
+        self.assertRedirects(response, reverse('home'))
+        self.assertEqual(PersonTag.objects.count(), count + 1)
+        # Two tags added to the tag table
+        self.assertEqual(Tag.objects.count(), count_tag + 2)
+        new_person_tag = PersonTag.objects.order_by('pk').last()
+        self.assertEqual(new_person_tag.tags.count(), 4)

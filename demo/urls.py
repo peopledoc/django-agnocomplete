@@ -43,6 +43,7 @@ urlpatterns = [
     url(r'^selectize-model-tag/edit/(?P<pk>\d+)/$',
         'demo.views.selectize_model_tag_edit',
         name='selectize-model-tag-edit'),  # noqa
+    url(r'^selectize-model-tag-with-create/$', 'demo.views.selectize_model_tag_with_create', name='selectize-model-tag-with-create'),  # noqa
     # Select 2, jquery-autocomplete, typeahead
     url(r'^select2/$', 'demo.views.select2', name='select2'),
     url(r'^jquery-autocomplete/$', 'demo.views.jquery_autocomplete',

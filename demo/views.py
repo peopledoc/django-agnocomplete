@@ -3,13 +3,16 @@ import logging
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.generic import CreateView, FormView, UpdateView
+from django.utils.decorators import method_decorator
 
 from agnocomplete.views import AgnocompleteGenericView, UserContextFormMixin
+from agnocomplete.decorators import allow_create
 
 from .forms import (
     SearchForm, SearchContextForm, SearchCustom,
     SearchFormTextInput, SearchColorMulti,
     PersonTagForm, PersonTagModelForm,
+    PersonTagModelFormWithCreate,
 )
 from .autocomplete import HiddenAutocomplete
 from .models import PersonTag
@@ -126,6 +129,21 @@ class PersonTagModelViewEdit(AutoTitleMixin, UpdateView):
         return reverse('home')
 
 
+class PersonTagModelViewWithCreate(PersonTagModelView):
+    title = "Multi select with Models & Modelforms w/create mode (Create View)"
+    form_class = PersonTagModelFormWithCreate
+
+    # FIXME: REMOVE THIS
+    # def post(self, request, *args, **kwargs):
+    #     import ipdb; ipdb.set_trace()
+    #     return super(PersonTagModelViewWithCreate, self).post(
+    #     request, *args, **kwargs)
+
+    @method_decorator(allow_create)
+    def form_valid(self, form):
+        return super(PersonTagModelViewWithCreate, self).form_valid(form)
+
+
 index = IndexView.as_view()
 filled_form = FilledFormView.as_view()
 search_context = SearchContextFormView.as_view()
@@ -142,3 +160,4 @@ typeahead = TypeaheadView.as_view()
 selectize_tag = PersonTagView.as_view()
 selectize_model_tag = PersonTagModelView.as_view()
 selectize_model_tag_edit = PersonTagModelViewEdit.as_view()
+selectize_model_tag_with_create = PersonTagModelViewWithCreate.as_view()
