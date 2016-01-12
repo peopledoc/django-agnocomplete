@@ -99,6 +99,8 @@ We're half way here: the view needs to know that, when the form & fields will be
 
 .. code-block:: python
 
+    from django.utils.decorators import method_decorator
+
     class PersonTagModelViewWithCreate(PersonTagModelView):
         form_class = PersonTagModelFormWithCreate
 
@@ -109,3 +111,5 @@ We're half way here: the view needs to know that, when the form & fields will be
 .. important::
 
     You **must** override ``form_valid()``, there's no other method that will guarantee that these new values will be added to the database **and** linked to the current record.
+
+    We know... it doesn't look very elegant.
