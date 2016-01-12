@@ -114,12 +114,10 @@ class AgnocompleteMultipleMixin(AgnocompleteMixin):
 
     @property
     def empty_value(self):
+        "Default empty value for this field."
         return []
 
     def to_python(self, value):
-        """
-        Clean the argument value to eliminate None or Falsy values if needed.
-        """
         # Pre-clean the list value
         value = self.clear_list_value(value)
         value = super(AgnocompleteMultipleMixin, self).to_python(value)
@@ -127,6 +125,9 @@ class AgnocompleteMultipleMixin(AgnocompleteMixin):
         return value or self.empty_value
 
     def clear_list_value(self, value):
+        """
+        Clean the argument value to eliminate None or Falsy values if needed.
+        """
         # Don't go any further: this value is empty.
         if not value:
             return self.empty_value
@@ -151,9 +152,17 @@ class AgnocompleteModelMultipleField(AgnocompleteMultipleMixin,
 
     @property
     def empty_value(self):
+        """Return default empty value as a Queryset.
+
+        This value can be added via the `|` operator, so we surely need
+        a queryset and not a list.
+        """
         return self.queryset.model.objects.none()
 
     def create_new_values(self):
+        """
+        Create values created by the user input. Return the model instances QS.
+        """
         model = self.queryset.model
         pks = []
         for value in self._new_values:
@@ -162,6 +171,9 @@ class AgnocompleteModelMultipleField(AgnocompleteMultipleMixin,
         return model.objects.filter(pk__in=pks)
 
     def clean(self, value):
+        """
+        Clean the field values.
+        """
         if not self.create:
             # No new value can be created, use the regular clean field
             return super(AgnocompleteModelMultipleField, self).clean(value)
