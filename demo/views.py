@@ -133,12 +133,6 @@ class PersonTagModelViewWithCreate(PersonTagModelView):
     title = "Multi select with Models & Modelforms w/create mode (Create View)"
     form_class = PersonTagModelFormWithCreate
 
-    # FIXME: REMOVE THIS
-    # def post(self, request, *args, **kwargs):
-    #     import ipdb; ipdb.set_trace()
-    #     return super(PersonTagModelViewWithCreate, self).post(
-    #     request, *args, **kwargs)
-
     @method_decorator(allow_create)
     def form_valid(self, form):
         return super(PersonTagModelViewWithCreate, self).form_valid(form)
