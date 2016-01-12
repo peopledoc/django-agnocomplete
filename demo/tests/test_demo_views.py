@@ -363,6 +363,20 @@ class MultipleModelSelectWithCreateTest(MultipleModelSelectGeneric):
         new_person_tag = PersonTag.objects.order_by('pk').last()
         self.assertEqual(new_person_tag.tags.count(), 0)
 
+    def test_no_tag_data(self):
+        # Empty list is means empty tag list, no error
+        count = PersonTag.objects.count()
+        response = self.client.post(
+            reverse('selectize-model-tag-with-create'),
+            data={
+                u'person': self.alice.pk,
+            }
+        )
+        self.assertRedirects(response, reverse('home'))
+        self.assertEqual(PersonTag.objects.count(), count + 1)
+        new_person_tag = PersonTag.objects.order_by('pk').last()
+        self.assertEqual(new_person_tag.tags.count(), 0)
+
     def test_tag_with_create(self):
         count = PersonTag.objects.count()
         count_tag = Tag.objects.count()

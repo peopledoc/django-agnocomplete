@@ -116,24 +116,24 @@ class AgnocompleteMultipleMixin(AgnocompleteMixin):
     def empty_value(self):
         return []
 
-    def pre_clean(self, value):
+    def to_python(self, value):
         """
         Clean the argument value to eliminate None or Falsy values if needed.
         """
+        # Pre-clean the list value
+        value = self.clear_list_value(value)
+        value = super(AgnocompleteMultipleMixin, self).to_python(value)
+        # return the new cleaned value or the default empty_value
+        return value or self.empty_value
+
+    def clear_list_value(self, value):
         # Don't go any further: this value is empty.
         if not value:
             return self.empty_value
         # Clean empty items if wanted
         if self.clean_empty:
             value = [v for v in value if v]
-        # return the new cleaned value or the default empty_value
         return value or self.empty_value
-
-    def clean(self, value, pre_clean=True):
-        if pre_clean:
-            # Transform value to drop empty values
-            value = self.pre_clean(value)
-        return super(AgnocompleteMultipleMixin, self).clean(value)
 
 
 class AgnocompleteMultipleField(AgnocompleteMultipleMixin,
@@ -166,13 +166,15 @@ class AgnocompleteModelMultipleField(AgnocompleteMultipleMixin,
             # No new value can be created, use the regular clean field
             return super(AgnocompleteModelMultipleField, self).clean(value)
 
-        value = self.pre_clean(value)
+        # We have to do this here before the call to "super".
+        # It'll be called again, but we can't find a way to "pre_clean" the
+        # field value before pushing it into the parent class "clean()" method.
+        value = self.clear_list_value(value)
         # Split the actual values with the potential new values
         # Numeric values will always be considered as PKs
         pks = [v for v in value if v.isdigit()]
         self._new_values = [v for v in value if not v.isdigit()]
 
-        qs = super(AgnocompleteModelMultipleField, self).clean(
-            pks, pre_clean=False)
+        qs = super(AgnocompleteModelMultipleField, self).clean(pks)
 
         return qs
