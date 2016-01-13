@@ -14,6 +14,7 @@ from .autocomplete import (
     AutocompletePersonShort,
     HiddenAutocomplete,
     AutocompleteTag,
+    AutocompleteContextTag,
 )
 from .models import PersonTag
 
@@ -70,6 +71,14 @@ class PersonTagModelForm(forms.ModelForm):
 class PersonTagModelFormWithCreate(PersonTagModelForm):
     tags = fields.AgnocompleteModelMultipleField(
         AutocompleteTag,
+        create_field="name",
+        required=False
+    )
+
+
+class PersonContextTagModelFormWithCreate(PersonTagModelForm):
+    tags = fields.AgnocompleteModelMultipleField(
+        AutocompleteContextTag,
         create_field="name",
         required=False
     )

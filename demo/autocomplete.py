@@ -6,7 +6,7 @@ from django.utils.encoding import force_text
 
 from agnocomplete.register import register
 from agnocomplete.core import AgnocompleteChoices, AgnocompleteModel
-from .models import Person, Tag
+from .models import Person, Tag, ContextTag
 from .common import COLORS
 
 
@@ -106,6 +106,19 @@ class AutocompleteTag(AgnocompleteModel):
     query_size = 2
 
 
+class AutocompleteContextTag(AgnocompleteModel):
+    model = ContextTag
+    fields = ['name']
+    query_size_min = 2
+    query_size = 2
+    requires_authentication = True
+
+    def get_queryset(self):
+        email = self.user.email
+        _, domain = email.split('@')
+        return ContextTag.objects.filter(domain__contains=domain)
+
+
 # Registration
 register(AutocompleteColor)
 register(AutocompleteColorShort)
@@ -116,3 +129,4 @@ register(AutocompleteChoicesPagesOverride)
 register(AutocompletePersonDomain)
 register(AutocompleteCustomUrl)
 register(AutocompleteTag)
+register(AutocompleteContextTag)

@@ -4,7 +4,7 @@ from django.test import TestCase
 class RegistryTestGeneric(TestCase):
 
     def _test_registry_keys(self, keys):
-        self.assertEqual(len(keys), 9)
+        self.assertEqual(len(keys), 10)
         self.assertIn("AutocompleteColor", keys)
         self.assertIn("AutocompletePerson", keys)
         self.assertIn("AutocompletePersonShort", keys)
@@ -19,6 +19,7 @@ class RegistryTestGeneric(TestCase):
         self.assertIn("my-autocomplete", keys)
         # Customized views demo
         self.assertNotIn("HiddenAutocomplete", keys)
+        self.assertIn("AutocompleteContextTag", keys)
 
 
 class MockRequestUser(object):
