@@ -93,6 +93,8 @@ Here's the corresponding :class:`ModelForm`
 
 .. code-block:: python
 
+    from agnocomplete.forms import UserContextFormMixin
+
     class ArticleContextTagModelForm(UserContextFormMixin,
                                      forms.ModelForm):
         article = fields.AgnocompleteModelField(AutocompleteArticle)
@@ -144,3 +146,5 @@ Of course, you're free to extract whichever information out of the context (or n
 .. important::
 
     Views that will use the :class:`ArticleContextTagModelForm` **must** inherit from the :class:`UserContextFormViewMixin`, exactly as above, otherwise, the context is not transmitted to the different elements of the view.
+
+    Also, you **have** to decorate your ``form_valid`` method using the ``@method_decorator(allow_create)`` trick.

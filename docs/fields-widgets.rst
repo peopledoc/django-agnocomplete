@@ -102,6 +102,7 @@ We're half way here: the view needs to know that, when the form & fields will be
 .. code-block:: python
 
     from django.utils.decorators import method_decorator
+    from agnocomplete.decorators import allow_create
 
     class PersonTagModelViewWithCreate(PersonTagModelView):
         form_class = PersonTagModelFormWithCreate
