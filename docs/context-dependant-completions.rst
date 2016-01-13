@@ -75,7 +75,7 @@ No need to redeclare the queryset, no need to override the ``clean_<field>()`` m
 Context-dependant multiple selects
 ==================================
 
-In the section :ref:`model-multiple-selection`, we've seen how to create multiple-select inputs, with or without enabling creation mode. It may happen that we want to create new model instances using the current context. Typically, let's imagine that we're on a multiple-client website, each logged user belongs to their own "domain". Now we want to tag items, but each tag catalog has to be isolated from the others. The tags of the *client A* are not the tags of the *client B*.
+In the :ref:`model-multiple-selection` section, we've seen how to create multiple-select inputs, with or without enabling creation mode. It may happen that we want to create new model instances using the current context. Typically, let's imagine that we're on a multiple-client website, each logged user belongs to their own "domain". Now we want to tag items, but each tag catalog has to be isolated from the others. The tags of the *client A* are not the tags of the *client B*.
 
 Here are our models:
 
@@ -93,7 +93,8 @@ Here's the corresponding :class:`ModelForm`
 
 .. code-block:: python
 
-    class ArticleContextTagModelForm(UserContextFormMixin, forms.ModelForm):
+    class ArticleContextTagModelForm(UserContextFormMixin,
+                                     forms.ModelForm):
         article = fields.AgnocompleteModelField(AutocompleteArticle)
         tags = ModelMultipleDomainField(
             AutocompleteContextTag,
