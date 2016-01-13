@@ -1,3 +1,4 @@
+import json
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 try:
@@ -8,7 +9,7 @@ except ImportError:
 
 from agnocomplete import get_namespace
 from agnocomplete.views import AgnocompleteJSONView
-from ..models import Person, PersonTag, Tag
+from ..models import Person, Tag, PersonTag, ContextTag
 
 
 class HomeTest(TestCase):
@@ -400,3 +401,46 @@ class MultipleModelSelectWithCreateTest(MultipleModelSelectGeneric):
         self.assertEqual(Tag.objects.count(), count_tag + 2)
         new_person_tag = PersonTag.objects.order_by('pk').last()
         self.assertEqual(new_person_tag.tags.count(), 4)
+
+
+class ContextTagTestCase(MultipleModelSelectGeneric):
+
+    def setUp(self):
+        super(ContextTagTestCase, self).setUp()
+        # Login for alice
+        self.client.login(email=self.alice.email)
+        self.search_url = get_namespace() + ':agnocomplete'
+
+    def test_search_empty_table(self):
+        response = self.client.get(
+            reverse(self.search_url, args=['AutocompleteContextTag']),
+            data={'q': "hello"}
+        )
+        result = json.loads(response.content)
+        self.assertIn('data', result)
+        self.assertEqual(len(result['data']), 0)
+
+    def test_search_domains(self):
+        ContextTag.objects.create(
+            name="first",
+            domain="example.com"
+        )
+        ContextTag.objects.create(
+            name="second",
+            domain="demo.com"
+        )
+        response = self.client.get(
+            reverse(self.search_url, args=['AutocompleteContextTag']),
+            data={'q': "first"}
+        )
+        result = json.loads(response.content)
+        self.assertIn('data', result)
+        self.assertEqual(len(result['data']), 1)
+
+        response = self.client.get(
+            reverse(self.search_url, args=['AutocompleteContextTag']),
+            data={'q': "second"}
+        )
+        result = json.loads(response.content)
+        self.assertIn('data', result)
+        self.assertEqual(len(result['data']), 0)
