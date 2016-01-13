@@ -3,13 +3,14 @@ Agnocomplete, the Agnostic Autocomplete Django app.
 
 """
 import logging
-logger = logging.getLogger(__name__)
 
 from distutils.version import StrictVersion
 
 import django
 from django.conf import settings
 from django.utils.importlib import import_module
+
+logger = logging.getLogger(__name__)
 
 
 def get_namespace():
