@@ -78,7 +78,7 @@ class RegistryMixin(object):
         return get_agnocomplete_registry()
 
 
-class UserContextFormMixin(object):
+class UserContextFormViewMixin(object):
     """
     This mixin is injecting the context variable into the form kwargs
     """
@@ -99,7 +99,7 @@ class UserContextFormMixin(object):
         :meth:`get_agnocomplete_context`. Override this method to adjust it to
         your needs.
         """
-        data = super(UserContextFormMixin, self).get_form_kwargs()
+        data = super(UserContextFormViewMixin, self).get_form_kwargs()
         data.update({
             'user': self.get_agnocomplete_context(),
         })

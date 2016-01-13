@@ -9,7 +9,7 @@ except ImportError:
 
 from agnocomplete import get_namespace
 from agnocomplete.views import AgnocompleteJSONView
-from ..models import Person, Tag, PersonTag, ContextTag
+from ..models import Person, Tag, PersonTag, ContextTag, PersonContextTag
 
 
 class HomeTest(TestCase):
@@ -416,7 +416,7 @@ class ContextTagTestCase(MultipleModelSelectGeneric):
             reverse(self.search_url, args=['AutocompleteContextTag']),
             data={'q': "hello"}
         )
-        result = json.loads(response.content)
+        result = json.loads(response.content.decode())
         self.assertIn('data', result)
         self.assertEqual(len(result['data']), 0)
 
@@ -433,7 +433,7 @@ class ContextTagTestCase(MultipleModelSelectGeneric):
             reverse(self.search_url, args=['AutocompleteContextTag']),
             data={'q': "first"}
         )
-        result = json.loads(response.content)
+        result = json.loads(response.content.decode())
         self.assertIn('data', result)
         self.assertEqual(len(result['data']), 1)
 
@@ -441,6 +441,38 @@ class ContextTagTestCase(MultipleModelSelectGeneric):
             reverse(self.search_url, args=['AutocompleteContextTag']),
             data={'q': "second"}
         )
-        result = json.loads(response.content)
+        result = json.loads(response.content.decode())
         self.assertIn('data', result)
         self.assertEqual(len(result['data']), 0)
+
+    def test_tag_with_create(self):
+        # Create one context tag
+        random = ContextTag.objects.create(
+            name="hello",
+            domain="example.com"
+        )
+        count = PersonContextTag.objects.count()
+        count_tag = ContextTag.objects.count()
+        response = self.client.get(reverse('selectize-context-tag'))
+        self.assertEqual(response.status_code, 200)
+        response = self.client.post(
+            reverse('selectize-context-tag'),
+            data={
+                u'person': self.alice.pk,
+                u'tags': [
+                    random.pk,
+                    'newtag1',
+                ],
+            }
+        )
+        self.assertRedirects(response, reverse('home'))
+        self.assertEqual(PersonContextTag.objects.count(), count + 1)
+        # Two tags added to the tag table
+        self.assertEqual(ContextTag.objects.count(), count_tag + 1)
+        new_person_tag = PersonContextTag.objects.order_by('pk').last()
+        self.assertEqual(new_person_tag.tags.count(), 2)
+        tags = [(t.name, t.domain) for t in new_person_tag.tags.all()]
+        names, domains = zip(*tags)
+        self.assertIn("hello", names)
+        self.assertIn("newtag1", names)
+        self.assertEqual(("example.com", "example.com"), domains)

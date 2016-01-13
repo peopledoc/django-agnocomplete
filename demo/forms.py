@@ -5,7 +5,7 @@ from django import forms
 from django.core.urlresolvers import reverse_lazy
 
 from agnocomplete import fields, widgets
-from agnocomplete.forms import UserContextForm
+from agnocomplete.forms import UserContextFormMixin
 
 from .autocomplete import (
     AutocompleteColor,
@@ -16,7 +16,8 @@ from .autocomplete import (
     AutocompleteTag,
     AutocompleteContextTag,
 )
-from .models import PersonTag
+from .models import PersonTag, PersonContextTag
+from .fields import ModelMultipleDomainField
 
 
 class SearchForm(forms.Form):
@@ -35,7 +36,7 @@ class SearchFormTextInput(forms.Form):
         AutocompletePerson, widget=widgets.AgnocompleteTextInput)
 
 
-class SearchContextForm(UserContextForm):
+class SearchContextForm(UserContextFormMixin, forms.Form):
     search_person = fields.AgnocompleteModelField('AutocompletePersonDomain')
 
 
@@ -76,9 +77,14 @@ class PersonTagModelFormWithCreate(PersonTagModelForm):
     )
 
 
-class PersonContextTagModelFormWithCreate(PersonTagModelForm):
-    tags = fields.AgnocompleteModelMultipleField(
+class PersonContextTagModelForm(UserContextFormMixin, forms.ModelForm):
+    person = fields.AgnocompleteModelField(AutocompletePersonShort)
+    tags = ModelMultipleDomainField(
         AutocompleteContextTag,
         create_field="name",
         required=False
     )
+
+    class Meta:
+        model = PersonContextTag
+        fields = '__all__'

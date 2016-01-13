@@ -48,10 +48,10 @@ class AgnocompleteMixin(object):
                 search_instance = fields.AgnocompleteField(
                     AgnocompleteColor(page_size=3))
 
-            if it's a :class: being passed as a parameter, it'll be
-            instantiated using the default parameters. If it's a string, it'll
-            be instanciated also, using the name of the class as the key to
-            fetch the actual class.
+        if it's a :class: being passed as a parameter, it'll be
+        instantiated using the default parameters. If it's a string, it'll
+        be instanciated also, using the name of the class as the key to
+        fetch the actual class.
 
         """
         # If string, use register to fetch the class
@@ -67,6 +67,13 @@ class AgnocompleteMixin(object):
             klass_or_instance = klass_or_instance(user=user)
         # Store it in the instance
         self.agnocomplete = klass_or_instance
+        self.agnocomplete.user = user
+
+    def get_agnocomplete_context(self):
+        """
+        Return the agnocomplete user variable, if set.
+        """
+        return getattr(self, AGNOCOMPLETE_USER_ATTRIBUTE, None)
 
 
 class AgnocompleteField(AgnocompleteMixin, forms.ChoiceField):
@@ -152,12 +159,22 @@ class AgnocompleteModelMultipleField(AgnocompleteMultipleMixin,
 
     @property
     def empty_value(self):
-        """Return default empty value as a Queryset.
+        """
+        Return default empty value as a Queryset.
 
         This value can be added via the `|` operator, so we surely need
         a queryset and not a list.
         """
         return self.queryset.model.objects.none()
+
+    def extra_create_kwargs(self):
+        """
+        Return extra arguments to create the new model instance.
+
+        You can pass context-related arguments in the dictionary, or default
+        values.
+        """
+        return {}
 
     def create_new_values(self):
         """
@@ -165,8 +182,11 @@ class AgnocompleteModelMultipleField(AgnocompleteMultipleMixin,
         """
         model = self.queryset.model
         pks = []
+        extra_create_kwargs = self.extra_create_kwargs()
         for value in self._new_values:
-            new_item = model.objects.create(**{self.create_field: value})
+            create_kwargs = {self.create_field: value}
+            create_kwargs.update(extra_create_kwargs)
+            new_item = model.objects.create(**create_kwargs)
             pks.append(new_item.pk)
         return model.objects.filter(pk__in=pks)
 
