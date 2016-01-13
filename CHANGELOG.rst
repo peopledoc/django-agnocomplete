@@ -2,10 +2,10 @@
 Changelog for django-agnocomplete
 =================================
 
-master (unreleased)
+0.4rc2 (2016-01-13)
 ===================
 
-- Nothing changed yet.
+- Allow multiple selection over normal (string) items and model instances (#33).
 
 
 0.3.1 (2015-12-04)
