@@ -46,6 +46,8 @@ In the second field, the users can use the search feature to look after "green" 
 
 It's the backend responsability to handle these values when the view will receive the submitted form.
 
+.. _model-multiple-selection:
+
 Model Multiple Selection
 ========================
 

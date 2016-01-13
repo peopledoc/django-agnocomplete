@@ -5,7 +5,10 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.generic import CreateView, FormView, UpdateView
 from django.utils.decorators import method_decorator
 
-from agnocomplete.views import AgnocompleteGenericView, UserContextFormMixin
+from agnocomplete.views import (
+    AgnocompleteGenericView,
+    UserContextFormViewMixin
+)
 from agnocomplete.decorators import allow_create
 
 from .forms import (
@@ -13,6 +16,7 @@ from .forms import (
     SearchFormTextInput, SearchColorMulti,
     PersonTagForm, PersonTagModelForm,
     PersonTagModelFormWithCreate,
+    PersonContextTagModelForm,
 )
 from .autocomplete import HiddenAutocomplete
 from .models import PersonTag
@@ -54,7 +58,7 @@ class FilledFormView(AutoView):
         return data
 
 
-class SearchContextFormView(UserContextFormMixin, AutoView):
+class SearchContextFormView(UserContextFormViewMixin, AutoView):
     title = "Form filtering on logged in user context"
     form_class = SearchContextForm
 
@@ -139,6 +143,21 @@ class PersonTagModelViewWithCreate(PersonTagModelView):
         return super(PersonTagModelViewWithCreate, self).form_valid(form)
 
 
+class PersonContextTagView(AutoTitleMixin,
+                           UserContextFormViewMixin,
+                           CreateView):
+    title = "Multi select w/ models w/ create mode w/ context"
+    form_class = PersonContextTagModelForm
+    template_name = "selectize.html"
+
+    @method_decorator(allow_create)
+    def form_valid(self, form):
+        return super(PersonContextTagView, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse('home')
+
+
 index = IndexView.as_view()
 filled_form = FilledFormView.as_view()
 search_context = SearchContextFormView.as_view()
@@ -156,3 +175,4 @@ selectize_tag = PersonTagView.as_view()
 selectize_model_tag = PersonTagModelView.as_view()
 selectize_model_tag_edit = PersonTagModelViewEdit.as_view()
 selectize_model_tag_with_create = PersonTagModelViewWithCreate.as_view()
+selectize_context_tag = PersonContextTagView.as_view()

@@ -1,11 +1,9 @@
-from django import forms
-
 from .constants import AGNOCOMPLETE_USER_ATTRIBUTE
 
 
-class UserContextForm(forms.Form):
+class UserContextFormMixin(object):
     """
-    Regular Form that passes the user context to its fields.
+    Form Mixin that passes the user context to its fields.
 
     This property takes the name of the ``AGNOCOMPLETE_USER_ATTRIBUTE``
     constant value, to avoid conflicting with any other field property.
@@ -16,7 +14,7 @@ class UserContextForm(forms.Form):
     """
     def __init__(self, user, *args, **kwargs):
         self.user = user
-        super(UserContextForm, self).__init__(*args, **kwargs)
+        super(UserContextFormMixin, self).__init__(*args, **kwargs)
         if self.user:
             for field in self.fields.values():
                 setattr(field, AGNOCOMPLETE_USER_ATTRIBUTE, self.user)
