@@ -396,6 +396,16 @@ class AgnocompleteModel(AgnocompleteModelBase):
             'label': text(current_item)
         }
 
+    def build_filtered_queryset(self, query):
+        """
+        Build and return the fully-filtered queryset
+        """
+        # Take the basic queryset
+        qs = self.get_queryset()
+        # filter it via the query conditions
+        qs = qs.filter(self.get_queryset_filters(query))
+        return qs
+
     def items(self, query=None):
         """
         Return the items to be sent to the client
@@ -419,10 +429,7 @@ class AgnocompleteModel(AgnocompleteModelBase):
                     "Authentication is required to use this autocomplete"
                 )
 
-        # Take the basic queryset
-        qs = self.get_queryset()
-        # filter it via the query conditions
-        qs = qs.filter(self.get_queryset_filters(query))
+        qs = self.build_filtered_queryset(query)
         # The final queryset is the paginated queryset
         self.__final_queryset = qs
         return self.serialize(qs)

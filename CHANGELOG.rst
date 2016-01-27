@@ -5,7 +5,7 @@ Changelog for django-agnocomplete
 master (unreleased)
 ===================
 
-- Nothing changed yet.
+- added a new method in ``AgnocompleteModel``, named ``build_filtered_queryset``, to allow overriding (#47).
 
 
 0.3.1 (2015-12-04)
