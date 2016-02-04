@@ -2,7 +2,7 @@
 Changelog for django-agnocomplete
 =================================
 
-0.4.0 (unreleased)
+0.4.0 (2016-02-04)
 ==================
 
 - Added the multiple selection feature (#33).
