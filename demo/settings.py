@@ -133,6 +133,14 @@ LOGGING = {
             # 'level': 'DEBUG',  # for more output
             'handlers': ['console'],
         },
+        'agnocomplete': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+        },
+        'demo': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+        }
     }
 }
 

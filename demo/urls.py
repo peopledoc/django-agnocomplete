@@ -36,8 +36,16 @@ urlpatterns = [
     url(r'^search-context/$', 'demo.views.search_context', name='search-context'),  # noqa
     url(r'^custom/$', 'demo.views.search_custom', name='search-custom'),
     # Demo Front JS views
-    url(r'^selectize/$', 'demo.views.selectize',
-        name='selectize'),
+    url(r'^selectize/$', 'demo.views.selectize', name='selectize'),
+    url(r'^selectize-multi/$', 'demo.views.selectize_multi', name='selectize-multi'),  # noqa
+    url(r'^selectize-tag/$', 'demo.views.selectize_tag', name='selectize-tag'),
+    url(r'^selectize-model-tag/$', 'demo.views.selectize_model_tag', name='selectize-model-tag'),  # noqa
+    url(r'^selectize-model-tag/edit/(?P<pk>\d+)/$',
+        'demo.views.selectize_model_tag_edit',
+        name='selectize-model-tag-edit'),  # noqa
+    url(r'^selectize-model-tag-with-create/$', 'demo.views.selectize_model_tag_with_create', name='selectize-model-tag-with-create'),  # noqa
+    url(r'^selectize-context-tag/$', 'demo.views.selectize_context_tag', name='selectize-context-tag'),  # noqa
+    # Select 2, jquery-autocomplete, typeahead
     url(r'^select2/$', 'demo.views.select2', name='select2'),
     url(r'^jquery-autocomplete/$', 'demo.views.jquery_autocomplete',
         name='jquery-autocomplete'),

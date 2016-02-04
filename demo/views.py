@@ -1,23 +1,46 @@
-from django.views.generic import FormView
+import logging
+
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseBadRequest
+from django.views.generic import CreateView, FormView, UpdateView
+from django.utils.decorators import method_decorator
 
-from agnocomplete.views import AgnocompleteGenericView, UserContextFormMixin
+from agnocomplete.views import (
+    AgnocompleteGenericView,
+    UserContextFormViewMixin
+)
+from agnocomplete.decorators import allow_create
 
-from .forms import (SearchForm, SearchContextForm, SearchCustom,
-                    SearchFormTextInput)
+from .forms import (
+    SearchForm, SearchContextForm, SearchCustom,
+    SearchFormTextInput, SearchColorMulti,
+    PersonTagForm, PersonTagModelForm,
+    PersonTagModelFormWithCreate,
+    PersonContextTagModelForm,
+)
 from .autocomplete import HiddenAutocomplete
+from .models import PersonTag
+
+logger = logging.getLogger(__name__)
 
 
-class AutoView(FormView):
-    template_name = 'base.html'
-    form_class = SearchForm
+class AutoTitleMixin(object):
 
     def get_context_data(self, **kwargs):
-        data = super(AutoView, self).get_context_data(**kwargs)
+        data = super(AutoTitleMixin, self).get_context_data(**kwargs)
         data.update({
             "title": self.title,
         })
         return data
+
+
+class AutoView(AutoTitleMixin, FormView):
+    template_name = 'base.html'
+    form_class = SearchForm
+
+    def post(self, request, **kwargs):
+        logger.info(request.POST)
+        return HttpResponse("POST request {}".format(dict(request.POST)))
 
 
 class IndexView(AutoView):
@@ -35,7 +58,7 @@ class FilledFormView(AutoView):
         return data
 
 
-class SearchContextFormView(UserContextFormMixin, AutoView):
+class SearchContextFormView(UserContextFormViewMixin, AutoView):
     title = "Form filtering on logged in user context"
     form_class = SearchContextForm
 
@@ -62,6 +85,12 @@ class SelectizeView(AutoView):
     title = "View using the Selectize autocomplete front library"
 
 
+class SelectizeMultiView(AutoView):
+    template_name = "selectize.html"
+    title = "View using Selectize for a multi-select (tags)"
+    form_class = SearchColorMulti
+
+
 class Select2View(AutoView):
     template_name = 'select2.html'
     title = "View using the Select2 autocomplete front library"
@@ -79,6 +108,56 @@ class TypeaheadView(AutoView):
     form_class = SearchFormTextInput
 
 
+class PersonTagView(AutoView):
+    template_name = "selectize.html"
+    title = "Multi select with Models"
+    form_class = PersonTagForm
+
+
+class PersonTagModelView(AutoTitleMixin, CreateView):
+    template_name = "selectize.html"
+    title = "Multi select with Models & Modelforms (Create View)"
+    form_class = PersonTagModelForm
+
+    def get_success_url(self):
+        return reverse('home')
+
+
+class PersonTagModelViewEdit(AutoTitleMixin, UpdateView):
+    template_name = "selectize.html"
+    title = "Multi select with Models & Modelforms (Create View)"
+    form_class = PersonTagModelForm
+    model = PersonTag
+
+    def get_success_url(self):
+        return reverse('home')
+
+
+class PersonTagModelViewWithCreate(PersonTagModelView):
+    title = "Multi select with Models & Modelforms w/create mode (Create View)"
+    form_class = PersonTagModelFormWithCreate
+
+    # See documentation about this decorated method.
+    @method_decorator(allow_create)
+    def form_valid(self, form):
+        return super(PersonTagModelViewWithCreate, self).form_valid(form)
+
+
+class PersonContextTagView(AutoTitleMixin,
+                           UserContextFormViewMixin,
+                           CreateView):
+    title = "Multi select w/ models w/ create mode w/ context"
+    form_class = PersonContextTagModelForm
+    template_name = "selectize.html"
+
+    @method_decorator(allow_create)
+    def form_valid(self, form):
+        return super(PersonContextTagView, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse('home')
+
+
 index = IndexView.as_view()
 filled_form = FilledFormView.as_view()
 search_context = SearchContextFormView.as_view()
@@ -87,6 +166,13 @@ search_custom = SearchCustomView.as_view()
 hidden_autocomplete = HiddenAutocompleteView.as_view()
 # JS Demo views
 selectize = SelectizeView.as_view()
+selectize_multi = SelectizeMultiView.as_view()
 select2 = Select2View.as_view()
 jquery_autocomplete = JqueryAutocompleteView.as_view()
 typeahead = TypeaheadView.as_view()
+# Multi-select with models
+selectize_tag = PersonTagView.as_view()
+selectize_model_tag = PersonTagModelView.as_view()
+selectize_model_tag_edit = PersonTagModelViewEdit.as_view()
+selectize_model_tag_with_create = PersonTagModelViewWithCreate.as_view()
+selectize_context_tag = PersonContextTagView.as_view()

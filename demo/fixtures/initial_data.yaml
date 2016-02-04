@@ -32,3 +32,36 @@
     first_name: Alice
     last_name: Galactic
     email: alice4@example.com
+
+- model: demo.person
+  pk: 6
+  fields:
+    first_name: Luke
+    last_name: Skywalker
+    email: luke@example.com
+
+# Tags
+- model: demo.tag
+  pk: 1
+  fields:
+    name: linux
+- model: demo.tag
+  pk: 2
+  fields:
+    name: python
+- model: demo.tag
+  pk: 3
+  fields:
+    name: javascript
+
+# Tag a few persons
+- model: demo.persontag
+  pk: 1
+  fields:
+    person: 1
+    tags: [1, 2]
+- model: demo.persontag
+  pk: 2
+  fields:
+    person: 3
+    tags: [3, 2]

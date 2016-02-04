@@ -3,7 +3,7 @@ from django import forms
 
 from agnocomplete import fields
 
-from .models import Person, FavoriteColor
+from .models import Person, FavoriteColor, Tag, PersonTag
 
 
 class PersonAdmin(admin.ModelAdmin):
@@ -35,3 +35,5 @@ class FavoriteColorAdmin(admin.ModelAdmin):
 
 admin.site.register(Person, PersonAdmin)
 admin.site.register(FavoriteColor, FavoriteColorAdmin)
+admin.site.register(Tag)
+admin.site.register(PersonTag)

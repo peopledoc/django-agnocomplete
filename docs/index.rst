@@ -32,6 +32,7 @@ So far, we've got it implemented using:
    autocomplete-definition
    context-dependant-completions
    custom-views
+   fields-widgets
    demo-site
    admin-site
 

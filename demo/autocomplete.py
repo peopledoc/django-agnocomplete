@@ -6,12 +6,17 @@ from django.utils.encoding import force_text
 
 from agnocomplete.register import register
 from agnocomplete.core import AgnocompleteChoices, AgnocompleteModel
-from .models import Person
+from .models import Person, Tag, ContextTag
 from .common import COLORS
 
 
 class AutocompleteColor(AgnocompleteChoices):
     choices = COLORS
+
+
+class AutocompleteColorShort(AutocompleteColor):
+    query_size = 2
+    query_size_min = 2
 
 
 class AutocompleteCustomUrl(AutocompleteColor):
@@ -34,6 +39,10 @@ class AutocompletePerson(AgnocompleteModel):
     model = Person
     fields = ['first_name', 'last_name']
     query_size_min = 2
+
+
+class AutocompletePersonShort(AutocompletePerson):
+    query_size = 2
 
 
 class AutocompletePersonLabel(AutocompletePerson):
@@ -90,10 +99,34 @@ class HiddenAutocompleteURLReverse(AutocompleteColor):
     url = reverse_lazy('hidden-autocomplete')
 
 
+class AutocompleteTag(AgnocompleteModel):
+    model = Tag
+    fields = ['name']
+    query_size_min = 2
+    query_size = 2
+
+
+class AutocompleteContextTag(AgnocompleteModel):
+    model = ContextTag
+    fields = ['name']
+    query_size_min = 2
+    query_size = 2
+    requires_authentication = True
+
+    def get_queryset(self):
+        email = self.user.email
+        _, domain = email.split('@')
+        return ContextTag.objects.filter(domain__contains=domain)
+
+
 # Registration
 register(AutocompleteColor)
+register(AutocompleteColorShort)
 register(AutocompletePerson)
+register(AutocompletePersonShort)
 register(AutocompleteChoicesPages)
 register(AutocompleteChoicesPagesOverride)
 register(AutocompletePersonDomain)
 register(AutocompleteCustomUrl)
+register(AutocompleteTag)
+register(AutocompleteContextTag)

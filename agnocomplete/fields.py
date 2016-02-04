@@ -6,12 +6,17 @@ from django import forms
 
 from .core import AgnocompleteBase
 from .constants import AGNOCOMPLETE_USER_ATTRIBUTE
-from .widgets import AgnocompleteSelect
+from .widgets import AgnocompleteSelect, AgnocompleteMultiSelect
 from .register import get_agnocomplete_registry
 from .exceptions import UnregisteredAgnocompleteException
 
 
-__all__ = ['AgnocompleteField', 'AgnocompleteModelField']
+__all__ = [
+    'AgnocompleteField',
+    'AgnocompleteModelField',
+    'AgnocompleteMultipleField',
+    'AgnocompleteModelMultipleField',
+]
 
 
 class AgnocompleteMixin(object):
@@ -43,10 +48,10 @@ class AgnocompleteMixin(object):
                 search_instance = fields.AgnocompleteField(
                     AgnocompleteColor(page_size=3))
 
-            if it's a :class: being passed as a parameter, it'll be
-            instantiated using the default parameters. If it's a string, it'll
-            be instanciated also, using the name of the class as the key to
-            fetch the actual class.
+        if it's a :class: being passed as a parameter, it'll be
+        instantiated using the default parameters. If it's a string, it'll
+        be instanciated also, using the name of the class as the key to
+        fetch the actual class.
 
         """
         # If string, use register to fetch the class
@@ -62,6 +67,13 @@ class AgnocompleteMixin(object):
             klass_or_instance = klass_or_instance(user=user)
         # Store it in the instance
         self.agnocomplete = klass_or_instance
+        self.agnocomplete.user = user
+
+    def get_agnocomplete_context(self):
+        """
+        Return the agnocomplete user variable, if set.
+        """
+        return getattr(self, AGNOCOMPLETE_USER_ATTRIBUTE, None)
 
 
 class AgnocompleteField(AgnocompleteMixin, forms.ChoiceField):
@@ -89,3 +101,112 @@ class AgnocompleteModelField(AgnocompleteMixin, forms.ModelChoiceField):
                 self.agnocomplete.user = user
                 self.queryset = self.agnocomplete.get_queryset()
         return super(AgnocompleteModelField, self).clean(*args, **kwargs)
+
+
+class AgnocompleteMultipleMixin(AgnocompleteMixin):
+    """
+    Core mixin for multiple-selection enabled fields
+    """
+    widget = AgnocompleteMultiSelect
+    clean_empty = True
+
+    def __init__(self, *args, **kwargs):
+        create_arg = kwargs.pop('create', False)
+        self.create_field = kwargs.pop('create_field', False)
+        self.create = bool(self.create_field) or create_arg
+        super(AgnocompleteMultipleMixin, self).__init__(*args, **kwargs)
+        # self.widget is a thing here
+        self.widget.create = self.create
+        self._new_values = []
+
+    @property
+    def empty_value(self):
+        "Default empty value for this field."
+        return []
+
+    def to_python(self, value):
+        # Pre-clean the list value
+        value = self.clear_list_value(value)
+        value = super(AgnocompleteMultipleMixin, self).to_python(value)
+        # return the new cleaned value or the default empty_value
+        return value or self.empty_value
+
+    def clear_list_value(self, value):
+        """
+        Clean the argument value to eliminate None or Falsy values if needed.
+        """
+        # Don't go any further: this value is empty.
+        if not value:
+            return self.empty_value
+        # Clean empty items if wanted
+        if self.clean_empty:
+            value = [v for v in value if v]
+        return value or self.empty_value
+
+
+class AgnocompleteMultipleField(AgnocompleteMultipleMixin,
+                                forms.MultipleChoiceField):
+    """
+    Agnocomplete Field class for multiple Choice fields.
+    """
+
+
+class AgnocompleteModelMultipleField(AgnocompleteMultipleMixin,
+                                     forms.ModelMultipleChoiceField):
+    """
+    Field class for multiple selection on Django models.
+    """
+
+    @property
+    def empty_value(self):
+        """
+        Return default empty value as a Queryset.
+
+        This value can be added via the `|` operator, so we surely need
+        a queryset and not a list.
+        """
+        return self.queryset.model.objects.none()
+
+    def extra_create_kwargs(self):
+        """
+        Return extra arguments to create the new model instance.
+
+        You can pass context-related arguments in the dictionary, or default
+        values.
+        """
+        return {}
+
+    def create_new_values(self):
+        """
+        Create values created by the user input. Return the model instances QS.
+        """
+        model = self.queryset.model
+        pks = []
+        extra_create_kwargs = self.extra_create_kwargs()
+        for value in self._new_values:
+            create_kwargs = {self.create_field: value}
+            create_kwargs.update(extra_create_kwargs)
+            new_item = model.objects.create(**create_kwargs)
+            pks.append(new_item.pk)
+        return model.objects.filter(pk__in=pks)
+
+    def clean(self, value):
+        """
+        Clean the field values.
+        """
+        if not self.create:
+            # No new value can be created, use the regular clean field
+            return super(AgnocompleteModelMultipleField, self).clean(value)
+
+        # We have to do this here before the call to "super".
+        # It'll be called again, but we can't find a way to "pre_clean" the
+        # field value before pushing it into the parent class "clean()" method.
+        value = self.clear_list_value(value)
+        # Split the actual values with the potential new values
+        # Numeric values will always be considered as PKs
+        pks = [v for v in value if v.isdigit()]
+        self._new_values = [v for v in value if not v.isdigit()]
+
+        qs = super(AgnocompleteModelMultipleField, self).clean(pks)
+
+        return qs

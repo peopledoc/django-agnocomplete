@@ -1,3 +1,4 @@
+import json
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 try:
@@ -8,7 +9,7 @@ except ImportError:
 
 from agnocomplete import get_namespace
 from agnocomplete.views import AgnocompleteJSONView
-from ..models import Person
+from ..models import Person, Tag, PersonTag, ContextTag, PersonContextTag
 
 
 class HomeTest(TestCase):
@@ -27,6 +28,8 @@ class HomeTest(TestCase):
         self.assertIn('data-url', attrs_color)
         self.assertIn('data-query-size', attrs_color)
         self.assertIn('data-agnocomplete', attrs_color)
+        # Not a multi
+        self.assertFalse(search_color.widget.allow_multiple_selected)
 
     @override_settings(AGNOCOMPLETE_DATA_ATTRIBUTE='wow')
     def test_data_attribute(self):
@@ -119,6 +122,60 @@ class CustomSearchTest(TestCase):
         )
 
 
+class MultiSearchTest(TestCase):
+
+    def test_widgets_multi_create(self):
+        response = self.client.get(reverse('selectize-multi'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('form', response.context)
+        form = response.context['form']
+        self.assertIn('search_multi_color_create', form.fields)
+        search_color = form.fields['search_multi_color_create']
+        # Specific: this is a multi
+        self.assertTrue(search_color.widget.allow_multiple_selected)
+        # But it's also a "create-enabled"
+        attrs_color = search_color.widget.build_attrs()
+        self.assertIn('data-create', attrs_color)
+        self.assertTrue(attrs_color['data-create'])
+
+    def test_widgets_multi_no_create(self):
+        response = self.client.get(reverse('selectize-multi'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('form', response.context)
+        form = response.context['form']
+        self.assertIn('search_multi_color', form.fields)
+        search_color = form.fields['search_multi_color']
+        # Specific: this is a multi
+        self.assertTrue(search_color.widget.allow_multiple_selected)
+        # But it's not "create-enabled"
+        attrs_color = search_color.widget.build_attrs()
+        self.assertNotIn('data-create', attrs_color)
+
+    def test_tag_multi(self):
+        response = self.client.get(reverse('selectize-tag'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('form', response.context)
+        form = response.context['form']
+        self.assertIn('person', form.fields)
+        self.assertIn('tags', form.fields)
+
+    def test_tag_multi_modelforms(self):
+        response = self.client.get(reverse('selectize-model-tag'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('form', response.context)
+        form = response.context['form']
+        self.assertIn('person', form.fields)
+        self.assertIn('tags', form.fields)
+
+    def test_tag_multi_with_create_modelforms(self):
+        response = self.client.get(reverse('selectize-model-tag-with-create'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('form', response.context)
+        form = response.context['form']
+        self.assertIn('person', form.fields)
+        self.assertIn('tags', form.fields)
+
+
 class ABCTestView(TestCase):
 
     def test_AgnocompleteJSONView(self):
@@ -139,6 +196,10 @@ class JSDemoViews(TestCase):
 
     def test_selectize(self):
         response = self.client.get(reverse('selectize'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_selectize_multi(self):
+        response = self.client.get(reverse('selectize-multi'))
         self.assertEqual(response.status_code, 200)
 
     def test_select2(self):
@@ -179,3 +240,239 @@ class FormValidationViewTest(TestCase):
             data={'search_person': self.bob.pk}
         )
         self.assertNotEqual(response.status_code, 200)
+
+
+class MultipleModelSelectGeneric(TestCase):
+
+    def setUp(self):
+        super(MultipleModelSelectGeneric, self).setUp()
+        self.alice = Person.objects.get(pk=1)
+        self.other_person = Person.objects.exclude(pk=self.alice.pk)\
+            .order_by('?').first()
+        self.random = Tag.objects.first()
+        self.random2 = Tag.objects.exclude(pk=self.random.pk).first()
+
+
+class MultipleModelSelectTest(MultipleModelSelectGeneric):
+
+    def test_no_tag_empty_string(self):
+        # Empty string is an error: required field
+        count = PersonTag.objects.count()
+        response = self.client.post(
+            reverse('selectize-model-tag'),
+            data={
+                u'person': self.alice.pk,
+                u'tags': '',
+            }
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['form'].errors)
+        self.assertEqual(PersonTag.objects.count(), count)
+
+    def test_no_tag_empty_list(self):
+        # Empty list is an error: required field
+        count = PersonTag.objects.count()
+        response = self.client.post(
+            reverse('selectize-model-tag'),
+            data={
+                u'person': self.alice.pk,
+                u'tags': [],
+            }
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['form'].errors)
+        self.assertEqual(PersonTag.objects.count(), count)
+
+    def test_tag_create(self):
+        count = PersonTag.objects.count()
+        response = self.client.post(
+            reverse('selectize-model-tag'),
+            data={
+                u'person': self.alice.pk,
+                u'tags': [self.random.pk, self.random2.pk],
+            }
+        )
+        self.assertRedirects(response, reverse('home'))
+        self.assertEqual(PersonTag.objects.count(), count + 1)
+        new_person_tag = PersonTag.objects.order_by('pk').last()
+        self.assertEqual(new_person_tag.tags.count(), 2)
+
+    def test_tag_edit(self):
+        count = PersonTag.objects.count()
+        person_tag = PersonTag.objects.first()
+
+        # Checks on this tags
+        all_tags = set([p.pk for p in Tag.objects.all()])
+        tags = set([t.pk for t in person_tag.tags.all()])
+        self.assertNotEqual(all_tags, tags)
+        self.assertEqual(self.alice, person_tag.person)
+
+        # Check the edit page as a GET
+        response = self.client.get(
+            reverse('selectize-model-tag-edit', args=[person_tag.pk]),
+        )
+        self.assertEqual(response.status_code, 200)
+
+        # It's fine, let's edit it now
+        response = self.client.post(
+            reverse('selectize-model-tag-edit', args=[person_tag.pk]),
+            data={
+                u'person': self.other_person.pk,
+                u'tags': list(all_tags),
+            }
+        )
+        self.assertRedirects(response, reverse('home'))
+        # No new PersonTag
+        self.assertEqual(PersonTag.objects.count(), count)
+        # Reload
+        person_tag = PersonTag.objects.get(pk=person_tag.pk)
+        # Check that the object has been modified
+        tags = set([t.pk for t in person_tag.tags.all()])
+        self.assertEqual(all_tags, tags)
+        self.assertEqual(self.other_person, person_tag.person)
+
+
+class MultipleModelSelectWithCreateTest(MultipleModelSelectGeneric):
+
+    def test_no_tag_empty_string(self):
+        # Empty string means empty tag list, no error
+        count = PersonTag.objects.count()
+        response = self.client.post(
+            reverse('selectize-model-tag-with-create'),
+            data={
+                u'person': self.alice.pk,
+                u'tags': '',
+            }
+        )
+        self.assertRedirects(response, reverse('home'))
+        self.assertEqual(PersonTag.objects.count(), count + 1)
+        new_person_tag = PersonTag.objects.order_by('pk').last()
+        self.assertEqual(new_person_tag.tags.count(), 0)
+
+    def test_no_tag_empty_list(self):
+        # Empty list is means empty tag list, no error
+        count = PersonTag.objects.count()
+        response = self.client.post(
+            reverse('selectize-model-tag-with-create'),
+            data={
+                u'person': self.alice.pk,
+                u'tags': [],
+            }
+        )
+        self.assertRedirects(response, reverse('home'))
+        self.assertEqual(PersonTag.objects.count(), count + 1)
+        new_person_tag = PersonTag.objects.order_by('pk').last()
+        self.assertEqual(new_person_tag.tags.count(), 0)
+
+    def test_no_tag_data(self):
+        # Empty list is means empty tag list, no error
+        count = PersonTag.objects.count()
+        response = self.client.post(
+            reverse('selectize-model-tag-with-create'),
+            data={
+                u'person': self.alice.pk,
+            }
+        )
+        self.assertRedirects(response, reverse('home'))
+        self.assertEqual(PersonTag.objects.count(), count + 1)
+        new_person_tag = PersonTag.objects.order_by('pk').last()
+        self.assertEqual(new_person_tag.tags.count(), 0)
+
+    def test_tag_with_create(self):
+        count = PersonTag.objects.count()
+        count_tag = Tag.objects.count()
+        response = self.client.get(reverse('selectize-model-tag-with-create'))
+        self.assertEqual(response.status_code, 200)
+        response = self.client.post(
+            reverse('selectize-model-tag-with-create'),
+            data={
+                u'person': self.alice.pk,
+                u'tags': [
+                    self.random.pk,
+                    self.random2.pk,
+                    'newtag1',
+                    'newtag2',
+                ],
+            }
+        )
+        self.assertRedirects(response, reverse('home'))
+        self.assertEqual(PersonTag.objects.count(), count + 1)
+        # Two tags added to the tag table
+        self.assertEqual(Tag.objects.count(), count_tag + 2)
+        new_person_tag = PersonTag.objects.order_by('pk').last()
+        self.assertEqual(new_person_tag.tags.count(), 4)
+
+
+class ContextTagTestCase(MultipleModelSelectGeneric):
+
+    def setUp(self):
+        super(ContextTagTestCase, self).setUp()
+        # Login for alice
+        self.client.login(email=self.alice.email)
+        self.search_url = get_namespace() + ':agnocomplete'
+
+    def test_search_empty_table(self):
+        response = self.client.get(
+            reverse(self.search_url, args=['AutocompleteContextTag']),
+            data={'q': "hello"}
+        )
+        result = json.loads(response.content.decode())
+        self.assertIn('data', result)
+        self.assertEqual(len(result['data']), 0)
+
+    def test_search_domains(self):
+        ContextTag.objects.create(
+            name="first",
+            domain="example.com"
+        )
+        ContextTag.objects.create(
+            name="second",
+            domain="demo.com"
+        )
+        response = self.client.get(
+            reverse(self.search_url, args=['AutocompleteContextTag']),
+            data={'q': "first"}
+        )
+        result = json.loads(response.content.decode())
+        self.assertIn('data', result)
+        self.assertEqual(len(result['data']), 1)
+
+        response = self.client.get(
+            reverse(self.search_url, args=['AutocompleteContextTag']),
+            data={'q': "second"}
+        )
+        result = json.loads(response.content.decode())
+        self.assertIn('data', result)
+        self.assertEqual(len(result['data']), 0)
+
+    def test_tag_with_create(self):
+        # Create one context tag
+        random = ContextTag.objects.create(
+            name="hello",
+            domain="example.com"
+        )
+        count = PersonContextTag.objects.count()
+        count_tag = ContextTag.objects.count()
+        response = self.client.get(reverse('selectize-context-tag'))
+        self.assertEqual(response.status_code, 200)
+        response = self.client.post(
+            reverse('selectize-context-tag'),
+            data={
+                u'person': self.alice.pk,
+                u'tags': [
+                    random.pk,
+                    'newtag1',
+                ],
+            }
+        )
+        self.assertRedirects(response, reverse('home'))
+        self.assertEqual(PersonContextTag.objects.count(), count + 1)
+        # Two tags added to the tag table
+        self.assertEqual(ContextTag.objects.count(), count_tag + 1)
+        new_person_tag = PersonContextTag.objects.order_by('pk').last()
+        self.assertEqual(new_person_tag.tags.count(), 2)
+        tags = [(t.name, t.domain) for t in new_person_tag.tags.all()]
+        names, domains = zip(*tags)
+        self.assertIn("hello", names)
+        self.assertIn("newtag1", names)
+        self.assertEqual(("example.com", "example.com"), domains)
