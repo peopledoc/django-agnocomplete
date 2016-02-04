@@ -5,7 +5,7 @@ Changelog for django-agnocomplete
 master (unreleased)
 ===================
 
-- Nothing changed yet.
+- Now ready for Python 3.5. (#19) - Note: Only available for Django 1.8 and above.
 
 
 0.4.0 (2016-02-04)
