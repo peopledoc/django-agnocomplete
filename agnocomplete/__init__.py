@@ -8,7 +8,7 @@ from distutils.version import StrictVersion
 
 import django
 from django.conf import settings
-from django.utils.importlib import import_module
+from django.utils.module_loading import import_module
 
 logger = logging.getLogger(__name__)
 
