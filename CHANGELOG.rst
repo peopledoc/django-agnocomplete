@@ -5,6 +5,7 @@ Changelog for django-agnocomplete
 master (unreleased)
 ===================
 
+- Removed Django deprecation (#49)
 - Now ready for Python 3.5. (#19) - Note: Only available for Django 1.8 and above.
 
 
