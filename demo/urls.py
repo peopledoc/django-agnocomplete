@@ -1,18 +1,11 @@
 """
 Demo URL Configuration
 """
-
-from distutils.version import StrictVersion
-
-import django
 from django.conf.urls import include, url
 from django.contrib import admin
 
 from agnocomplete import get_namespace
 
-# Needed by Django 1.6
-if StrictVersion(django.get_version()) < StrictVersion('1.7'):
-    admin.autodiscover()
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
