@@ -31,6 +31,7 @@ So far, we've got it implemented using:
    overview
    autocomplete-definition
    context-dependant-completions
+   url-proxy
    custom-views
    fields-widgets
    demo-site
