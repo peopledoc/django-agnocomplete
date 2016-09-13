@@ -8,7 +8,7 @@ from agnocomplete import constants
 from agnocomplete.core import AgnocompleteModelBase, AgnocompleteBase
 from agnocomplete.exceptions import AuthenticationRequiredAgnocompleteException
 
-from demo.autocomplete import (
+from ..autocomplete import (
     AutocompleteColor,
     AutocompletePerson,
     AutocompletePersonLabel,
@@ -18,8 +18,8 @@ from demo.autocomplete import (
     AutocompletePersonMisconfigured,
     AutocompletePersonDomain
 )
-from demo.models import Person
-from demo.tests import MockRequestUser
+from ..models import Person
+from . import MockRequestUser, LoaddataTestCase
 
 
 # Should work with this query size
@@ -131,7 +131,7 @@ class AutocompleteChoicesPagesOverrideTest(TestCase):
             AutocompleteChoicesPagesOverride.query_size_min)
 
 
-class AutocompleteModelTest(TestCase):
+class AutocompleteModelTest(LoaddataTestCase):
 
     def test_queryset_by_model(self):
         instance = AutocompletePerson()
@@ -204,7 +204,7 @@ class AutocompleteModelTest(TestCase):
         self.assertEqual(instance.final_raw_queryset.count(), 4)
 
 
-class AutocompletePersonTest(TestCase):
+class AutocompletePersonTest(LoaddataTestCase):
 
     def test_items(self):
         instance = AutocompletePerson()
@@ -271,7 +271,7 @@ class AutocompletePersonTest(TestCase):
         self.assertEqual(result, [])
 
 
-class RequiresAuthenticationTest(TestCase):
+class RequiresAuthenticationTest(LoaddataTestCase):
 
     def test_does_not_require(self):
         instance = AutocompletePerson()
@@ -401,7 +401,7 @@ class AutocompleteColorPerformance(CountItemCalls, AutocompleteColor):
     pass
 
 
-class PerformanceTest(TestCase):
+class PerformanceTest(LoaddataTestCase):
 
     def test_item_calls_core(self):
         instance = AutocompleteColorPerformance(page_size=2)

@@ -1,10 +1,9 @@
-from django.test import TestCase
-
 from ..forms import SearchContextForm
 from ..models import Person
+from . import LoaddataTestCase
 
 
-class TestSearchContext(TestCase):
+class TestSearchContext(LoaddataTestCase):
 
     def setUp(self):
         super(TestSearchContext, self).setUp()

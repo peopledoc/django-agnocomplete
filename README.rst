@@ -44,10 +44,14 @@ Install ``tox`` in your environment (it could be a virtualenv) and run::
 
 It'll run the tests for all the combinations of the following:
 
-* Python 2.7, 3.3, 3.4
-* Django 1.8
+* Python 2.7, 3.3, 3.4.
+* Django 1.8, 1.9.
 
 and a ``flake8`` check.
+
+.. note::
+
+    The combination Python 3.3 and Django 1.9 is incompatible - `see Django 1.9 release notes <https://docs.djangoproject.com/en/1.10/releases/1.9/>`_
 
 Are you a developper?
 ---------------------
