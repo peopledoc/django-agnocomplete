@@ -4,7 +4,7 @@ Agnocomplete views.
 from six import with_metaclass
 from abc import abstractmethod, ABCMeta
 from django.core.exceptions import PermissionDenied
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.utils.functional import cached_property
 from django.views.generic import View
 
@@ -13,25 +13,6 @@ from .exceptions import (
     AuthenticationRequiredAgnocompleteException,
     ImproperlyConfiguredView
 )
-
-
-try:
-    from django.http import JsonResponse
-except ImportError:
-    # JsonResponse for Django 1.6.
-    # Source: https://gist.github.com/philippeowagner/3179eb475fe1795d6515
-    import json
-    from django.http import HttpResponse
-
-    class JsonResponse(HttpResponse):
-        """
-        JSON response
-        """
-        def __init__(self, content,
-                     status=None, content_type=None):
-            super(JsonResponse, self).__init__(
-                content=json.dumps(content),
-                status=status, content_type=content_type)
 
 
 class AgnocompleteJSONView(with_metaclass(ABCMeta, View)):

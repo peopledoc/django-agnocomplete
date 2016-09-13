@@ -2,11 +2,7 @@
 from django.conf import settings
 from django.test import TestCase
 from django.utils.encoding import force_text as text
-try:
-    from django.test import override_settings
-except ImportError:
-    # Django 1.6
-    from django.test.utils import override_settings
+from django.test import override_settings
 
 from agnocomplete import constants
 from agnocomplete.core import AgnocompleteModelBase, AgnocompleteBase
