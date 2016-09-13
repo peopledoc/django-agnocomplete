@@ -4,10 +4,12 @@ The different agnocomplete classes to be discovered
 from copy import copy
 from six import with_metaclass
 from abc import abstractmethod, ABCMeta
+
 from django.db.models import Q
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.encoding import force_text as text
 from django.conf import settings
+import requests
 
 from .constants import AGNOCOMPLETE_DEFAULT_PAGESIZE
 from .constants import AGNOCOMPLETE_MIN_PAGESIZE
@@ -212,6 +214,22 @@ class AgnocompleteBase(with_metaclass(ABCMeta, object)):
         """
         pass
 
+    def is_valid_query(self, query):
+        """
+        Return True if the search query is valid.
+
+        e.g.:
+        * not empty,
+        * not too short,
+        """
+        # No query, no item
+        if not query:
+            return False
+        # Query is too short, no item
+        if len(query) < self.get_query_size_min():
+            return False
+        return True
+
 
 class AgnocompleteChoices(AgnocompleteBase):
     """
@@ -235,11 +253,7 @@ class AgnocompleteChoices(AgnocompleteBase):
         return dict(value=value, label=label)
 
     def items(self, query=None, **kwargs):
-        # No query, no item
-        if not query:
-            return []
-        # Query is too short, no item
-        if len(query) < self.get_query_size_min():
+        if not self.is_valid_query(query):
             return []
 
         result = copy(self.choices)
@@ -464,3 +478,38 @@ class AgnocompleteModel(AgnocompleteModelBase):
                 (text(item.pk), text(item))
             )
         return result
+
+
+class AgnocompleteUrlProxy(with_metaclass(ABCMeta, AgnocompleteBase)):
+    """
+    This class serves as a proxy between your application and a 3rd party
+    URL (typically a REST HTTP API).
+    """
+
+    def get_search_url(self):
+        raise NotImplementedError(
+            "Integrator: You must implement a `get_search_url` method"
+            " or have a `search_url` property in this class.")
+
+    @property
+    def search_url(self):
+        return self.get_search_url()
+
+    def get_choices(self):
+        return []
+
+    def http_call(self, **kwargs):
+        """
+        Call the target URL via HTTP and return the JSON result
+        """
+        response = requests.get(self.search_url.format(**kwargs))
+        return response.json()
+
+    def items(self, query=None):
+        if not self.is_valid_query(query):
+            return []
+        result = self.http_call(q=query)
+        return result.get('data', [])
+
+    def selected(self, ids):
+        return []

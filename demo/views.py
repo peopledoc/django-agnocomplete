@@ -17,6 +17,7 @@ from .forms import (
     PersonTagForm, PersonTagModelForm,
     PersonTagModelFormWithCreate,
     PersonContextTagModelForm,
+    UrlProxyForm,
 )
 from .autocomplete import HiddenAutocomplete
 from .models import PersonTag
@@ -171,6 +172,12 @@ class PersonContextTagView(AutoTitleMixin,
         return reverse('home')
 
 
+class UrlProxySimpleView(AutoView):
+    form_class = UrlProxyForm
+    title = 'Simple URL, returned data without transformation'
+    template_name = "selectize.html"
+
+
 index = IndexView.as_view()
 filled_form = FilledFormView.as_view()
 search_context = SearchContextFormView.as_view()
@@ -190,3 +197,4 @@ selectize_model_tag = PersonTagModelView.as_view()
 selectize_model_tag_edit = PersonTagModelViewEdit.as_view()
 selectize_model_tag_with_create = PersonTagModelViewWithCreate.as_view()
 selectize_context_tag = PersonContextTagView.as_view()
+url_proxy_simple = UrlProxySimpleView.as_view()

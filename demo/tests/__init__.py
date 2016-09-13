@@ -13,7 +13,7 @@ class LoaddataTestCase(TestCase):
 class RegistryTestGeneric(LoaddataTestCase):
 
     def _test_registry_keys(self, keys):
-        self.assertEqual(len(keys), 12)
+        self.assertEqual(len(keys), 13)
         self.assertIn("AutocompleteColor", keys)
         self.assertIn("AutocompleteColorExtra", keys)
         self.assertIn("AutocompletePerson", keys)
@@ -31,6 +31,8 @@ class RegistryTestGeneric(LoaddataTestCase):
         # Customized views demo
         self.assertNotIn("HiddenAutocomplete", keys)
         self.assertIn("AutocompleteContextTag", keys)
+        # URL Proxies
+        self.assertIn("AutocompleteUrlSimple", keys)
 
 
 class MockRequestUser(object):

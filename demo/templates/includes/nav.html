@@ -1,14 +1,24 @@
-Demo pages:
+<h1>Demo pages:</h1>
 <ul>
     <li><a href="{% url 'home' %}">Index</a></li>
     <li><a href="{% url 'filled-form' %}">Filled form</a></li>
-    <li><a href="{% url 'selectize' %}">[JS DEMO] Selectize</a></li>
+</ul>
+<h2>Simple JS Demos</h2>
+<ul>
+    <li><a href="{% url 'selectize' %}">Selectize</a></li>
     <li><a href="{% url 'selectize-extra' %}">[JS DEMO] Selectize with extra argument in query payload</a></li>
-    <li><a href="{% url 'selectize-multi' %}">[JS DEMO] Selectize w/ multi-selection</a></li>
-    <li><a href="{% url 'select2' %}">[JS DEMO] Select2</a></li>
-    <li><a href="{% url 'jquery-autocomplete' %}">[JS DEMO] JQuery Autocomplete</a></li>
-    <li><a href="{% url 'typeahead' %}">[JS DEMO] Typeahead</a></li>
-    <li><a href="{% url 'selectize-tag' %}">[JS DEMO] Person/Tag form (multi-selection + models)</a></li>
-    <li><a href="{% url 'selectize-model-tag' %}">[JS DEMO] Person/Tag form (multi-selection + models with modelforms)</a></li>
-    <li><a href="{% url 'selectize-model-tag-with-create' %}">[JS DEMO] Person/Tag form (multi-selection + models with modelforms + creation mode)</a></li>
+    <li><a href="{% url 'selectize-multi' %}">Selectize w/ multi-selection</a></li>
+    <li><a href="{% url 'select2' %}">Select2</a></li>
+    <li><a href="{% url 'jquery-autocomplete' %}">JQuery Autocomplete</a></li>
+    <li><a href="{% url 'typeahead' %}">Typeahead</a></li>
+</ul>
+<h2>Multiple selection using Django Models</h2>
+<ul>
+    <li><a href="{% url 'selectize-tag' %}">Person/Tag form (multi-selection + models)</a></li>
+    <li><a href="{% url 'selectize-model-tag' %}">Person/Tag form (multi-selection + models with modelforms)</a></li>
+    <li><a href="{% url 'selectize-model-tag-with-create' %}">Person/Tag form (multi-selection + models with modelforms + creation mode)</a></li>
+</ul>
+<h2>URL Proxy</h2>
+<ul>
+    <li><a href="{% url 'url-proxy-simple' %}">Simple URL, returned data without transformation</a></li>
 </ul>

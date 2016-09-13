@@ -159,3 +159,6 @@ AGNOCOMPLETE_DEFAULT_QUERYSIZE = 5
 AGNOCOMPLETE_MIN_QUERYSIZE = 4
 # 3. agnocomplete prefix
 AGNOCOMPLETE_NAMESPACE = 'autocomplete'
+
+# Demo specifics
+HTTP_HOST = 'http://127.0.0.1:8000'

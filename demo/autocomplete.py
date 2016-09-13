@@ -3,9 +3,14 @@ Autocomplete classes
 """
 from django.core.urlresolvers import reverse_lazy
 from django.utils.encoding import force_text
+from django.conf import settings
 
 from agnocomplete.register import register
-from agnocomplete.core import AgnocompleteChoices, AgnocompleteModel
+from agnocomplete.core import (
+    AgnocompleteChoices,
+    AgnocompleteModel,
+    AgnocompleteUrlProxy,
+)
 from .models import Person, Tag, ContextTag
 from .common import COLORS
 
@@ -139,6 +144,16 @@ class AutocompleteContextTag(AgnocompleteModel):
         return ContextTag.objects.filter(domain__contains=domain)
 
 
+class AutocompleteUrlSimple(AgnocompleteUrlProxy):
+
+    def get_search_url(self):
+        return '{}{}?{}'.format(
+            getattr(settings, 'HTTP_HOST', ''),
+            reverse_lazy('url-proxy:simple'),
+            r'q={q}'
+        )
+
+
 # Registration
 register(AutocompleteColor)
 register(AutocompleteColorExtra)
@@ -152,3 +167,5 @@ register(AutocompletePersonDomain)
 register(AutocompleteCustomUrl)
 register(AutocompleteTag)
 register(AutocompleteContextTag)
+# URL-proxy autocompletion
+register(AutocompleteUrlSimple)

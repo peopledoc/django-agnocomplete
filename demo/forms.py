@@ -96,3 +96,7 @@ class PersonContextTagModelForm(UserContextFormMixin, forms.ModelForm):
     class Meta:
         model = PersonContextTag
         fields = '__all__'
+
+
+class UrlProxyForm(forms.Form):
+    person = fields.AgnocompleteField('AutocompleteUrlSimple')
