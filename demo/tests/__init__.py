@@ -1,7 +1,16 @@
 from django.test import TestCase
+from django.core.management import call_command
 
 
-class RegistryTestGeneric(TestCase):
+class LoaddataTestCase(TestCase):
+    def setUp(self):
+        super(LoaddataTestCase, self).setUp()
+        # Explicitly load initial data, not loaded by default since Django 1.9
+        # And keep this command quiet
+        call_command("loaddata", "initial_data", verbosity=0)
+
+
+class RegistryTestGeneric(LoaddataTestCase):
 
     def _test_registry_keys(self, keys):
         self.assertEqual(len(keys), 10)

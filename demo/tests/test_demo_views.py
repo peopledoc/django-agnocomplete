@@ -6,6 +6,7 @@ from django.test import override_settings
 from agnocomplete import get_namespace
 from agnocomplete.views import AgnocompleteJSONView
 from ..models import Person, Tag, PersonTag, ContextTag, PersonContextTag
+from . import LoaddataTestCase
 
 
 class HomeTest(TestCase):
@@ -70,7 +71,7 @@ class HomeTest(TestCase):
             self.client.get(reverse('home'))
 
 
-class FilledFormTest(TestCase):
+class FilledFormTest(LoaddataTestCase):
 
     def setUp(self):
         super(FilledFormTest, self).setUp()
@@ -215,7 +216,7 @@ class JSDemoViews(TestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class FormValidationViewTest(TestCase):
+class FormValidationViewTest(LoaddataTestCase):
 
     def setUp(self):
         super(FormValidationViewTest, self).setUp()
@@ -238,7 +239,7 @@ class FormValidationViewTest(TestCase):
         self.assertNotEqual(response.status_code, 200)
 
 
-class MultipleModelSelectGeneric(TestCase):
+class MultipleModelSelectGeneric(LoaddataTestCase):
 
     def setUp(self):
         super(MultipleModelSelectGeneric, self).setUp()
