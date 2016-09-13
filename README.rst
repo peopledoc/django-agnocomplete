@@ -54,7 +54,7 @@ Are you a developper?
 
 To target a specific test case, use the following::
 
-    tox -e py27-django17 --  demo.tests.test_core.AutocompleteChoicesPagesOverrideTest
+    tox -e py27-django18 --  demo.tests.test_core.AutocompleteChoicesPagesOverrideTest
 
 Everything after the double-dash will be passed to the django-admin.py test command.
 
