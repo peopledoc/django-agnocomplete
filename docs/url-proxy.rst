@@ -33,3 +33,28 @@ What if it doesn't return the standard agnocomplete JSON?
 ---------------------------------------------------------
 
 You'll have to convert this data into a format known by the agnocomplete widgets. Hopefully, we're providing simple parameters to make an easy conversion.
+
+What's configurable?
+
+* ``value_key``: the name of the key in the item dictionary to be used for ``value``,
+* ``label_key``: the name of the key in the item dictionary to be used for ``label``,
+
+Example:
+
+.. code-block:: python
+
+    class AutocompleteUrlConvert(AgnocompleteUrlProxy):
+        value_key = 'pk'
+        label_key = 'full_name'
+
+With this class, the item:
+
+.. code-block:: json
+
+    {"pk": 19911, "full_name": "Inigo Montoya", "country": "Spain"}
+
+will be converted like this before being returned by the search:
+
+.. code-block:: json
+
+    {"value": 19911, "label": "Inigo Montoya"}
