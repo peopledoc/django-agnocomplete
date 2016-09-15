@@ -495,21 +495,37 @@ class AgnocompleteUrlProxy(with_metaclass(ABCMeta, AgnocompleteBase)):
     def search_url(self):
         return self.get_search_url()
 
+    def get_item_url(self, pk):
+        raise NotImplementedError(
+            "Integrator: You must implement a `get_item_url` method")
+
     def get_choices(self):
         return []
 
-    def http_call(self, **kwargs):
+    def http_call(self, url=None, **kwargs):
         """
         Call the target URL via HTTP and return the JSON result
         """
-        response = requests.get(self.search_url.format(**kwargs))
+        if not url:
+            url = self.search_url
+        response = requests.get(url.format(**kwargs))
         return response.json()
 
     def items(self, query=None):
         if not self.is_valid_query(query):
             return []
+        # Call to search URL
         result = self.http_call(q=query)
         return result.get('data', [])
 
     def selected(self, ids):
-        return []
+        data = []
+        for _id in ids:
+            # Call to the item URL
+            result = self.http_call(url=self.get_item_url(pk=_id))
+            if 'data' in result and len(result['data']):
+                for item in result['data']:
+                    data.append(
+                        (text(item['value']), text(item['label']))
+                    )
+        return data

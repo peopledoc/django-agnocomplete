@@ -6,6 +6,8 @@ import json
 from django.test import TestCase, LiveServerTestCase
 from django.core.urlresolvers import reverse
 from django.test import override_settings
+from django.utils.encoding import force_text as text
+
 import mock
 
 from ..autocomplete import AutocompleteUrlSimple
@@ -55,8 +57,29 @@ class UrlProxySimpleTest(TestCase):
         data = result['data']
         # Result data is a list
         self.assertTrue(isinstance(data, list))
-        # Result data is  empty
+        # Result data is empty
         self.assertFalse(data)
+
+    def test_item(self):
+        response = self.client.get(reverse('url-proxy:item', args=[4]))
+        self.assertEqual(response.status_code, 200)
+        result = json.loads(response.content.decode())
+        self.assertIn('data', result)
+        data = result['data']
+        # Result data is a list
+        self.assertTrue(isinstance(data, list))
+        # Result data is not empty
+        self.assertTrue(data)
+        self.assertEqual(len(data), 1)
+        item = data[0]
+        self.assertIn('value', item)
+        self.assertIn('label', item)
+        # The label is "first person"
+        self.assertEqual(item['label'], 'fourth person')
+
+    def test_item_unknown(self):
+        response = self.client.get(reverse('url-proxy:item', args=[42]))
+        self.assertEqual(response.status_code, 404)
 
 
 @override_settings(
@@ -89,4 +112,18 @@ class AutocompleteUrlSimpleTest(LiveServerTestCase):
             self.assertEqual(
                 list(instance.items(query='zzzzz')),
                 []
+            )
+
+    def test_selected(self):
+        instance = AutocompleteUrlSimple()
+        searched_id = 1
+        item_url = instance.get_item_url(searched_id)
+        with mock.patch('demo.autocomplete.AutocompleteUrlSimple'
+                        '.get_item_url') as mock_auto:
+            mock_auto.return_value = self.live_server_url + item_url
+            result = instance.selected([])
+            self.assertEqual(result, [])
+            result = instance.selected([searched_id])
+            self.assertEqual(result, [
+                (text(searched_id), text('first person'))]
             )

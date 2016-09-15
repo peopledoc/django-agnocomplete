@@ -2,7 +2,7 @@
 Autocomplete classes
 """
 from django.core.urlresolvers import reverse_lazy
-from django.utils.encoding import force_text
+from django.utils.encoding import force_text as text
 from django.conf import settings
 
 from agnocomplete.register import register
@@ -73,9 +73,9 @@ class AutocompletePersonShort(AutocompletePerson):
 class AutocompletePersonLabel(AutocompletePerson):
     def item(self, current_item):
         label = {
-            'value': force_text(current_item.pk),
+            'value': text(current_item.pk),
             'label': u'{item} {mail}'.format(
-                item=force_text(current_item), mail=current_item.email)
+                item=text(current_item), mail=current_item.email)
         }
 
         return label
@@ -151,6 +151,12 @@ class AutocompleteUrlSimple(AgnocompleteUrlProxy):
             getattr(settings, 'HTTP_HOST', ''),
             reverse_lazy('url-proxy:simple'),
             r'q={q}'
+        )
+
+    def get_item_url(self, pk):
+        return '{}{}'.format(
+            getattr(settings, 'HTTP_HOST', ''),
+            reverse_lazy('url-proxy:item', args=[pk]),
         )
 
 
