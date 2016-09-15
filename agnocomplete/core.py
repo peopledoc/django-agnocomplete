@@ -485,6 +485,8 @@ class AgnocompleteUrlProxy(with_metaclass(ABCMeta, AgnocompleteBase)):
     This class serves as a proxy between your application and a 3rd party
     URL (typically a REST HTTP API).
     """
+    value_key = 'value'
+    label_key = 'label'
 
     def get_search_url(self):
         raise NotImplementedError(
@@ -515,8 +517,17 @@ class AgnocompleteUrlProxy(with_metaclass(ABCMeta, AgnocompleteBase)):
         if not self.is_valid_query(query):
             return []
         # Call to search URL
-        result = self.http_call(q=query)
-        return result.get('data', [])
+        http_result = self.http_call(q=query)
+        http_result = http_result.get('data', [])
+        result = []
+        for item in http_result:
+            result.append(
+                dict(
+                    value=text(item[self.value_key]),
+                    label=text(item[self.label_key])
+                )
+            )
+        return result
 
     def selected(self, ids):
         data = []
@@ -526,6 +537,9 @@ class AgnocompleteUrlProxy(with_metaclass(ABCMeta, AgnocompleteBase)):
             if 'data' in result and len(result['data']):
                 for item in result['data']:
                     data.append(
-                        (text(item['value']), text(item['label']))
+                        (
+                            text(item[self.value_key]),
+                            text(item[self.label_key])
+                        )
                     )
         return data

@@ -160,6 +160,27 @@ class AutocompleteUrlSimple(AgnocompleteUrlProxy):
         )
 
 
+class AutocompleteUrlConvert(AgnocompleteUrlProxy):
+    """
+    Only value_key and label_key are redefined here
+    """
+    value_key = 'pk'
+    label_key = 'name'
+
+    def get_search_url(self):
+        return '{}{}?{}'.format(
+            getattr(settings, 'HTTP_HOST', ''),
+            reverse_lazy('url-proxy:convert'),
+            r'q={q}'
+        )
+
+    def get_item_url(self, pk):
+        return '{}{}'.format(
+            getattr(settings, 'HTTP_HOST', ''),
+            reverse_lazy('url-proxy:item', args=[pk]),
+        )
+
+
 # Registration
 register(AutocompleteColor)
 register(AutocompleteColorExtra)
@@ -175,3 +196,4 @@ register(AutocompleteTag)
 register(AutocompleteContextTag)
 # URL-proxy autocompletion
 register(AutocompleteUrlSimple)
+register(AutocompleteUrlConvert)
