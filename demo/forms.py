@@ -9,6 +9,7 @@ from agnocomplete.forms import UserContextFormMixin
 
 from .autocomplete import (
     AutocompleteColor,
+    AutocompleteColorExtra,
     AutocompleteColorShort,
     AutocompletePerson,
     AutocompletePersonShort,
@@ -23,6 +24,10 @@ from .fields import ModelMultipleDomainField
 class SearchForm(forms.Form):
     search_color = fields.AgnocompleteField(AutocompleteColor)
     search_person = fields.AgnocompleteModelField(AutocompletePerson)
+
+
+class SearchFormExtra(SearchForm):
+    search_color = fields.AgnocompleteField(AutocompleteColorExtra)
 
 
 class SearchFormTextInput(forms.Form):

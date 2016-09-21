@@ -12,7 +12,7 @@ from agnocomplete.views import (
 from agnocomplete.decorators import allow_create
 
 from .forms import (
-    SearchForm, SearchContextForm, SearchCustom,
+    SearchForm, SearchFormExtra, SearchContextForm, SearchCustom,
     SearchFormTextInput, SearchColorMulti,
     PersonTagForm, PersonTagModelForm,
     PersonTagModelFormWithCreate,
@@ -83,6 +83,19 @@ class HiddenAutocompleteView(AgnocompleteGenericView):
 class SelectizeView(AutoView):
     template_name = 'selectize.html'
     title = "View using the Selectize autocomplete front library"
+
+
+class SelectizeExtraView(AutoView):
+    template_name = 'selectize.html'
+    title = "View using the Selectize autocomplete front library" \
+        " + extra arguments"
+    form_class = SearchFormExtra
+
+    def get_context_data(self, *args, **kwargs):
+        data = super(SelectizeExtraView, self).get_context_data(
+            *args, **kwargs)
+        data['selectize_with_extra'] = 'yes'
+        return data
 
 
 class SelectizeMultiView(AutoView):
@@ -166,6 +179,7 @@ search_custom = SearchCustomView.as_view()
 hidden_autocomplete = HiddenAutocompleteView.as_view()
 # JS Demo views
 selectize = SelectizeView.as_view()
+selectize_extra = SelectizeExtraView.as_view()
 selectize_multi = SelectizeMultiView.as_view()
 select2 = Select2View.as_view()
 jquery_autocomplete = JqueryAutocompleteView.as_view()

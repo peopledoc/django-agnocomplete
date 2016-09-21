@@ -7,5 +7,9 @@
 {% block extra_body %}
         <script src="{% static 'js/jquery.js' %}" charset="utf-8"></script>
         <script src="{% static 'js/selectize.js' %}" charset="utf-8"></script>
+        {% if selectize_with_extra %}
+        <script src="{% static 'js/demo/selectize-extra.js' %}" charset="utf-8"></script>
+        {% else %}
         <script src="{% static 'js/demo/selectize.js' %}" charset="utf-8"></script>
+        {% endif %}
 {% endblock %}

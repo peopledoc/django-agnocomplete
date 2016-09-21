@@ -202,7 +202,7 @@ class AgnocompleteBase(with_metaclass(ABCMeta, object)):
         pass
 
     @abstractmethod
-    def items(self, query=None):
+    def items(self, query=None, **kwargs):
         pass
 
     @abstractmethod
@@ -234,7 +234,7 @@ class AgnocompleteChoices(AgnocompleteBase):
         value, label = current_item
         return dict(value=value, label=label)
 
-    def items(self, query=None):
+    def items(self, query=None, **kwargs):
         # No query, no item
         if not query:
             return []
@@ -406,7 +406,7 @@ class AgnocompleteModel(AgnocompleteModelBase):
         qs = qs.filter(self.get_queryset_filters(query))
         return qs
 
-    def items(self, query=None):
+    def items(self, query=None, **kwargs):
         """
         Return the items to be sent to the client
         """

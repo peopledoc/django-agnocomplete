@@ -30,6 +30,7 @@ urlpatterns = [
     url(r'^custom/$', 'demo.views.search_custom', name='search-custom'),
     # Demo Front JS views
     url(r'^selectize/$', 'demo.views.selectize', name='selectize'),
+    url(r'^selectize-extra/$', 'demo.views.selectize_extra', name='selectize-extra'),  # noqa
     url(r'^selectize-multi/$', 'demo.views.selectize_multi', name='selectize-multi'),  # noqa
     url(r'^selectize-tag/$', 'demo.views.selectize_tag', name='selectize-tag'),
     url(r'^selectize-model-tag/$', 'demo.views.selectize_model_tag', name='selectize-model-tag'),  # noqa
