@@ -22,7 +22,7 @@ $(document).ready(function() {
                     return callback();
                 // Query's ready
                 $.ajax({
-                    url: $(select).data('url') + '?q=' + encodeURIComponent(query) + '&extra_argument=' + encodeURIComponent("hello I'm the extra argument"),
+                    url: $(select).data('url') + '?q=' + encodeURIComponent(query) + '&extra_argument=' + encodeURIComponent($("#id_extra_argument").val()),
                     type: 'GET',
                     error: function() {
                         callback();

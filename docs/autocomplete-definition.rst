@@ -257,4 +257,19 @@ You can also override the :meth:`get_extra_arguments()` method **in your views**
 
 In the case of a queryset-based Agnocomplete, you can also use the extra arguments in the ``Agnocomplete`` class.
 
-TODO TODO TODO
+Using Extra arguments with Models/Querysets
++++++++++++++++++++++++++++++++++++++++++++
+
+The extra arguments are passed along to :meth:`items()`, and then to the :meth:`build_filtered_queryset()` method.
+
+This method calls :meth:`build_extra_filtered_queryset()`. By default, this method returns the queryset "verbatim". You can override or overwrite this to perform custom filter on this QS.
+
+.. code-block:: python
+
+    class AutocompletePersonExtra(AutocompletePerson):
+
+        def build_extra_filtered_queryset(self, queryset, **kwargs):
+            location = kwargs.get('location', None)
+            if location:
+                queryset = queryset.filter(location__iexact=location)
+            return queryset

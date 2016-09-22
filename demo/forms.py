@@ -12,6 +12,7 @@ from .autocomplete import (
     AutocompleteColorExtra,
     AutocompleteColorShort,
     AutocompletePerson,
+    AutocompletePersonExtra,
     AutocompletePersonShort,
     HiddenAutocomplete,
     AutocompleteTag,
@@ -26,8 +27,10 @@ class SearchForm(forms.Form):
     search_person = fields.AgnocompleteModelField(AutocompletePerson)
 
 
-class SearchFormExtra(SearchForm):
+class SearchFormExtra(forms.Form):
     search_color = fields.AgnocompleteField(AutocompleteColorExtra)
+    search_person = fields.AgnocompleteModelField(AutocompletePersonExtra)
+    extra_argument = forms.CharField(required=False)
 
 
 class SearchFormTextInput(forms.Form):

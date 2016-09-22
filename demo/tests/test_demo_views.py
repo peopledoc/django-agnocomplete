@@ -479,7 +479,7 @@ class ContextTagTestCase(MultipleModelSelectGeneric):
         self.assertEqual(("example.com", "example.com"), domains)
 
 
-class SelectizeExtraTest(TestCase):
+class SelectizeExtraTest(LoaddataTestCase):
 
     def setUp(self):
         super(SelectizeExtraTest, self).setUp()
@@ -533,3 +533,44 @@ class SelectizeExtraTest(TestCase):
         self.assertEqual(len(data), 2)
         added = data[-1]
         self.assertEqual(added, {'value': 'EXTRA', 'label': 'EXTRA'})
+
+    def test_model_no_extra_arg_normal(self):
+        # Using the normal color search. no extra.
+        response = self.client.get(
+            reverse(self.search_url, args=['AutocompletePerson']),
+            data={'q': "Alice"}
+        )
+        result = json.loads(response.content.decode())
+        data = result.get('data')
+        self.assertEqual(len(data), 4)
+
+    def test_model_extra_arg_normal(self):
+        # Using the normal color search. extra arg. no problem.
+        response = self.client.get(
+            reverse(self.search_url, args=['AutocompletePerson']),
+            data={'q': "Alice", "extra_argument": "Hello I'm here"}
+        )
+        result = json.loads(response.content.decode())
+        # No extra stuff, this view doesn't use these extra arguments
+        data = result.get('data')
+        self.assertEqual(len(data), 4)
+
+    def test_model_no_extra_arg_extra(self):
+        response = self.client.get(
+            reverse(self.search_url, args=['AutocompletePersonExtra']),
+            data={'q': "Alice"}
+        )
+        result = json.loads(response.content.decode())
+        data = result.get('data')
+        self.assertEqual(len(data), 4)
+
+    def test_model_extra_arg(self):
+        search_url = get_namespace() + ':agnocomplete'
+        response = self.client.get(
+            reverse(search_url, args=['AutocompletePersonExtra']),
+            data={'q': "Alice", "extra_argument": "Marseille"}
+        )
+        # Only the "Alices" that live in Marseille
+        result = json.loads(response.content.decode())
+        data = result.get('data')
+        self.assertEqual(len(data), 2)

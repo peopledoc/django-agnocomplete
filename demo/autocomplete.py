@@ -51,6 +51,16 @@ class AutocompletePerson(AgnocompleteModel):
     query_size_min = 2
 
 
+class AutocompletePersonExtra(AutocompletePerson):
+
+    def build_extra_filtered_queryset(self, queryset, **kwargs):
+        # Filtering on location if provided
+        location = kwargs.get('extra_argument', None)
+        if location:
+            queryset = queryset.filter(location__iexact=location)
+        return queryset
+
+
 class AutocompletePersonShort(AutocompletePerson):
     query_size = 2
 
@@ -134,6 +144,7 @@ register(AutocompleteColor)
 register(AutocompleteColorExtra)
 register(AutocompleteColorShort)
 register(AutocompletePerson)
+register(AutocompletePersonExtra)
 register(AutocompletePersonShort)
 register(AutocompleteChoicesPages)
 register(AutocompleteChoicesPagesOverride)

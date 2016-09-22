@@ -4,6 +4,7 @@
     first_name: Alice
     last_name: Iñtërnâtiônàlizætiøn
     email: alice@example.com
+    location: Paris
 
 - model: demo.person
   pk: 2
@@ -11,6 +12,7 @@
     first_name: Alice
     last_name: Inchains
     email: alice2@example.com
+    location: Marseille
 
 - model: demo.person
   pk: 3
@@ -18,6 +20,7 @@
     first_name: Bob
     last_name: Hope
     email: bob@demo.com
+    location: Paris
 
 - model: demo.person
   pk: 4
@@ -25,6 +28,7 @@
     first_name: Alice
     last_name: Obvious
     email: alice3@example.com
+    location: Marseille
 
 - model: demo.person
   pk: 5
@@ -32,6 +36,7 @@
     first_name: Alice
     last_name: Galactic
     email: alice4@example.com
+    location: Berlin
 
 - model: demo.person
   pk: 6
@@ -39,6 +44,7 @@
     first_name: Luke
     last_name: Skywalker
     email: luke@example.com
+    location: Tatooine
 
 # Tags
 - model: demo.tag

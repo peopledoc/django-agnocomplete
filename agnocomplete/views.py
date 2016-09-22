@@ -130,7 +130,7 @@ class AgnocompleteGenericView(AgnocompleteJSONView):
         # Agnocomplete instance is ready
         try:
             instance = klass(user=self.request.user, page_size=page_size)
-            return instance.items(query=query, **self.get_extra_arguments())
+            return instance.items(query=query, **kwargs)
         except AuthenticationRequiredAgnocompleteException:
             raise PermissionDenied(
                 "Unauthorized access to this Autocomplete")
