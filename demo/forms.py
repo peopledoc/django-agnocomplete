@@ -101,8 +101,7 @@ class PersonContextTagModelForm(UserContextFormMixin, forms.ModelForm):
         fields = '__all__'
 
 
-class UrlProxyForm(forms.Form):
-    person = fields.AgnocompleteField('AutocompleteUrlSimple')
+class UrlProxyFormMixin(object):
     help_text = """
 We're not using the usual fixture here. Here's our "database":
 -------
@@ -110,3 +109,11 @@ We're not using the usual fixture here. Here's our "database":
 {}
 </pre>
 """.format(pprint.pformat(DATABASE))
+
+
+class UrlProxyForm(UrlProxyFormMixin, forms.Form):
+    person = fields.AgnocompleteField('AutocompleteUrlSimple')
+
+
+class UrlProxyConvertForm(UrlProxyFormMixin, forms.Form):
+    person = fields.AgnocompleteField('AutocompleteUrlConvert')
