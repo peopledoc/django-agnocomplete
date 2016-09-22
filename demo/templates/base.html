@@ -10,6 +10,9 @@
     </head>
     <body>
         <h1>{{ title }}</h1>
+        {% if form.help_text %}
+        <p style="color: #444;">{{ form.help_text|safe|linebreaks }}</p>
+        {% endif %}
         <form action="." method="post">
             {{ form }}
             <input type="submit" value="OK">

@@ -1,6 +1,8 @@
 """
 Form classes
 """
+import pprint
+
 from django import forms
 from django.core.urlresolvers import reverse_lazy
 
@@ -20,6 +22,7 @@ from .autocomplete import (
 )
 from .models import PersonTag, PersonContextTag
 from .fields import ModelMultipleDomainField
+from . import DATABASE
 
 
 class SearchForm(forms.Form):
@@ -100,3 +103,10 @@ class PersonContextTagModelForm(UserContextFormMixin, forms.ModelForm):
 
 class UrlProxyForm(forms.Form):
     person = fields.AgnocompleteField('AutocompleteUrlSimple')
+    help_text = """
+We're not using the usual fixture here. Here's our "database":
+-------
+<pre>
+{}
+</pre>
+""".format(pprint.pformat(DATABASE))

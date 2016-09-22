@@ -4,16 +4,7 @@ from django.http import HttpResponse, Http404
 from django.utils.encoding import force_text as text
 from django.views.decorators.http import require_GET
 
-# This is your fake DB
-DATABASE = (
-    {"pk": 1, 'name': 'first person'},
-    {"pk": 2, 'name': 'second person'},
-    {"pk": 3, 'name': 'third person'},
-    {"pk": 4, 'name': 'fourth person'},
-    {"pk": 5, 'name': 'fifth person'},
-    {"pk": 6, 'name': 'sixth person'},
-    {"pk": 7, 'name': 'seventh person'},
-)
+from . import DATABASE
 
 
 def convert_data(item):

@@ -3,7 +3,7 @@ import json
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
-from ..views_proxy import DATABASE
+from .. import DATABASE
 
 
 class UrlProxyGenericTest(object):

@@ -8,7 +8,7 @@ from django.utils.encoding import force_text as text
 import mock
 
 from ..autocomplete import AutocompleteUrlSimple, AutocompleteUrlConvert
-from ..views_proxy import DATABASE
+from .. import DATABASE
 RESULT_DICT = [{'value': text(item['pk']), 'label': text(item['name'])} for item in DATABASE]  # noqa
 
 
