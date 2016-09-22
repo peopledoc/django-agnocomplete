@@ -35,6 +35,7 @@ What if it doesn't return the standard agnocomplete JSON?
 You'll have to convert this data into a format known by the agnocomplete widgets. Hopefully, we're providing simple parameters to make an easy conversion.
 
 What's configurable?
+++++++++++++++++++++
 
 * ``value_key``: the name of the key in the item dictionary to be used for ``value``,
 * ``label_key``: the name of the key in the item dictionary to be used for ``label``,
@@ -58,3 +59,33 @@ will be converted like this before being returned by the search:
 .. code-block:: json
 
     {"value": 19911, "label": "Inigo Montoya"}
+
+For more complicated cases
+++++++++++++++++++++++++++
+
+If the returned JSON is in now way similar to what you were expecting, you have several options:
+
+**If the JSON is a list or an iterable**, you can override the `Agnocomplete` class :meth:`item()` method, like this:
+
+.. code-block:: python
+
+    class AutocompleteUrlConvert(AgnocompleteUrlProxy):
+
+        def item(self, current_item):
+            return dict(
+                value=current_item['pk'],
+                label='{} {}'.format(current_item['first_name'], current_item['last_name']),
+            )
+    
+
+or, if things are going more complicated:
+
+.. code-block:: python
+
+    class AutocompleteUrlConvert(AgnocompleteUrlProxy):
+
+        def item(self, current_item):
+            return dict(
+                value=current_item[current_item['meta']['value_field']],
+                label='{} {}'.format(current_item['label1'], current_item['label2']),
+            )

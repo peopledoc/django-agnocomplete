@@ -513,6 +513,12 @@ class AgnocompleteUrlProxy(with_metaclass(ABCMeta, AgnocompleteBase)):
         response = requests.get(url.format(**kwargs))
         return response.json()
 
+    def item(self, current_item):
+        return dict(
+            value=text(current_item[self.value_key]),
+            label=text(current_item[self.label_key]),
+        )
+
     def items(self, query=None):
         if not self.is_valid_query(query):
             return []
@@ -521,12 +527,7 @@ class AgnocompleteUrlProxy(with_metaclass(ABCMeta, AgnocompleteBase)):
         http_result = http_result.get('data', [])
         result = []
         for item in http_result:
-            result.append(
-                dict(
-                    value=text(item[self.value_key]),
-                    label=text(item[self.label_key])
-                )
-            )
+            result.append(self.item(item))
         return result
 
     def selected(self, ids):

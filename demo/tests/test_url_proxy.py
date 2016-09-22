@@ -7,7 +7,11 @@ from django.utils.encoding import force_text as text
 
 import mock
 
-from ..autocomplete import AutocompleteUrlSimple, AutocompleteUrlConvert
+from ..autocomplete import (
+    AutocompleteUrlSimple,
+    AutocompleteUrlConvert,
+    AutocompleteUrlConvertComplex,
+)
 from .. import DATABASE
 RESULT_DICT = [{'value': text(item['pk']), 'label': text(item['name'])} for item in DATABASE]  # noqa
 
@@ -77,6 +81,34 @@ class AutocompleteUrlConvertTest(LiveServerTestCase):
             mock_auto.return_value = self.live_server_url + search_url
             self.assertEqual(
                 list(instance.items(query='person')), RESULT_DICT
+            )
+            # Search for first person
+            self.assertEqual(
+                list(instance.items(query='first')), [
+                    {'value': '1', 'label': 'first person'},
+                ],
+            )
+
+
+@override_settings(
+    AGNOCOMPLETE_DEFAULT_QUERYSIZE=2,
+    AGNOCOMPLETE_MIN_QUERYSIZE=2,
+    HTTP_HOST='',
+)
+class AutocompleteUrlConvertComplexTest(LiveServerTestCase):
+    """
+    The AutocompleteUrlConvertComplex returns a different JSON format.
+    """
+    def test_search(self):
+        instance = AutocompleteUrlConvertComplex()
+        # "mock" Change URL by adding the host
+        search_url = instance.search_url
+        with mock.patch('demo.autocomplete.AutocompleteUrlConvertComplex'
+                        '.get_search_url') as mock_auto:
+            mock_auto.return_value = self.live_server_url + search_url
+            search_result = instance.items(query='person')
+            self.assertEqual(
+                list(search_result), RESULT_DICT
             )
             # Search for first person
             self.assertEqual(

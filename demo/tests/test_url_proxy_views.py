@@ -20,6 +20,10 @@ class UrlProxyGenericTest(object):
     def label_key(self):
         raise NotImplementedError("You need a `label_key` property")
 
+    @property
+    def item_keys(self):
+        return [self.label_key, self.value_key]
+
     def test_simple_query(self):
         response = self.client.get(self.http_url, {'q': 'person'})
         self.assertEqual(response.status_code, 200)
@@ -32,8 +36,8 @@ class UrlProxyGenericTest(object):
         self.assertTrue(data)
         self.assertEqual(len(data), len(DATABASE))
         for item in data:
-            self.assertIn(self.value_key, item)
-            self.assertIn(self.label_key, item)
+            for key in self.item_keys:
+                self.assertIn(key, item)
             # The label contains "person"
             self.assertIn('person', item[self.label_key])
 
@@ -71,6 +75,17 @@ class UrlProxyConvertTest(UrlProxyGenericTest, TestCase):
     http_url = reverse('url-proxy:convert')
     value_key = 'pk'
     label_key = 'name'
+
+
+class UrlProxyConvertComplexTest(UrlProxyGenericTest, TestCase):
+    http_url = reverse('url-proxy:convert-complex')
+    value_key = 'pk'
+    label_key = 'last_name'
+
+    @property
+    def item_keys(self):
+        # Not the same here: the return format is a bit more complex
+        return [self.value_key, 'first_name', 'last_name']
 
 
 class UrlProxyItemTest(TestCase):

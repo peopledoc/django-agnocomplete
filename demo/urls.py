@@ -50,6 +50,9 @@ urlpatterns = [
         name='url-proxy-simple'),
     url(r'^url-proxy-convert/$', 'demo.views.url_proxy_convert',
         name='url-proxy-convert'),
+    url(r'^url-proxy-convert-complex/$',
+        'demo.views.url_proxy_convert_complex',
+        name='url-proxy-convert-complex'),
 
     # Mock Third Party URLs
     url(r'^3rdparty/', include('demo.urls_proxy', namespace='url-proxy')),

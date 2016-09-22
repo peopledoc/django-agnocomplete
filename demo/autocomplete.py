@@ -144,7 +144,16 @@ class AutocompleteContextTag(AgnocompleteModel):
         return ContextTag.objects.filter(domain__contains=domain)
 
 
-class AutocompleteUrlSimple(AgnocompleteUrlProxy):
+# Toolbox
+class AutocompleteUrlMixin(AgnocompleteUrlProxy):
+    def get_item_url(self, pk):
+        return '{}{}'.format(
+            getattr(settings, 'HTTP_HOST', ''),
+            reverse_lazy('url-proxy:item', args=[pk]),
+        )
+
+
+class AutocompleteUrlSimple(AutocompleteUrlMixin):
 
     def get_search_url(self):
         return '{}{}?{}'.format(
@@ -153,14 +162,8 @@ class AutocompleteUrlSimple(AgnocompleteUrlProxy):
             r'q={q}'
         )
 
-    def get_item_url(self, pk):
-        return '{}{}'.format(
-            getattr(settings, 'HTTP_HOST', ''),
-            reverse_lazy('url-proxy:item', args=[pk]),
-        )
 
-
-class AutocompleteUrlConvert(AgnocompleteUrlProxy):
+class AutocompleteUrlConvert(AutocompleteUrlMixin):
     """
     Only value_key and label_key are redefined here
     """
@@ -174,10 +177,20 @@ class AutocompleteUrlConvert(AgnocompleteUrlProxy):
             r'q={q}'
         )
 
-    def get_item_url(self, pk):
-        return '{}{}'.format(
+
+class AutocompleteUrlConvertComplex(AgnocompleteUrlProxy):
+    def get_search_url(self):
+        return '{}{}?{}'.format(
             getattr(settings, 'HTTP_HOST', ''),
-            reverse_lazy('url-proxy:item', args=[pk]),
+            reverse_lazy('url-proxy:convert-complex'),
+            r'q={q}'
+        )
+
+    def item(self, current_item):
+        return dict(
+            value=text(current_item['pk']),
+            label='{} {}'.format(
+                current_item['first_name'], current_item['last_name']),
         )
 
 
@@ -197,3 +210,4 @@ register(AutocompleteContextTag)
 # URL-proxy autocompletion
 register(AutocompleteUrlSimple)
 register(AutocompleteUrlConvert)
+register(AutocompleteUrlConvertComplex)

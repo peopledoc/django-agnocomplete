@@ -117,3 +117,7 @@ class UrlProxyForm(UrlProxyFormMixin, forms.Form):
 
 class UrlProxyConvertForm(UrlProxyFormMixin, forms.Form):
     person = fields.AgnocompleteField('AutocompleteUrlConvert')
+
+
+class UrlProxyConvertComplexForm(UrlProxyFormMixin, forms.Form):
+    person = fields.AgnocompleteField('AutocompleteUrlConvertComplex')

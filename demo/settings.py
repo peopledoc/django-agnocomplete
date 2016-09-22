@@ -138,7 +138,7 @@ LOGGING = {
             'handlers': ['console'],
         },
         'demo': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'handlers': ['console'],
         }
     }
