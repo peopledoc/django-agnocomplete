@@ -202,7 +202,7 @@ class AgnocompleteBase(with_metaclass(ABCMeta, object)):
         pass
 
     @abstractmethod
-    def items(self, query=None):
+    def items(self, query=None, **kwargs):
         pass
 
     @abstractmethod
@@ -234,7 +234,7 @@ class AgnocompleteChoices(AgnocompleteBase):
         value, label = current_item
         return dict(value=value, label=label)
 
-    def items(self, query=None):
+    def items(self, query=None, **kwargs):
         # No query, no item
         if not query:
             return []
@@ -396,7 +396,22 @@ class AgnocompleteModel(AgnocompleteModelBase):
             'label': text(current_item)
         }
 
-    def build_filtered_queryset(self, query):
+    def build_extra_filtered_queryset(self, queryset, **kwargs):
+        """
+        Apply eventual queryset filters, based on the optional extra arguments
+        passed to the query.
+
+        By default, this method returns the queryset "verbatim". You can
+        override or overwrite this to perform custom filter on this QS.
+
+        * `queryset`: it's the final queryset build using the search terms.
+        * `kwargs`: this dictionary contains the extra arguments passed to the
+          agnocomplete class.
+        """
+        # By default, we're ignoring these arguments and return verbatim QS
+        return queryset
+
+    def build_filtered_queryset(self, query, **kwargs):
         """
         Build and return the fully-filtered queryset
         """
@@ -404,9 +419,9 @@ class AgnocompleteModel(AgnocompleteModelBase):
         qs = self.get_queryset()
         # filter it via the query conditions
         qs = qs.filter(self.get_queryset_filters(query))
-        return qs
+        return self.build_extra_filtered_queryset(qs, **kwargs)
 
-    def items(self, query=None):
+    def items(self, query=None, **kwargs):
         """
         Return the items to be sent to the client
         """
@@ -429,7 +444,7 @@ class AgnocompleteModel(AgnocompleteModelBase):
                     "Authentication is required to use this autocomplete"
                 )
 
-        qs = self.build_filtered_queryset(query)
+        qs = self.build_filtered_queryset(query, **kwargs)
         # The final queryset is the paginated queryset
         self.__final_queryset = qs
         return self.serialize(qs)

@@ -37,12 +37,16 @@ class AgnocompleteJSONView(with_metaclass(ABCMeta, View)):
             return "text/html"
 
     @abstractmethod
-    def get_dataset(self):
+    def get_dataset(self, **kwargs):
         pass
+
+    def get_extra_arguments(self):
+        extra = filter(lambda x: x[0] != 'q', self.request.GET.items())
+        return dict(extra)
 
     def get(self, *args, **kwargs):
         return JsonResponse(
-            {'data': self.get_dataset()},
+            {'data': self.get_dataset(**self.get_extra_arguments())},
             content_type=self.content_type,
         )
 
@@ -92,7 +96,7 @@ class CatalogView(RegistryMixin, AgnocompleteJSONView):
     The catalog view displays every available Agnocomplete slug available in
     the registry.
     """
-    def get_dataset(self):
+    def get_dataset(self, **kwargs):
         """
         Return the registry key set.
         """
@@ -109,7 +113,7 @@ class AgnocompleteGenericView(AgnocompleteJSONView):
             return self.klass
         raise ImproperlyConfiguredView("Undefined autocomplete class")
 
-    def get_dataset(self):
+    def get_dataset(self, **kwargs):
         klass = self.get_klass()
         # Query passed via the argument
         query = self.request.GET.get('q', "")
@@ -126,7 +130,7 @@ class AgnocompleteGenericView(AgnocompleteJSONView):
         # Agnocomplete instance is ready
         try:
             instance = klass(user=self.request.user, page_size=page_size)
-            return instance.items(query=query)
+            return instance.items(query=query, **kwargs)
         except AuthenticationRequiredAgnocompleteException:
             raise PermissionDenied(
                 "Unauthorized access to this Autocomplete")

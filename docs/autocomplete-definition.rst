@@ -225,3 +225,57 @@ You may want to add extra fields to your returned records, fields that belong to
 
         queryset = self.final_raw_queryset.filter(field="something")
         queryset = queryset[:2]
+
+Extra arguments
+===============
+
+Your front-end code may send you extra arguments that are not covered by the standard interface definition. These arguments will be passed down to your ``Agnocomplete`` class and can be used in the :meth:`items()` or the :meth:`get_dataset()` methods.
+
+.. code-block:: python
+
+    class AutocompleteColorExtra(AutocompleteColor):
+        def items(self, query, **kwargs):
+            extra = kwargs.get('extra_suff', None)
+            if extra_stuff:
+                change_something_in_the_search_method(extra_stuff)
+            return super(AutocompleteColorExtra, self).items(query, **kwargs)
+
+You can also override the :meth:`get_extra_arguments()` method **in your views** to eventually filter or manipulate these extra arguments. By default, :meth:`get_extra_arguments()` grabs arguments from the GET parameters that are not the `query` value.
+
+.. code-block:: python
+
+    class SelectizeExtraView(AutoView):
+        template_name = 'selectize.html'
+        title = "View using the Selectize autocomplete front library"
+        form = SearchFormExtra
+
+        def get_extra_arguments(self):
+            extras = super(SelectizeExtraView, self).get_extra_arguments()
+            whitelist = ['foo', 'bar']
+            extras = filter(lambda x: x[0] in whitelist, extras)
+            return dict(extras)
+
+Everything is possible in the view: you can even push your custom arguments, based on your current context, the date/time, etc.
+
+.. important::
+
+    The result of this method must be a dictionary.
+
+Using Extra arguments with Models/Querysets
+-------------------------------------------
+
+In the case of a queryset-based Agnocomplete, you can also use the extra arguments in the ``Agnocomplete`` class.
+
+The extra arguments are passed along to :meth:`items()`, and then to the :meth:`build_filtered_queryset()` method.
+
+This method calls :meth:`build_extra_filtered_queryset()`. By default, this method returns the queryset "verbatim". You can override or overwrite this to perform custom filter on this QS.
+
+.. code-block:: python
+
+    class AutocompletePersonExtra(AutocompletePerson):
+
+        def build_extra_filtered_queryset(self, queryset, **kwargs):
+            location = kwargs.get('location', None)
+            if location:
+                queryset = queryset.filter(location__iexact=location)
+            return queryset

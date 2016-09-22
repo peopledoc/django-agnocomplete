@@ -13,9 +13,11 @@ class LoaddataTestCase(TestCase):
 class RegistryTestGeneric(LoaddataTestCase):
 
     def _test_registry_keys(self, keys):
-        self.assertEqual(len(keys), 10)
+        self.assertEqual(len(keys), 12)
         self.assertIn("AutocompleteColor", keys)
+        self.assertIn("AutocompleteColorExtra", keys)
         self.assertIn("AutocompletePerson", keys)
+        self.assertIn("AutocompletePersonExtra", keys)
         self.assertIn("AutocompletePersonShort", keys)
         self.assertIn("AutocompleteChoicesPages", keys)
         self.assertIn("AutocompleteChoicesPagesOverride", keys)

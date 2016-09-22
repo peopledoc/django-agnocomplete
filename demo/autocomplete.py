@@ -14,6 +14,16 @@ class AutocompleteColor(AgnocompleteChoices):
     choices = COLORS
 
 
+class AutocompleteColorExtra(AutocompleteColor):
+    def items(self, query, **kwargs):
+        extra_argument = kwargs.get('extra_argument', None)
+        result = super(AutocompleteColorExtra, self).items(query, **kwargs)
+        # This is a very dummy usage of the extra argument
+        if extra_argument:
+            result.append({'value': 'EXTRA', 'label': 'EXTRA'})
+        return result
+
+
 class AutocompleteColorShort(AutocompleteColor):
     query_size = 2
     query_size_min = 2
@@ -39,6 +49,16 @@ class AutocompletePerson(AgnocompleteModel):
     model = Person
     fields = ['first_name', 'last_name']
     query_size_min = 2
+
+
+class AutocompletePersonExtra(AutocompletePerson):
+
+    def build_extra_filtered_queryset(self, queryset, **kwargs):
+        # Filtering on location if provided
+        location = kwargs.get('extra_argument', None)
+        if location:
+            queryset = queryset.filter(location__iexact=location)
+        return queryset
 
 
 class AutocompletePersonShort(AutocompletePerson):
@@ -121,8 +141,10 @@ class AutocompleteContextTag(AgnocompleteModel):
 
 # Registration
 register(AutocompleteColor)
+register(AutocompleteColorExtra)
 register(AutocompleteColorShort)
 register(AutocompletePerson)
+register(AutocompletePersonExtra)
 register(AutocompletePersonShort)
 register(AutocompleteChoicesPages)
 register(AutocompleteChoicesPagesOverride)
