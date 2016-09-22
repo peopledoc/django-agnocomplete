@@ -219,6 +219,10 @@ class JSDemoViews(TestCase):
         response = self.client.get(reverse('search-context'))
         self.assertEqual(response.status_code, 200)
 
+    def test_url_proxy_simple(self):
+        response = self.client.get(reverse('url-proxy-simple'))
+        self.assertEqual(response.status_code, 200)
+
 
 class FormValidationViewTest(LoaddataTestCase):
 

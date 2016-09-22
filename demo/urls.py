@@ -45,7 +45,8 @@ urlpatterns = [
         name='jquery-autocomplete'),
     url(r'^typeahead/$', 'demo.views.typeahead', name='typeahead'),
 
-    url(r'^url-proxy-simple', 'demo.views.url_proxy_simple',
+    # URL Proxy Urls
+    url(r'^url-proxy-simple/$', 'demo.views.url_proxy_simple',
         name='url-proxy-simple'),
 
     # Mock Third Party URLs

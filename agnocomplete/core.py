@@ -531,15 +531,18 @@ class AgnocompleteUrlProxy(with_metaclass(ABCMeta, AgnocompleteBase)):
 
     def selected(self, ids):
         data = []
+        # Filter out "falsy IDs" (empty string, None, 0...)
+        ids = filter(lambda x: x, ids)
         for _id in ids:
-            # Call to the item URL
-            result = self.http_call(url=self.get_item_url(pk=_id))
-            if 'data' in result and len(result['data']):
-                for item in result['data']:
-                    data.append(
-                        (
-                            text(item[self.value_key]),
-                            text(item[self.label_key])
+            if _id:
+                # Call to the item URL
+                result = self.http_call(url=self.get_item_url(pk=_id))
+                if 'data' in result and len(result['data']):
+                    for item in result['data']:
+                        data.append(
+                            (
+                                text(item[self.value_key]),
+                                text(item[self.label_key])
+                            )
                         )
-                    )
         return data
