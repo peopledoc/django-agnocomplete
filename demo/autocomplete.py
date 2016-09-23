@@ -210,6 +210,18 @@ class AutocompleteUrlSimpleAuth(AutocompleteUrlMixin):
         return query_args
 
 
+class AutocompleteUrlHeadersAuth(AutocompleteUrlMixin):
+    def get_search_url(self):
+        return '{}{}?{}'.format(
+            getattr(settings, 'HTTP_HOST', ''),
+            reverse_lazy('url-proxy:headers-auth'),
+            r'q={q}'
+        )
+
+    def get_http_headers(self):
+        return {'X-API-TOKEN': GOODAUTHTOKEN}
+
+
 # Registration
 register(AutocompleteColor)
 register(AutocompleteColorExtra)
@@ -228,3 +240,4 @@ register(AutocompleteUrlSimple)
 register(AutocompleteUrlConvert)
 register(AutocompleteUrlConvertComplex)
 register(AutocompleteUrlSimpleAuth)
+register(AutocompleteUrlHeadersAuth)

@@ -12,6 +12,7 @@ from ..autocomplete import (
     AutocompleteUrlConvert,
     AutocompleteUrlConvertComplex,
     AutocompleteUrlSimpleAuth,
+    AutocompleteUrlHeadersAuth,
 )
 from .. import DATABASE, GOODAUTHTOKEN
 RESULT_DICT = [{'value': text(item['pk']), 'label': text(item['name'])} for item in DATABASE]  # noqa
@@ -141,3 +142,32 @@ class AutocompleteUrlSimpleAuthTest(LiveServerTestCase):
         self.assertIn('q', query_args)
         self.assertIn('auth_token', query_args)
         self.assertEqual(query_args['auth_token'], GOODAUTHTOKEN)
+
+
+@override_settings(
+    HTTP_HOST='',
+)
+class AutocompleteUrlHeadersAuthTest(LiveServerTestCase):
+    def test_search(self):
+        instance = AutocompleteUrlHeadersAuth()
+        # "mock" Change URL by adding the host
+        search_url = instance.search_url
+        with mock.patch('demo.autocomplete.AutocompleteUrlHeadersAuth'
+                        '.get_search_url') as mock_auto:
+            mock_auto.return_value = self.live_server_url + search_url
+            search_result = instance.items(query='person')
+            self.assertEqual(
+                list(search_result), RESULT_DICT
+            )
+            # Search for first person
+            self.assertEqual(
+                list(instance.items(query='first')), [
+                    {'value': '1', 'label': 'first person'},
+                ],
+            )
+
+    def test_headers(self):
+        instance = AutocompleteUrlHeadersAuth()
+        headers = instance.get_http_headers()
+        self.assertIn('X-API-TOKEN', headers)
+        self.assertEqual(headers['X-API-TOKEN'], GOODAUTHTOKEN)

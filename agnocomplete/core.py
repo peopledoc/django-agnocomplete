@@ -510,7 +510,10 @@ class AgnocompleteUrlProxy(with_metaclass(ABCMeta, AgnocompleteBase)):
         """
         if not url:
             url = self.search_url
-        response = requests.get(url.format(**kwargs))
+        response = requests.get(
+            url.format(**kwargs),
+            headers=self.get_http_headers()
+        )
         return response.json()
 
     def item(self, current_item):
@@ -518,6 +521,14 @@ class AgnocompleteUrlProxy(with_metaclass(ABCMeta, AgnocompleteBase)):
             value=text(current_item[self.value_key]),
             label=text(current_item[self.label_key]),
         )
+
+    def get_http_headers(self):
+        """
+        Return a dictionary that will be added to the HTTP request to the API
+
+        You can overwrite this method, that return an empty dict by default.
+        """
+        return {}
 
     def get_http_call_kwargs(self, query):
         """

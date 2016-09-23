@@ -90,8 +90,8 @@ or, if things are going more complicated:
                 label='{} {}'.format(current_item['label1'], current_item['label2']),
             )
 
-Passing extra arguments to the API
-----------------------------------
+Passing extra arguments to the API call
+---------------------------------------
 
 For various reasons (mostly authentication), you may need to pass extra arguments to the 3rd party API.
 
@@ -118,4 +118,23 @@ The :meth:`get_http_call_kwargs()` method is completely overridable like this:
             return {
                 'search': query,
                 'auth_token': 'GOODAUTHTOKEN',
+            }
+
+Adding headers to the HTTP call
+-------------------------------
+
+You also may want to add custom HTTP headers to your request to the 3rd party API. For authentication reasons, or if you need to specify a Content-type, etc.
+In order to do so, you can override the :meth:`get_http_headers()` method in the Agnocomplete class.
+
+By default, this method returns an empty dictionary, so you can completely scratch it, no offense.
+
+.. code-block:: python
+
+    class AutocompleteUrlExtraHeaders(AgnocompleteProxy):
+        search_url = 'http://api.examplecom/search?q={q}'
+
+        def get_http_headers(self):
+            return {
+                'X-API-TOKEN': 'GOODAUTHTOKEN',
+                'Content-type': 'application/json',
             }

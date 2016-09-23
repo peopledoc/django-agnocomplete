@@ -84,6 +84,21 @@ def simple_auth(request, *args, **kwargs):
 
 
 @require_GET
+def headers_auth(request, *args, **kwargs):
+    # Check authentication
+    auth_token = request.META.get('HTTP_X_API_TOKEN', None)
+    if not auth_token or auth_token != GOODAUTHTOKEN:
+        logger.error('Error: Failed authentication')
+        raise PermissionDenied("Failed Authentication")
+    search_term = request.GET.get('q', None)
+    result = _search(search_term, convert_data)
+    response = json.dumps(result)
+    logger.debug('3rd party simple search: `%s`', search_term)
+    logger.debug('response: `%s`', response)
+    return HttpResponse(response)
+
+
+@require_GET
 def item(request, pk):
     data = filter(lambda item: text(item['pk']) == text(pk), DATABASE)
     data = map(convert_data, data)

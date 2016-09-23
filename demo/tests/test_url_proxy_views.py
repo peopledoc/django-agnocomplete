@@ -131,3 +131,27 @@ class UrlProxySimpleAuthTest(TestCase):
             {'q': 'person', 'auth_token': GOODAUTHTOKEN}
         )
         self.assertEqual(response.status_code, 200)
+
+
+class UrlProxyHeadersAuthTest(TestCase):
+
+    def test_simple_query_no_auth(self):
+        response = self.client.get(
+            reverse('url-proxy:headers-auth'), {'q': 'person'})
+        self.assertEqual(response.status_code, 403)
+
+    def test_simple_query_wrong_auth(self):
+        response = self.client.get(
+            reverse('url-proxy:headers-auth'),
+            {'q': 'person'},
+            HTTP_X_API_TOKEN='I-AM-WRONG',
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_simple_query_auth(self):
+        response = self.client.get(
+            reverse('url-proxy:headers-auth'),
+            {'q': 'person'},
+            HTTP_X_API_TOKEN=GOODAUTHTOKEN,
+        )
+        self.assertEqual(response.status_code, 200)
