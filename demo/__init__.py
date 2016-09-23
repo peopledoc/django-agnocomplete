@@ -8,3 +8,5 @@ DATABASE = (
     {"pk": 6, 'name': 'sixth person'},
     {"pk": 7, 'name': 'seventh person'},
 )
+
+GOODAUTHTOKEN = 'GOODAUTHTOKEN'

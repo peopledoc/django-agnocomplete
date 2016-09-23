@@ -11,4 +11,5 @@ urlpatterns = [
     url(r'^convert/$', views_proxy.convert, name='convert'),
     url(r'^convert-complex/$',
         views_proxy.convert_complex, name='convert-complex'),
+    url(r'^simple-auth/$', views_proxy.simple_auth, name='simple-auth'),
 ]

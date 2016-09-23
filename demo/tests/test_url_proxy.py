@@ -11,8 +11,9 @@ from ..autocomplete import (
     AutocompleteUrlSimple,
     AutocompleteUrlConvert,
     AutocompleteUrlConvertComplex,
+    AutocompleteUrlSimpleAuth,
 )
-from .. import DATABASE
+from .. import DATABASE, GOODAUTHTOKEN
 RESULT_DICT = [{'value': text(item['pk']), 'label': text(item['name'])} for item in DATABASE]  # noqa
 
 
@@ -116,3 +117,35 @@ class AutocompleteUrlConvertComplexTest(LiveServerTestCase):
                     {'value': '1', 'label': 'first person'},
                 ],
             )
+
+
+@override_settings(
+    AGNOCOMPLETE_DEFAULT_QUERYSIZE=2,
+    AGNOCOMPLETE_MIN_QUERYSIZE=2,
+    HTTP_HOST='',
+)
+class AutocompleteUrlSimpleAuthTest(LiveServerTestCase):
+    def test_search(self):
+        instance = AutocompleteUrlSimpleAuth()
+        # "mock" Change URL by adding the host
+        search_url = instance.search_url
+        with mock.patch('demo.autocomplete.AutocompleteUrlSimpleAuth'
+                        '.get_search_url') as mock_auto:
+            mock_auto.return_value = self.live_server_url + search_url
+            search_result = instance.items(query='person')
+            self.assertEqual(
+                list(search_result), RESULT_DICT
+            )
+            # Search for first person
+            self.assertEqual(
+                list(instance.items(query='first')), [
+                    {'value': '1', 'label': 'first person'},
+                ],
+            )
+
+    def test_query_args(self):
+        instance = AutocompleteUrlSimpleAuth()
+        query_args = instance.get_http_call_kwargs('hello')
+        self.assertIn('q', query_args)
+        self.assertIn('auth_token', query_args)
+        self.assertEqual(query_args['auth_token'], GOODAUTHTOKEN)

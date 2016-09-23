@@ -1,11 +1,12 @@
 import json
 import logging
 
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse, Http404
 from django.utils.encoding import force_text as text
 from django.views.decorators.http import require_GET
 
-from . import DATABASE
+from . import DATABASE, GOODAUTHTOKEN
 
 logger = logging.getLogger(__name__)
 
@@ -63,6 +64,21 @@ def convert_complex(request, *args, **kwargs):
     result = _search(search_term, convert_data_complex)
     response = json.dumps(result)
     logger.debug('3rd party complex conversion search: `%s`', search_term)
+    logger.debug('response: `%s`', response)
+    return HttpResponse(response)
+
+
+@require_GET
+def simple_auth(request, *args, **kwargs):
+    # Check authentication
+    auth_token = request.GET.get('auth_token', None)
+    if not auth_token or auth_token != GOODAUTHTOKEN:
+        logger.error('Error: Failed authentication')
+        raise PermissionDenied("Failed Authentication")
+    search_term = request.GET.get('q', None)
+    result = _search(search_term, convert_data)
+    response = json.dumps(result)
+    logger.debug('3rd party simple search: `%s`', search_term)
     logger.debug('response: `%s`', response)
     return HttpResponse(response)
 

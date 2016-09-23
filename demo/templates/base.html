@@ -7,6 +7,12 @@
         {% block extra_head %}
         <!-- put your extra head elements (scripts, css) here -->
         {% endblock %}
+        <style>
+            .helptext {
+                color: #555;
+                font-size: .8em;
+            }
+        </style>
     </head>
     <body>
         <h1>{{ title }}</h1>
@@ -15,7 +21,7 @@
         {% endif %}
         <form action="." method="post">
             {{ form }}
-            <input type="submit" value="OK">
+            <p><input type="submit" value="OK">
         </form>
 
         <hr>

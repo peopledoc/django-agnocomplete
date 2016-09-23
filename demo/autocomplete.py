@@ -13,6 +13,7 @@ from agnocomplete.core import (
 )
 from .models import Person, Tag, ContextTag
 from .common import COLORS
+from . import GOODAUTHTOKEN
 
 
 class AutocompleteColor(AgnocompleteChoices):
@@ -194,6 +195,21 @@ class AutocompleteUrlConvertComplex(AgnocompleteUrlProxy):
         )
 
 
+class AutocompleteUrlSimpleAuth(AutocompleteUrlMixin):
+    def get_search_url(self):
+        return '{}{}?{}'.format(
+            getattr(settings, 'HTTP_HOST', ''),
+            reverse_lazy('url-proxy:simple-auth'),
+            r'q={q}&auth_token={auth_token}'
+        )
+
+    def get_http_call_kwargs(self, query):
+        query_args = super(
+            AutocompleteUrlSimpleAuth, self).get_http_call_kwargs(query)
+        query_args['auth_token'] = GOODAUTHTOKEN
+        return query_args
+
+
 # Registration
 register(AutocompleteColor)
 register(AutocompleteColorExtra)
@@ -211,3 +227,4 @@ register(AutocompleteContextTag)
 register(AutocompleteUrlSimple)
 register(AutocompleteUrlConvert)
 register(AutocompleteUrlConvertComplex)
+register(AutocompleteUrlSimpleAuth)

@@ -76,7 +76,7 @@ If the returned JSON is in now way similar to what you were expecting, you have 
                 value=current_item['pk'],
                 label='{} {}'.format(current_item['first_name'], current_item['last_name']),
             )
-    
+
 
 or, if things are going more complicated:
 
@@ -89,3 +89,33 @@ or, if things are going more complicated:
                 value=current_item[current_item['meta']['value_field']],
                 label='{} {}'.format(current_item['label1'], current_item['label2']),
             )
+
+Passing extra arguments to the API
+----------------------------------
+
+For various reasons (mostly authentication), you may need to pass extra arguments to the 3rd party API.
+
+The :meth:`get_http_call_kwargs()` method is completely overridable like this:
+
+.. code-block:: python
+
+    class AutocompleteUrlExtraArgs(AgnocompleteProxy):
+        search_url = 'http://api.examplecom/search?q={q}&auth_token={auth_token}'
+
+        def get_http_call_kwargs(self, query):
+            query_args = super(
+                AutocompleteUrlExtraArgs, self).get_http_call_kwargs(query)
+            query_args['auth_token'] = 'GOODAUTHTOKEN'
+            return query_args
+
+.. note::
+
+    You may want to change here the default name of the search term field, if the 3rd party API doesn't accept "q" as a search term name.
+
+    .. code-block:: python
+
+        def get_http_call_kwargs(self, query):
+            return {
+                'search': query,
+                'auth_token': 'GOODAUTHTOKEN',
+            }

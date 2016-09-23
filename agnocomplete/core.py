@@ -519,11 +519,20 @@ class AgnocompleteUrlProxy(with_metaclass(ABCMeta, AgnocompleteBase)):
             label=text(current_item[self.label_key]),
         )
 
+    def get_http_call_kwargs(self, query):
+        """
+        Return the HTTP query arguments.
+
+        You can override this method to pass further arguments corresponding
+        to your search_url.
+        """
+        return {'q': query}
+
     def items(self, query=None):
         if not self.is_valid_query(query):
             return []
         # Call to search URL
-        http_result = self.http_call(q=query)
+        http_result = self.http_call(**self.get_http_call_kwargs(query))
         http_result = http_result.get('data', [])
         result = []
         for item in http_result:

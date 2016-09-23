@@ -3,7 +3,7 @@ import json
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
-from .. import DATABASE
+from .. import DATABASE, GOODAUTHTOKEN
 
 
 class UrlProxyGenericTest(object):
@@ -109,3 +109,25 @@ class UrlProxyItemTest(TestCase):
     def test_item_unknown(self):
         response = self.client.get(reverse('url-proxy:item', args=[42]))
         self.assertEqual(response.status_code, 404)
+
+
+class UrlProxySimpleAuthTest(TestCase):
+
+    def test_simple_query_no_auth(self):
+        response = self.client.get(
+            reverse('url-proxy:simple-auth'), {'q': 'person'})
+        self.assertEqual(response.status_code, 403)
+
+    def test_simple_query_wrong_auth(self):
+        response = self.client.get(
+            reverse('url-proxy:simple-auth'),
+            {'q': 'person', 'auth_token': 'I-AM-WRONG'}
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_simple_query_auth(self):
+        response = self.client.get(
+            reverse('url-proxy:simple-auth'),
+            {'q': 'person', 'auth_token': GOODAUTHTOKEN}
+        )
+        self.assertEqual(response.status_code, 200)
