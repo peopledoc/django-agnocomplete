@@ -20,7 +20,7 @@
         <p style="color: #444;">{{ form.help_text|safe|linebreaks }}</p>
         {% endif %}
         <form action="." method="post">
-            {{ form }}
+            {{ form.as_p }}
             <p><input type="submit" value="OK">
         </form>
 

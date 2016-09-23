@@ -227,10 +227,6 @@ class JSDemoViews(TestCase):
         response = self.client.get(reverse('url-proxy-convert'))
         self.assertEqual(response.status_code, 200)
 
-    def test_url_proxy_convert_complex(self):
-        response = self.client.get(reverse('url-proxy-convert-complex'))
-        self.assertEqual(response.status_code, 200)
-
     def test_url_proxy_auth(self):
         response = self.client.get(reverse('url-proxy-auth'))
         self.assertEqual(response.status_code, 200)

@@ -17,7 +17,7 @@ from .forms import (
     PersonTagForm, PersonTagModelForm,
     PersonTagModelFormWithCreate,
     PersonContextTagModelForm,
-    UrlProxyForm, UrlProxyConvertForm, UrlProxyConvertComplexForm,
+    UrlProxyForm, UrlProxyConvertForm,
     UrlProxyAuthForm,
 )
 from .autocomplete import HiddenAutocomplete
@@ -181,13 +181,7 @@ class UrlProxySimpleView(AutoView):
 
 class UrlProxyConvertView(AutoView):
     form_class = UrlProxyConvertForm
-    title = 'Simple URL, returned data with little transformation'
-    template_name = "selectize.html"
-
-
-class UrlProxyConvertComplexView(AutoView):
-    form_class = UrlProxyConvertComplexForm
-    title = 'Simple URL, returned data with a big transormation'
+    title = 'Converted data when returned, more or less mangled'
     template_name = "selectize.html"
 
 
@@ -219,5 +213,4 @@ selectize_context_tag = PersonContextTagView.as_view()
 # URL proxies
 url_proxy_simple = UrlProxySimpleView.as_view()
 url_proxy_convert = UrlProxyConvertView.as_view()
-url_proxy_convert_complex = UrlProxyConvertComplexView.as_view()
 url_proxy_auth = UrlProxyAuthView.as_view()
