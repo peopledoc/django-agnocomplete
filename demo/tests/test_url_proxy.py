@@ -18,8 +18,6 @@ RESULT_DICT = [{'value': text(item['pk']), 'label': text(item['name'])} for item
 
 
 @override_settings(
-    AGNOCOMPLETE_DEFAULT_QUERYSIZE=2,
-    AGNOCOMPLETE_MIN_QUERYSIZE=2,
     HTTP_HOST='',
 )
 class AutocompleteUrlSimpleTest(LiveServerTestCase):
@@ -65,8 +63,6 @@ class AutocompleteUrlSimpleTest(LiveServerTestCase):
 
 
 @override_settings(
-    AGNOCOMPLETE_DEFAULT_QUERYSIZE=2,
-    AGNOCOMPLETE_MIN_QUERYSIZE=2,
     HTTP_HOST='',
 )
 class AutocompleteUrlConvertTest(LiveServerTestCase):
@@ -92,8 +88,6 @@ class AutocompleteUrlConvertTest(LiveServerTestCase):
 
 
 @override_settings(
-    AGNOCOMPLETE_DEFAULT_QUERYSIZE=2,
-    AGNOCOMPLETE_MIN_QUERYSIZE=2,
     HTTP_HOST='',
 )
 class AutocompleteUrlConvertComplexTest(LiveServerTestCase):
@@ -120,8 +114,6 @@ class AutocompleteUrlConvertComplexTest(LiveServerTestCase):
 
 
 @override_settings(
-    AGNOCOMPLETE_DEFAULT_QUERYSIZE=2,
-    AGNOCOMPLETE_MIN_QUERYSIZE=2,
     HTTP_HOST='',
 )
 class AutocompleteUrlSimpleAuthTest(LiveServerTestCase):
