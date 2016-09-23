@@ -229,6 +229,8 @@ You may want to add extra fields to your returned records, fields that belong to
 Extra arguments
 ===============
 
+.. versionadded:: 0.6
+
 Your front-end code may send you extra arguments that are not covered by the standard interface definition. These arguments will be passed down to your ``Agnocomplete`` class and can be used in the :meth:`items()` or the :meth:`get_dataset()` methods.
 
 .. code-block:: python
@@ -263,6 +265,8 @@ Everything is possible in the view: you can even push your custom arguments, bas
 
 Using Extra arguments with Models/Querysets
 -------------------------------------------
+
+.. versionadded:: 0.6
 
 In the case of a queryset-based Agnocomplete, you can also use the extra arguments in the ``Agnocomplete`` class.
 
