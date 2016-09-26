@@ -15,6 +15,7 @@ from ..autocomplete import (
     AutocompleteUrlConvertComplex,
     AutocompleteUrlSimpleAuth,
     AutocompleteUrlHeadersAuth,
+    AutocompleteUrlSimplePost,
 )
 from .. import DATABASE, GOODAUTHTOKEN
 RESULT_DICT = [{'value': text(item['pk']), 'label': text(item['name'])} for item in DATABASE]  # noqa
@@ -193,3 +194,26 @@ class HTTPErrorHandlingTest(LiveServerTestCase):
                 with self.assertRaises(HTTPError):
                     # Raising a "requests" exception
                     instance.items(query='person')
+
+
+@override_settings(
+    HTTP_HOST='',
+)
+class AutocompleteUrlSimplePostTest(LiveServerTestCase):
+    def test_search(self):
+        instance = AutocompleteUrlSimplePost()
+        # "mock" Change URL by adding the host
+        search_url = instance.search_url
+        with mock.patch('demo.autocomplete.AutocompleteUrlSimplePost'
+                        '.get_search_url') as mock_auto:
+            mock_auto.return_value = self.live_server_url + search_url
+            search_result = instance.items(query='person')
+            self.assertEqual(
+                list(search_result), RESULT_DICT
+            )
+            # Search for first person
+            self.assertEqual(
+                list(instance.items(query='first')), [
+                    {'value': '1', 'label': 'first person'},
+                ],
+            )

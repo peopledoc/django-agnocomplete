@@ -157,10 +157,9 @@ class AutocompleteUrlMixin(AgnocompleteUrlProxy):
 class AutocompleteUrlSimple(AutocompleteUrlMixin):
 
     def get_search_url(self):
-        return '{}{}?{}'.format(
+        return '{}{}'.format(
             getattr(settings, 'HTTP_HOST', ''),
             reverse_lazy('url-proxy:simple'),
-            r'q={q}'
         )
 
 
@@ -172,19 +171,17 @@ class AutocompleteUrlConvert(AutocompleteUrlMixin):
     label_key = 'name'
 
     def get_search_url(self):
-        return '{}{}?{}'.format(
+        return '{}{}'.format(
             getattr(settings, 'HTTP_HOST', ''),
             reverse_lazy('url-proxy:convert'),
-            r'q={q}'
         )
 
 
 class AutocompleteUrlConvertComplex(AgnocompleteUrlProxy):
     def get_search_url(self):
-        return '{}{}?{}'.format(
+        return '{}{}'.format(
             getattr(settings, 'HTTP_HOST', ''),
             reverse_lazy('url-proxy:convert-complex'),
-            r'q={q}'
         )
 
     def item(self, current_item):
@@ -197,10 +194,9 @@ class AutocompleteUrlConvertComplex(AgnocompleteUrlProxy):
 
 class AutocompleteUrlSimpleAuth(AutocompleteUrlMixin):
     def get_search_url(self):
-        return '{}{}?{}'.format(
+        return '{}{}'.format(
             getattr(settings, 'HTTP_HOST', ''),
             reverse_lazy('url-proxy:simple-auth'),
-            r'q={q}&auth_token={auth_token}'
         )
 
     def get_http_call_kwargs(self, query):
@@ -212,14 +208,24 @@ class AutocompleteUrlSimpleAuth(AutocompleteUrlMixin):
 
 class AutocompleteUrlHeadersAuth(AutocompleteUrlMixin):
     def get_search_url(self):
-        return '{}{}?{}'.format(
+        return '{}{}'.format(
             getattr(settings, 'HTTP_HOST', ''),
             reverse_lazy('url-proxy:headers-auth'),
-            r'q={q}'
         )
 
     def get_http_headers(self):
         return {'X-API-TOKEN': GOODAUTHTOKEN}
+
+
+class AutocompleteUrlSimplePost(AutocompleteUrlMixin):
+    method = 'post'
+
+    def get_search_url(self):
+        # Search using POST, no need to send query args
+        return '{}{}'.format(
+            getattr(settings, 'HTTP_HOST', ''),
+            reverse_lazy('url-proxy:simple-post'),
+        )
 
 
 # Registration
@@ -241,3 +247,4 @@ register(AutocompleteUrlConvert)
 register(AutocompleteUrlConvertComplex)
 register(AutocompleteUrlSimpleAuth)
 register(AutocompleteUrlHeadersAuth)
+register(AutocompleteUrlSimplePost)

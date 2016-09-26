@@ -13,7 +13,7 @@ Example:
     from agnocomplete.core import AgnocompleteUrlProxy
 
     class ServiceAutocomplete(AgnocompleteUrlProxy):
-        search_url = "https://api.example.com/search?q={q}"
+        search_url = "https://api.example.com/search"
         item_url = "https://api.example.com/item/{id}"
 
 You may want to have either a :meth:`get_search_url()` method in your class, or overriding the ``search_url`` property.
@@ -100,7 +100,7 @@ The :meth:`get_http_call_kwargs()` method is completely overridable like this:
 .. code-block:: python
 
     class AutocompleteUrlExtraArgs(AgnocompleteProxy):
-        search_url = 'http://api.examplecom/search?q={q}&auth_token={auth_token}'
+        search_url = 'http://api.example.com/search'
 
         def get_http_call_kwargs(self, query):
             query_args = super(
@@ -131,10 +131,23 @@ By default, this method returns an empty dictionary, so you can completely scrat
 .. code-block:: python
 
     class AutocompleteUrlExtraHeaders(AgnocompleteProxy):
-        search_url = 'http://api.examplecom/search?q={q}'
+        search_url = 'http://api.example.com/search'
 
         def get_http_headers(self):
             return {
                 'X-API-TOKEN': 'GOODAUTHTOKEN',
                 'Content-type': 'application/json',
             }
+
+GET or POST
+-----------
+
+The default HTTP verb used is ``GET``, but you may be forced to use ``POST`` if your 3rd party API wants you to. It's just one configuration flag here:
+
+.. code-block:: python
+
+    class AutocompleteUrlPost(AgnocompleteProxy):
+        search_url = 'http://api.example.com/search'
+        method = 'post'
+
+The payload (with or without extra arguments) will be sent as a JSON dictionary.

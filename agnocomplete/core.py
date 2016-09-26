@@ -491,6 +491,7 @@ class AgnocompleteUrlProxy(with_metaclass(ABCMeta, AgnocompleteBase)):
     """
     value_key = 'value'
     label_key = 'label'
+    method = 'get'
 
     def get_search_url(self):
         raise NotImplementedError(
@@ -508,15 +509,32 @@ class AgnocompleteUrlProxy(with_metaclass(ABCMeta, AgnocompleteBase)):
     def get_choices(self):
         return []
 
+    def get_http_method_arg_name(self):
+        """
+        Return the HTTP function to call and the params/data argument name
+        """
+        if self.method == 'get':
+            arg_name = 'params'
+        else:
+            arg_name = 'data'
+        return getattr(requests, self.method), arg_name
+
     def http_call(self, url=None, **kwargs):
         """
         Call the target URL via HTTP and return the JSON result
         """
         if not url:
             url = self.search_url
-        response = requests.get(
-            url.format(**kwargs),
-            headers=self.get_http_headers()
+        http_func, arg_name = self.get_http_method_arg_name()
+        # Build the argument dictionary to pass in the http function
+        _kwargs = {
+            arg_name: kwargs,
+        }
+        # The actual HTTP call
+        response = http_func(
+            url=url.format(**kwargs),
+            headers=self.get_http_headers(),
+            **_kwargs
         )
         # Error handling
         if response.status_code != 200:

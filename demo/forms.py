@@ -112,7 +112,14 @@ We're not using the usual fixture here. Here's our "database":
 
 
 class UrlProxyForm(UrlProxyFormMixin, forms.Form):
-    person = fields.AgnocompleteField('AutocompleteUrlSimple')
+    person_simple = fields.AgnocompleteField(
+        'AutocompleteUrlSimple',
+        help_text='Simple search using GET',
+    )
+    person_post = fields.AgnocompleteField(
+        'AutocompleteUrlSimplePost',
+        help_text='Simple search using POST',
+    )
 
 
 class UrlProxyConvertForm(UrlProxyFormMixin, forms.Form):

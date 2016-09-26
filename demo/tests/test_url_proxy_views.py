@@ -7,6 +7,7 @@ from .. import DATABASE, GOODAUTHTOKEN
 
 
 class UrlProxyGenericTest(object):
+    method = 'get'
 
     @property
     def http_url(self):
@@ -24,8 +25,13 @@ class UrlProxyGenericTest(object):
     def item_keys(self):
         return [self.label_key, self.value_key]
 
+    def http_call(self, query, method='get'):
+        if method == 'get':
+            return self.client.get(self.http_url, {'q': query})
+        return self.client.post(self.http_url, {'q': query})
+
     def test_simple_query(self):
-        response = self.client.get(self.http_url, {'q': 'person'})
+        response = self.http_call('person', self.method)
         self.assertEqual(response.status_code, 200)
         result = json.loads(response.content.decode())
         self.assertIn('data', result)
@@ -42,7 +48,7 @@ class UrlProxyGenericTest(object):
             self.assertIn('person', item[self.label_key])
 
     def test_single(self):
-        response = self.client.get(self.http_url, {'q': 'first'})
+        response = self.http_call('first', self.method)
         self.assertEqual(response.status_code, 200)
         result = json.loads(response.content.decode())
         self.assertIn('data', result)
@@ -54,7 +60,7 @@ class UrlProxyGenericTest(object):
         self.assertEqual(len(data), 1)
 
     def test_empty_query(self):
-        response = self.client.get(self.http_url, {'q': 'lorem ipsum'})
+        response = self.http_call('lorem ipsum', self.method)
         self.assertEqual(response.status_code, 200)
         result = json.loads(response.content.decode())
         self.assertIn('data', result)
@@ -155,3 +161,15 @@ class UrlProxyHeadersAuthTest(TestCase):
             HTTP_X_API_TOKEN=GOODAUTHTOKEN,
         )
         self.assertEqual(response.status_code, 200)
+
+
+class UrlProxySimplePostTest(UrlProxyGenericTest, TestCase):
+    http_url = reverse('url-proxy:simple-post')
+    value_key = 'value'
+    label_key = 'label'
+    method = 'post'
+
+    def test_get(self):
+        # GET requests are forbidden
+        response = self.http_call('hello', 'get')
+        self.assertEqual(response.status_code, 405)
