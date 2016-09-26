@@ -1,6 +1,7 @@
 """
 Agnocomplete exception classes
 """
+from requests.exceptions import HTTPError
 
 
 class UnregisteredAgnocompleteException(Exception):
@@ -20,5 +21,12 @@ class AuthenticationRequiredAgnocompleteException(Exception):
 class ImproperlyConfiguredView(Exception):
     """
     Occurs if you want to misuse an AgnocompleteGenericView
+    """
+    pass
+
+
+class HTTPError(HTTPError):
+    """
+    Occurs when the 3rd party API returns an error code
     """
     pass

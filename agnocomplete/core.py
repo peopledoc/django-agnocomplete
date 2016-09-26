@@ -4,6 +4,7 @@ The different agnocomplete classes to be discovered
 from copy import copy
 from six import with_metaclass
 from abc import abstractmethod, ABCMeta
+import logging
 
 from django.db.models import Q
 from django.core.exceptions import ImproperlyConfigured
@@ -17,6 +18,9 @@ from .constants import AGNOCOMPLETE_MAX_PAGESIZE
 from .constants import AGNOCOMPLETE_DEFAULT_QUERYSIZE
 from .constants import AGNOCOMPLETE_MIN_QUERYSIZE
 from .exceptions import AuthenticationRequiredAgnocompleteException
+
+
+logger = logging.getLogger(__name__)
 
 
 class ClassPropertyDescriptor(object):
@@ -514,6 +518,11 @@ class AgnocompleteUrlProxy(with_metaclass(ABCMeta, AgnocompleteBase)):
             url.format(**kwargs),
             headers=self.get_http_headers()
         )
+        # Error handling
+        if response.status_code != 200:
+            logger.warning('Invalid Authentication for `%s`', response.url)
+            # Raising a "requests" exception
+            response.raise_for_status()
         return response.json()
 
     def item(self, current_item):
@@ -544,6 +553,7 @@ class AgnocompleteUrlProxy(with_metaclass(ABCMeta, AgnocompleteBase)):
             return []
         # Call to search URL
         http_result = self.http_call(**self.get_http_call_kwargs(query))
+        # TODO: Eventual error handling
         http_result = http_result.get('data', [])
         result = []
         for item in http_result:

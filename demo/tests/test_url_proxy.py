@@ -6,6 +6,8 @@ from django.test import override_settings
 from django.utils.encoding import force_text as text
 
 import mock
+from requests.exceptions import HTTPError
+
 
 from ..autocomplete import (
     AutocompleteUrlSimple,
@@ -171,3 +173,23 @@ class AutocompleteUrlHeadersAuthTest(LiveServerTestCase):
         headers = instance.get_http_headers()
         self.assertIn('X-API-TOKEN', headers)
         self.assertEqual(headers['X-API-TOKEN'], GOODAUTHTOKEN)
+
+
+@override_settings(
+    HTTP_HOST='',
+)
+class HTTPErrorHandlingTest(LiveServerTestCase):
+
+    def test_wrong_auth_error(self):
+        instance = AutocompleteUrlHeadersAuth()
+        search_url = instance.search_url
+        klass = 'demo.autocomplete.AutocompleteUrlHeadersAuth'
+        with mock.patch(klass + '.get_search_url') as mock_auto:
+            mock_auto.return_value = self.live_server_url + search_url
+            with mock.patch(klass + '.get_http_headers') as mock_headers:
+                mock_headers.return_value = {
+                    'NOTHING': 'HERE'
+                }
+                with self.assertRaises(HTTPError):
+                    # Raising a "requests" exception
+                    instance.items(query='person')

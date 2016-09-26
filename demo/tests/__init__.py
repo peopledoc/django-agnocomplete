@@ -1,13 +1,31 @@
-from django.test import TestCase
+from django.test import TestCase, LiveServerTestCase
 from django.core.management import call_command
 
 
-class LoaddataTestCase(TestCase):
+class LoaddataMixin(object):
     def setUp(self):
-        super(LoaddataTestCase, self).setUp()
+        super(LoaddataMixin, self).setUp()
         # Explicitly load initial data, not loaded by default since Django 1.9
         # And keep this command quiet
         call_command("loaddata", "initial_data", verbosity=0)
+
+
+class LoaddataTestCase(LoaddataMixin, TestCase):
+    """
+    Test class that loads data.
+
+    ref: starting from Django 1.9, there's no more automatic implicit loaddata
+    for initial_data fixtures.
+    """
+
+
+class LoaddataLiveTestCase(LoaddataMixin, LiveServerTestCase):
+    """
+    Test class that loads data, along with the LiveServer service activated.
+
+    ref: starting from Django 1.9, there's no more automatic implicit loaddata
+    for initial_data fixtures.
+    """
 
 
 class RegistryTestGeneric(LoaddataTestCase):

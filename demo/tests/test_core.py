@@ -16,7 +16,7 @@ from ..autocomplete import (
     AutocompleteChoicesPagesOverride,
     AutocompletePersonQueryset,
     AutocompletePersonMisconfigured,
-    AutocompletePersonDomain
+    AutocompletePersonDomain,
 )
 from ..models import Person
 from . import MockRequestUser, LoaddataTestCase
