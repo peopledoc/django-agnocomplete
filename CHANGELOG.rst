@@ -9,7 +9,7 @@ master (unreleased)
 - Added support for Django 1.9. Please note that the combination Python 3.3 and Django 1.9 is incompatible - `see Django 1.9 release notes <https://docs.djangoproject.com/en/1.10/releases/1.9/>`_ (#56).
 - Added support for extra arguments passed to the search URL, passed on the Agnocomplete class (#52).
 - Added the ``AgnocompleteUrlProxy`` class, handling autocomplete using a third-party HTTP API (#55).
-
+- Removed Django 1.10 deprecation warnings (#59).
 
 0.5.0 (2016-07-01)
 ==================

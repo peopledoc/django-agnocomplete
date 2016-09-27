@@ -5,6 +5,7 @@ from django.conf.urls import include, url
 from django.contrib import admin
 
 from agnocomplete import get_namespace
+from . import views
 
 
 urlpatterns = [
@@ -20,37 +21,41 @@ urlpatterns = [
     ),
 
     # Agnocomplete Custom view
-    url(r'^hidden-autocomplete/$', 'demo.views.hidden_autocomplete',
+    url(r'^hidden-autocomplete/$', views.hidden_autocomplete,
         name='hidden-autocomplete'),
 
     # Templated DEMO views
-    url(r'^$', 'demo.views.index', name='home'),
-    url(r'^filled-form/$', 'demo.views.filled_form', name='filled-form'),
-    url(r'^search-context/$', 'demo.views.search_context', name='search-context'),  # noqa
-    url(r'^custom/$', 'demo.views.search_custom', name='search-custom'),
+    url(r'^$', views.index, name='home'),
+    url(r'^filled-form/$', views.filled_form, name='filled-form'),
+    url(r'^search-context/$', views.search_context, name='search-context'),
+    url(r'^custom/$', views.search_custom, name='search-custom'),
     # Demo Front JS views
-    url(r'^selectize/$', 'demo.views.selectize', name='selectize'),
-    url(r'^selectize-extra/$', 'demo.views.selectize_extra', name='selectize-extra'),  # noqa
-    url(r'^selectize-multi/$', 'demo.views.selectize_multi', name='selectize-multi'),  # noqa
-    url(r'^selectize-tag/$', 'demo.views.selectize_tag', name='selectize-tag'),
-    url(r'^selectize-model-tag/$', 'demo.views.selectize_model_tag', name='selectize-model-tag'),  # noqa
+    url(r'^selectize/$', views.selectize, name='selectize'),
+    url(r'^selectize-extra/$', views.selectize_extra, name='selectize-extra'),
+    url(r'^selectize-multi/$', views.selectize_multi, name='selectize-multi'),
+    url(r'^selectize-tag/$', views.selectize_tag, name='selectize-tag'),
+    url(r'^selectize-model-tag/$',
+        views.selectize_model_tag, name='selectize-model-tag'),
     url(r'^selectize-model-tag/edit/(?P<pk>\d+)/$',
-        'demo.views.selectize_model_tag_edit',
-        name='selectize-model-tag-edit'),  # noqa
-    url(r'^selectize-model-tag-with-create/$', 'demo.views.selectize_model_tag_with_create', name='selectize-model-tag-with-create'),  # noqa
-    url(r'^selectize-context-tag/$', 'demo.views.selectize_context_tag', name='selectize-context-tag'),  # noqa
+        views.selectize_model_tag_edit,
+        name='selectize-model-tag-edit'),
+    url(r'^selectize-model-tag-with-create/$',
+        views.selectize_model_tag_with_create,
+        name='selectize-model-tag-with-create'),
+    url(r'^selectize-context-tag/$',
+        views.selectize_context_tag, name='selectize-context-tag'),
     # Select 2, jquery-autocomplete, typeahead
-    url(r'^select2/$', 'demo.views.select2', name='select2'),
-    url(r'^jquery-autocomplete/$', 'demo.views.jquery_autocomplete',
+    url(r'^select2/$', views.select2, name='select2'),
+    url(r'^jquery-autocomplete/$', views.jquery_autocomplete,
         name='jquery-autocomplete'),
-    url(r'^typeahead/$', 'demo.views.typeahead', name='typeahead'),
+    url(r'^typeahead/$', views.typeahead, name='typeahead'),
 
     # URL Proxy Urls
-    url(r'^url-proxy-simple/$', 'demo.views.url_proxy_simple',
+    url(r'^url-proxy-simple/$', views.url_proxy_simple,
         name='url-proxy-simple'),
-    url(r'^url-proxy-convert/$', 'demo.views.url_proxy_convert',
+    url(r'^url-proxy-convert/$', views.url_proxy_convert,
         name='url-proxy-convert'),
-    url(r'^url-proxy-auth/$', 'demo.views.url_proxy_auth',
+    url(r'^url-proxy-auth/$', views.url_proxy_auth,
         name='url-proxy-auth'),
 
     # Mock Third Party URLs

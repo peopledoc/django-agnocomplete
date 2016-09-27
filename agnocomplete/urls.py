@@ -1,7 +1,7 @@
 """
 Agnostic Autocomplete URLS
 """
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from .views import AgnocompleteView, CatalogView
 
 urlpatterns = [
@@ -11,5 +11,3 @@ urlpatterns = [
         name='agnocomplete'),
     url(r'^$', CatalogView.as_view(), name='catalog'),
 ]
-
-urlpatterns = patterns('', *urlpatterns)
