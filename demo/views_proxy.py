@@ -80,6 +80,21 @@ def convert_schema(request, *args, **kwargs):
 
 
 @require_GET
+def convert_schema_list(request, *args, **kwargs):
+    """
+    Return a list of items not embedded in a dict.
+    """
+    search_term = request.GET.get('q', None)
+    # Fetching result without converting item JSON payload.
+    result = _search(search_term, convert_data)
+    response = json.dumps(result.get('data', []))
+    logger.debug(
+        '3rd party schema conversion search w/ list: `%s`', search_term)
+    logger.debug('response: `%s`', response)
+    return HttpResponse(response)
+
+
+@require_GET
 def simple_auth(request, *args, **kwargs):
     # Check authentication
     auth_token = request.GET.get('auth_token', None)

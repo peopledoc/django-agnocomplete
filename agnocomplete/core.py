@@ -492,6 +492,7 @@ class AgnocompleteUrlProxy(with_metaclass(ABCMeta, AgnocompleteBase)):
     value_key = 'value'
     label_key = 'label'
     method = 'get'
+    data_key = 'data'
 
     def get_search_url(self):
         raise NotImplementedError(
@@ -557,6 +558,15 @@ class AgnocompleteUrlProxy(with_metaclass(ABCMeta, AgnocompleteBase)):
         """
         return {}
 
+    def get_http_result(self, http_result):
+        """
+        Return an iterable with all the result items in.
+
+        You can override/overwrite this method to adapt it to the payload
+        returned by the 3rd party API.
+        """
+        return http_result.get(self.data_key, [])
+
     def get_http_call_kwargs(self, query):
         """
         Return the HTTP query arguments.
@@ -572,7 +582,7 @@ class AgnocompleteUrlProxy(with_metaclass(ABCMeta, AgnocompleteBase)):
         # Call to search URL
         http_result = self.http_call(**self.get_http_call_kwargs(query))
         # TODO: Eventual error handling
-        http_result = http_result.get('data', [])
+        http_result = self.get_http_result(http_result)
         result = []
         for item in http_result:
             result.append(self.item(item))
@@ -586,8 +596,8 @@ class AgnocompleteUrlProxy(with_metaclass(ABCMeta, AgnocompleteBase)):
             if _id:
                 # Call to the item URL
                 result = self.http_call(url=self.get_item_url(pk=_id))
-                if 'data' in result and len(result['data']):
-                    for item in result['data']:
+                if self.data_key in result and len(result[self.data_key]):
+                    for item in result[self.data_key]:
                         data.append(
                             (
                                 text(item[self.value_key]),

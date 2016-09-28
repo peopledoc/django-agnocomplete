@@ -107,7 +107,27 @@ or, if things are going more complicated:
 If the result doesn't follow standard schema
 ++++++++++++++++++++++++++++++++++++++++++++
 
-The :meth:`get_http_result` is ready to be overridden.
+The simplest case is this one:
+
+.. code-block:: json
+
+    {
+        "resultset": [
+            {"value": "value", "label": "label"},
+            {"value": "value2", "label": "label2"},
+            {"value": "etc, etc", "label": "etc, etc..."}
+        ]
+    }
+
+Your dataset is embedded in a dictionary, but the key to this dataset is not ``data`` but *something else*. You'll only have to give a different value to the class property ``data_key``.
+
+
+.. code-block:: python
+
+    class AutocompleteUrlConvert(AgnocompleteUrlProxy):
+        data_key = 'resultset'
+
+If your result payload is more complicated and you need to loop over it or transform it, you can still overwrite/override the method :meth:`get_http_result`.
 
 .. important::
 
@@ -119,7 +139,8 @@ Simple example:
 
     class AutocompleteUrlSchema(AgnocompleteUrlProxy):
         def get_http_result(self, payload):
-            return payload.get('result', [])
+            return payload.get('meta', {}).get('dataset', {})
+
 
 
 Passing extra arguments to the API call

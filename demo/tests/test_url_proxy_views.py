@@ -187,7 +187,6 @@ class UrlProxyConvertSchemaTest(UrlProxyGenericTest, TestCase):
     label_key = 'label'
 
     def test_search_person(self):
-        # GET requests are forbidden
         response = self.client.get(
             self.http_url,
             {'q': 'person'},
@@ -196,3 +195,17 @@ class UrlProxyConvertSchemaTest(UrlProxyGenericTest, TestCase):
         result = json.loads(response.content.decode())
         # Not "data"
         self.assertNotIn('data', result)
+
+
+class UrlProxyConvertSchemaListTest(TestCase):
+    http_url = reverse('url-proxy:convert-schema-list')
+    # Returning the standard items, but as a list
+
+    def test_search_person(self):
+        response = self.client.get(
+            self.http_url,
+            {'q': 'person'},
+        )
+        self.assertEqual(response.status_code, 200)
+        result = json.loads(response.content.decode())
+        self.assertTrue(isinstance(result, list))
