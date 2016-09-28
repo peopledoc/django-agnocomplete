@@ -595,9 +595,7 @@ class SelectizeExtraTest(LoaddataTestCase):
         self.assertEqual(len(data), 2)
 
 
-@override_settings(
-    HTTP_HOST='',
-)
+@override_settings(HTTP_HOST='')
 class UrlProxyAuthTest(LoaddataLiveTestCase):
     def test_search_query_auth(self):
         # URL construct
