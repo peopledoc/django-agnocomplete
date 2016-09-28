@@ -8,6 +8,7 @@ from .. import DATABASE, GOODAUTHTOKEN
 
 class UrlProxyGenericTest(object):
     method = 'get'
+    data_key = 'data'
 
     @property
     def http_url(self):
@@ -34,8 +35,8 @@ class UrlProxyGenericTest(object):
         response = self.http_call('person', self.method)
         self.assertEqual(response.status_code, 200)
         result = json.loads(response.content.decode())
-        self.assertIn('data', result)
-        data = result['data']
+        self.assertIn(self.data_key, result)
+        data = result[self.data_key]
         # Result data is a list
         self.assertTrue(isinstance(data, list))
         # Result data is not empty
@@ -51,8 +52,8 @@ class UrlProxyGenericTest(object):
         response = self.http_call('first', self.method)
         self.assertEqual(response.status_code, 200)
         result = json.loads(response.content.decode())
-        self.assertIn('data', result)
-        data = result['data']
+        self.assertIn(self.data_key, result)
+        data = result[self.data_key]
         # Result data is a list
         self.assertTrue(isinstance(data, list))
         # Result data is not empty
@@ -63,8 +64,8 @@ class UrlProxyGenericTest(object):
         response = self.http_call('lorem ipsum', self.method)
         self.assertEqual(response.status_code, 200)
         result = json.loads(response.content.decode())
-        self.assertIn('data', result)
-        data = result['data']
+        self.assertIn(self.data_key, result)
+        data = result[self.data_key]
         # Result data is a list
         self.assertTrue(isinstance(data, list))
         # Result data is empty
@@ -95,12 +96,15 @@ class UrlProxyConvertComplexTest(UrlProxyGenericTest, TestCase):
 
 
 class UrlProxyItemTest(TestCase):
+
+    data_key = 'data'
+
     def test_item(self):
         response = self.client.get(reverse('url-proxy:item', args=[4]))
         self.assertEqual(response.status_code, 200)
         result = json.loads(response.content.decode())
-        self.assertIn('data', result)
-        data = result['data']
+        self.assertIn(self.data_key, result)
+        data = result[self.data_key]
         # Result data is a list
         self.assertTrue(isinstance(data, list))
         # Result data is not empty
@@ -173,3 +177,22 @@ class UrlProxySimplePostTest(UrlProxyGenericTest, TestCase):
         # GET requests are forbidden
         response = self.http_call('hello', 'get')
         self.assertEqual(response.status_code, 405)
+
+
+class UrlProxyConvertSchemaTest(UrlProxyGenericTest, TestCase):
+    http_url = reverse('url-proxy:convert-schema')
+    # Returning the standard items, but embedded in "result"
+    data_key = 'result'
+    value_key = 'value'
+    label_key = 'label'
+
+    def test_search_person(self):
+        # GET requests are forbidden
+        response = self.client.get(
+            self.http_url,
+            {'q': 'person'},
+        )
+        self.assertEqual(response.status_code, 200)
+        result = json.loads(response.content.decode())
+        # Not "data"
+        self.assertNotIn('data', result)
