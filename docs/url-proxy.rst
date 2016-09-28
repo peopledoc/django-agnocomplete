@@ -32,10 +32,26 @@ then, you won't have to do anything else: this service will return data directly
 What if it doesn't return the standard agnocomplete JSON?
 ---------------------------------------------------------
 
-You'll have to convert this data into a format known by the agnocomplete widgets. Hopefully, we're providing simple parameters to make an easy conversion.
+By default, ``django-agnocomplete`` assumes that the returned data looks like this:
 
-What's configurable?
-++++++++++++++++++++
+.. code-block:: json
+
+    {
+        "data": [
+            {"value": "value", "label": "label"},
+            {"value": "value2", "label": "label2"},
+            {"value": "etc, etc", "label": "etc, etc..."}
+        ]
+    }
+
+Of course, this very simple structure is a bit biased and we're sure it's not even a standard.
+
+As a consequence, you'll probablay have to convert this data into a format known by the agnocomplete widgets. Hopefully, we're providing simple parameters and methods to make an easy conversion.
+
+Configurable parameters
++++++++++++++++++++++++
+
+If your target API follows the dataset structure, you have two params to adjust to your return schema.
 
 * ``value_key``: the name of the key in the item dictionary to be used for ``value``,
 * ``label_key``: the name of the key in the item dictionary to be used for ``label``,
@@ -60,10 +76,8 @@ will be converted like this before being returned by the search:
 
     {"value": 19911, "label": "Inigo Montoya"}
 
-For more complicated cases
-++++++++++++++++++++++++++
-
-If the returned JSON is in now way similar to what you were expecting, you have several options:
+If you need to merge fields
++++++++++++++++++++++++++++
 
 **If the JSON is a list or an iterable**, you can override the `Agnocomplete` class :meth:`item()` method, like this:
 
@@ -89,6 +103,45 @@ or, if things are going more complicated:
                 value=current_item[current_item['meta']['value_field']],
                 label='{} {}'.format(current_item['label1'], current_item['label2']),
             )
+
+If the result doesn't follow standard schema
+++++++++++++++++++++++++++++++++++++++++++++
+
+The simplest case is this one:
+
+.. code-block:: json
+
+    {
+        "resultset": [
+            {"value": "value", "label": "label"},
+            {"value": "value2", "label": "label2"},
+            {"value": "etc, etc", "label": "etc, etc..."}
+        ]
+    }
+
+Your dataset is embedded in a dictionary, but the key to this dataset is not ``data`` but *something else*. You'll only have to give a different value to the class property ``data_key``.
+
+
+.. code-block:: python
+
+    class AutocompleteUrlConvert(AgnocompleteUrlProxy):
+        data_key = 'resultset'
+
+If your result payload is more complicated and you need to loop over it or transform it, you can still overwrite/override the method :meth:`get_http_result`.
+
+.. important::
+
+    this overridden/overwritten method **must** return an iterable (list, set, tuple...)
+
+Simple example:
+
+.. code-block:: python
+
+    class AutocompleteUrlSchema(AgnocompleteUrlProxy):
+        def get_http_result(self, payload):
+            return payload.get('meta', {}).get('dataset', {})
+
+
 
 Passing extra arguments to the API call
 ---------------------------------------

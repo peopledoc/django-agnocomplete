@@ -24,14 +24,14 @@ def convert_data_complex(item):
     }
 
 
-def _search(search_term, convert_func):
+def _search(search_term, convert_func, key='data'):
     data = []
     if search_term:
         data = filter(lambda x: search_term in x['name'], DATABASE)
     if data and convert_func:
         data = map(convert_func, data)
     data = list(data)
-    result = {'data': data}
+    result = {key: data}
     return result
 
 
@@ -64,6 +64,32 @@ def convert_complex(request, *args, **kwargs):
     result = _search(search_term, convert_data_complex)
     response = json.dumps(result)
     logger.debug('3rd party complex conversion search: `%s`', search_term)
+    logger.debug('response: `%s`', response)
+    return HttpResponse(response)
+
+
+@require_GET
+def convert_schema(request, *args, **kwargs):
+    search_term = request.GET.get('q', None)
+    # Fetching result without converting item JSON payload.
+    result = _search(search_term, convert_data, key='result')
+    response = json.dumps(result)
+    logger.debug('3rd party schema conversion search: `%s`', search_term)
+    logger.debug('response: `%s`', response)
+    return HttpResponse(response)
+
+
+@require_GET
+def convert_schema_list(request, *args, **kwargs):
+    """
+    Return a list of items not embedded in a dict.
+    """
+    search_term = request.GET.get('q', None)
+    # Fetching result without converting item JSON payload.
+    result = _search(search_term, convert_data)
+    response = json.dumps(result.get('data', []))
+    logger.debug(
+        '3rd party schema conversion search w/ list: `%s`', search_term)
     logger.debug('response: `%s`', response)
     return HttpResponse(response)
 

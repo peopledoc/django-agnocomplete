@@ -12,6 +12,8 @@ from requests.exceptions import HTTPError
 from ..autocomplete import (
     AutocompleteUrlSimple,
     AutocompleteUrlConvert,
+    AutocompleteUrlConvertSchema,
+    AutocompleteUrlConvertSchemaList,
     AutocompleteUrlConvertComplex,
     AutocompleteUrlSimpleAuth,
     AutocompleteUrlHeadersAuth,
@@ -94,9 +96,59 @@ class AutocompleteUrlConvertTest(LiveServerTestCase):
 @override_settings(
     HTTP_HOST='',
 )
+class AutocompleteUrlConvertSchemaTest(LiveServerTestCase):
+    """
+    The AutocompleteUrlConvertSchema URL returns a non-standard schema.
+    """
+    def test_search(self):
+        instance = AutocompleteUrlConvertSchema()
+        # "mock" Change URL by adding the host
+        search_url = instance.search_url
+        with mock.patch('demo.autocomplete.AutocompleteUrlConvertSchema'
+                        '.get_search_url') as mock_auto:
+            mock_auto.return_value = self.live_server_url + search_url
+            self.assertEqual(
+                list(instance.items(query='person')), RESULT_DICT
+            )
+            # Search for first person
+            self.assertEqual(
+                list(instance.items(query='first')), [
+                    {'value': '1', 'label': 'first person'},
+                ],
+            )
+
+
+@override_settings(
+    HTTP_HOST='',
+)
+class AutocompleteUrlConvertSchemaListTest(LiveServerTestCase):
+    """
+    The AutocompleteUrlConvertSchemaList URL returns a list.
+    """
+    def test_search(self):
+        instance = AutocompleteUrlConvertSchemaList()
+        # "mock" Change URL by adding the host
+        search_url = instance.search_url
+        with mock.patch('demo.autocomplete.AutocompleteUrlConvertSchemaList'
+                        '.get_search_url') as mock_auto:
+            mock_auto.return_value = self.live_server_url + search_url
+            self.assertEqual(
+                list(instance.items(query='person')), RESULT_DICT
+            )
+            # Search for first person
+            self.assertEqual(
+                list(instance.items(query='first')), [
+                    {'value': '1', 'label': 'first person'},
+                ],
+            )
+
+
+@override_settings(
+    HTTP_HOST='',
+)
 class AutocompleteUrlConvertComplexTest(LiveServerTestCase):
     """
-    The AutocompleteUrlConvertComplex returns a different JSON format.
+    The AutocompleteUrlConvertComplex returns a different item format.
     """
     def test_search(self):
         instance = AutocompleteUrlConvertComplex()

@@ -177,6 +177,34 @@ class AutocompleteUrlConvert(AutocompleteUrlMixin):
         )
 
 
+class AutocompleteUrlConvertSchema(AutocompleteUrlMixin):
+    """
+    Return results embedded under the "result" key.
+    """
+    data_key = 'result'
+
+    def get_search_url(self):
+        return '{}{}'.format(
+            getattr(settings, 'HTTP_HOST', ''),
+            reverse_lazy('url-proxy:convert-schema'),
+        )
+
+
+class AutocompleteUrlConvertSchemaList(AutocompleteUrlMixin):
+    """
+    Return results as a list, not a dict
+    """
+    def get_search_url(self):
+        return '{}{}'.format(
+            getattr(settings, 'HTTP_HOST', ''),
+            reverse_lazy('url-proxy:convert-schema-list')
+        )
+
+    def get_http_result(self, payload):
+        # Return the payload as is, it's a list.
+        return payload
+
+
 class AutocompleteUrlConvertComplex(AgnocompleteUrlProxy):
     def get_search_url(self):
         return '{}{}'.format(
@@ -245,6 +273,8 @@ register(AutocompleteContextTag)
 register(AutocompleteUrlSimple)
 register(AutocompleteUrlConvert)
 register(AutocompleteUrlConvertComplex)
+register(AutocompleteUrlConvertSchema)
+register(AutocompleteUrlConvertSchemaList)
 register(AutocompleteUrlSimpleAuth)
 register(AutocompleteUrlHeadersAuth)
 register(AutocompleteUrlSimplePost)
