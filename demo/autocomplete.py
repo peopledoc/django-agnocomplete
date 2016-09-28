@@ -147,20 +147,24 @@ class AutocompleteContextTag(AgnocompleteModel):
 
 # Toolbox
 class AutocompleteUrlMixin(AgnocompleteUrlProxy):
+
+    url_search_string = None
+
     def get_item_url(self, pk):
         return '{}{}'.format(
             getattr(settings, 'HTTP_HOST', ''),
             reverse_lazy('url-proxy:item', args=[pk]),
         )
 
-
-class AutocompleteUrlSimple(AutocompleteUrlMixin):
-
     def get_search_url(self):
         return '{}{}'.format(
             getattr(settings, 'HTTP_HOST', ''),
-            reverse_lazy('url-proxy:simple'),
+            reverse_lazy(self.url_search_string),
         )
+
+
+class AutocompleteUrlSimple(AutocompleteUrlMixin):
+    url_search_string = 'url-proxy:simple'
 
 
 class AutocompleteUrlConvert(AutocompleteUrlMixin):
@@ -169,12 +173,7 @@ class AutocompleteUrlConvert(AutocompleteUrlMixin):
     """
     value_key = 'pk'
     label_key = 'name'
-
-    def get_search_url(self):
-        return '{}{}'.format(
-            getattr(settings, 'HTTP_HOST', ''),
-            reverse_lazy('url-proxy:convert'),
-        )
+    url_search_string = 'url-proxy:convert'
 
 
 class AutocompleteUrlConvertSchema(AutocompleteUrlMixin):
@@ -182,35 +181,22 @@ class AutocompleteUrlConvertSchema(AutocompleteUrlMixin):
     Return results embedded under the "result" key.
     """
     data_key = 'result'
-
-    def get_search_url(self):
-        return '{}{}'.format(
-            getattr(settings, 'HTTP_HOST', ''),
-            reverse_lazy('url-proxy:convert-schema'),
-        )
+    url_search_string = 'url-proxy:convert-schema'
 
 
 class AutocompleteUrlConvertSchemaList(AutocompleteUrlMixin):
     """
     Return results as a list, not a dict
     """
-    def get_search_url(self):
-        return '{}{}'.format(
-            getattr(settings, 'HTTP_HOST', ''),
-            reverse_lazy('url-proxy:convert-schema-list')
-        )
+    url_search_string = 'url-proxy:convert-schema-list'
 
     def get_http_result(self, payload):
         # Return the payload as is, it's a list.
         return payload
 
 
-class AutocompleteUrlConvertComplex(AgnocompleteUrlProxy):
-    def get_search_url(self):
-        return '{}{}'.format(
-            getattr(settings, 'HTTP_HOST', ''),
-            reverse_lazy('url-proxy:convert-complex'),
-        )
+class AutocompleteUrlConvertComplex(AutocompleteUrlMixin):
+    url_search_string = 'url-proxy:convert-complex'
 
     def item(self, current_item):
         return dict(
@@ -221,11 +207,7 @@ class AutocompleteUrlConvertComplex(AgnocompleteUrlProxy):
 
 
 class AutocompleteUrlSimpleAuth(AutocompleteUrlMixin):
-    def get_search_url(self):
-        return '{}{}'.format(
-            getattr(settings, 'HTTP_HOST', ''),
-            reverse_lazy('url-proxy:simple-auth'),
-        )
+    url_search_string = 'url-proxy:simple-auth'
 
     def get_http_call_kwargs(self, query):
         query_args = super(
@@ -235,11 +217,7 @@ class AutocompleteUrlSimpleAuth(AutocompleteUrlMixin):
 
 
 class AutocompleteUrlHeadersAuth(AutocompleteUrlMixin):
-    def get_search_url(self):
-        return '{}{}'.format(
-            getattr(settings, 'HTTP_HOST', ''),
-            reverse_lazy('url-proxy:headers-auth'),
-        )
+    url_search_string = 'url-proxy:headers-auth'
 
     def get_http_headers(self):
         return {'X-API-TOKEN': GOODAUTHTOKEN}
@@ -247,13 +225,7 @@ class AutocompleteUrlHeadersAuth(AutocompleteUrlMixin):
 
 class AutocompleteUrlSimplePost(AutocompleteUrlMixin):
     method = 'post'
-
-    def get_search_url(self):
-        # Search using POST, no need to send query args
-        return '{}{}'.format(
-            getattr(settings, 'HTTP_HOST', ''),
-            reverse_lazy('url-proxy:simple-post'),
-        )
+    url_search_string = 'url-proxy:simple-post'
 
 
 # Registration
