@@ -2,7 +2,7 @@
 Changelog for django-agnocomplete
 =================================
 
-master (unreleased)
+0.6rc2 (2016-09-28)
 ===================
 
 - Dropped support for Django 1.6 / 1.7 (#54),
