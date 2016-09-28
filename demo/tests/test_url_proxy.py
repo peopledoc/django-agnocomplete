@@ -23,9 +23,7 @@ from .. import DATABASE, GOODAUTHTOKEN
 RESULT_DICT = [{'value': text(item['pk']), 'label': text(item['name'])} for item in DATABASE]  # noqa
 
 
-@override_settings(
-    HTTP_HOST='',
-)
+@override_settings(HTTP_HOST='')
 class AutocompleteUrlSimpleTest(LiveServerTestCase):
 
     def test_search(self):
@@ -68,9 +66,7 @@ class AutocompleteUrlSimpleTest(LiveServerTestCase):
             )
 
 
-@override_settings(
-    HTTP_HOST='',
-)
+@override_settings(HTTP_HOST='')
 class AutocompleteUrlConvertTest(LiveServerTestCase):
     """
     The AutocompleteUrlConvert does not use the same value/label keys.
@@ -93,9 +89,7 @@ class AutocompleteUrlConvertTest(LiveServerTestCase):
             )
 
 
-@override_settings(
-    HTTP_HOST='',
-)
+@override_settings(HTTP_HOST='')
 class AutocompleteUrlConvertSchemaTest(LiveServerTestCase):
     """
     The AutocompleteUrlConvertSchema URL returns a non-standard schema.
@@ -118,9 +112,7 @@ class AutocompleteUrlConvertSchemaTest(LiveServerTestCase):
             )
 
 
-@override_settings(
-    HTTP_HOST='',
-)
+@override_settings(HTTP_HOST='')
 class AutocompleteUrlConvertSchemaListTest(LiveServerTestCase):
     """
     The AutocompleteUrlConvertSchemaList URL returns a list.
@@ -143,9 +135,7 @@ class AutocompleteUrlConvertSchemaListTest(LiveServerTestCase):
             )
 
 
-@override_settings(
-    HTTP_HOST='',
-)
+@override_settings(HTTP_HOST='')
 class AutocompleteUrlConvertComplexTest(LiveServerTestCase):
     """
     The AutocompleteUrlConvertComplex returns a different item format.
@@ -169,9 +159,7 @@ class AutocompleteUrlConvertComplexTest(LiveServerTestCase):
             )
 
 
-@override_settings(
-    HTTP_HOST='',
-)
+@override_settings(HTTP_HOST='')
 class AutocompleteUrlSimpleAuthTest(LiveServerTestCase):
     def test_search(self):
         instance = AutocompleteUrlSimpleAuth()
@@ -199,9 +187,7 @@ class AutocompleteUrlSimpleAuthTest(LiveServerTestCase):
         self.assertEqual(query_args['auth_token'], GOODAUTHTOKEN)
 
 
-@override_settings(
-    HTTP_HOST='',
-)
+@override_settings(HTTP_HOST='')
 class AutocompleteUrlHeadersAuthTest(LiveServerTestCase):
     def test_search(self):
         instance = AutocompleteUrlHeadersAuth()
@@ -228,9 +214,7 @@ class AutocompleteUrlHeadersAuthTest(LiveServerTestCase):
         self.assertEqual(headers['X-API-TOKEN'], GOODAUTHTOKEN)
 
 
-@override_settings(
-    HTTP_HOST='',
-)
+@override_settings(HTTP_HOST='')
 class HTTPErrorHandlingTest(LiveServerTestCase):
 
     def test_wrong_auth_error(self):
@@ -248,9 +232,7 @@ class HTTPErrorHandlingTest(LiveServerTestCase):
                     instance.items(query='person')
 
 
-@override_settings(
-    HTTP_HOST='',
-)
+@override_settings(HTTP_HOST='')
 class AutocompleteUrlSimplePostTest(LiveServerTestCase):
     def test_search(self):
         instance = AutocompleteUrlSimplePost()
