@@ -1,6 +1,4 @@
 # -*- coding: utf8 -*-
-import json
-
 from django.core.urlresolvers import reverse
 from django.utils.encoding import force_text as text
 from django.contrib.auth.models import User
@@ -8,14 +6,7 @@ from django.contrib.auth.models import User
 from agnocomplete import get_namespace
 
 from ..models import Person
-from . import RegistryTestGeneric
-
-
-def get_json(response, key='data'):
-    data = json.loads(response.content.decode())
-    if key:
-        return data.get(key, None)
-    return data
+from . import RegistryTestGeneric, get_json
 
 
 class NamespaceGeneric(object):

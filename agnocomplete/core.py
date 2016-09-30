@@ -539,7 +539,7 @@ class AgnocompleteUrlProxy(with_metaclass(ABCMeta, AgnocompleteBase)):
         )
         # Error handling
         if response.status_code != 200:
-            logger.warning('Invalid Authentication for `%s`', response.url)
+            logger.warning('Invalid Request for `%s`', response.url)
             # Raising a "requests" exception
             response.raise_for_status()
         return response.json()
@@ -581,10 +581,12 @@ class AgnocompleteUrlProxy(with_metaclass(ABCMeta, AgnocompleteBase)):
             return []
         # Call to search URL
         http_result = self.http_call(**self.get_http_call_kwargs(query))
-        # TODO: Eventual error handling
+        # In case of error, on the API side, the error is raised and handled
+        # in the view.
         http_result = self.get_http_result(http_result)
         result = []
         for item in http_result:
+            # Eventual result reshaping.
             result.append(self.item(item))
         return result
 

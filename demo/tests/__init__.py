@@ -1,3 +1,6 @@
+# -*- coding: utf8 -*-
+import json
+
 from django.test import TestCase, LiveServerTestCase
 from django.core.management import call_command
 
@@ -68,3 +71,10 @@ class MockRequestUser(object):
 
     def is_authenticated(self):
         return self._is_authenticated
+
+
+def get_json(response, key='data'):
+    data = json.loads(response.content.decode())
+    if key:
+        return data.get(key, None)
+    return data
