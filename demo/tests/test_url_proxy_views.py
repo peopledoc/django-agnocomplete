@@ -209,3 +209,26 @@ class UrlProxyConvertSchemaListTest(TestCase):
         self.assertEqual(response.status_code, 200)
         result = json.loads(response.content.decode())
         self.assertTrue(isinstance(result, list))
+
+
+class UrlProxyErrorsTest(TestCase):
+
+    def test_400(self):
+        response = self.client.get(
+            reverse('url-proxy:errors'), {'q': '400'})
+        self.assertEqual(response.status_code, 400)
+
+    def test_403(self):
+        response = self.client.get(
+            reverse('url-proxy:errors'), {'q': '403'})
+        self.assertEqual(response.status_code, 403)
+
+    def test_404(self):
+        response = self.client.get(
+            reverse('url-proxy:errors'), {'q': '404'})
+        self.assertEqual(response.status_code, 404)
+
+    def test_500(self):
+        response = self.client.get(
+            reverse('url-proxy:errors'), {'q': 'whatever'})
+        self.assertEqual(response.status_code, 500)
