@@ -4,6 +4,8 @@ Agnocomplete specific form fields.
 """
 from django import forms
 
+import six
+
 from .core import AgnocompleteBase
 from .constants import AGNOCOMPLETE_USER_ATTRIBUTE
 from .widgets import AgnocompleteSelect, AgnocompleteMultiSelect
@@ -55,7 +57,7 @@ class AgnocompleteMixin(object):
 
         """
         # If string, use register to fetch the class
-        if isinstance(klass_or_instance, str):
+        if isinstance(klass_or_instance, six.string_types):
             registry = get_agnocomplete_registry()
             if klass_or_instance not in registry:
                 raise UnregisteredAgnocompleteException(
