@@ -1,6 +1,8 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
+import six
+
 from agnocomplete.fields import (
     AgnocompleteField,
     AgnocompleteMultipleField,
@@ -37,6 +39,11 @@ class AgnocompleteInstanceTest(TestCase):
     def test_unkown_string(self):
         with self.assertRaises(UnregisteredAgnocompleteException):
             AgnocompleteField('MEUUUUUUH')
+
+    def test_unicode(self):
+        field = AgnocompleteField(six.u('AutocompleteColor'))
+        self.assertTrue(field.agnocomplete)
+        self.assertTrue(isinstance(field.agnocomplete, AutocompleteColor))
 
     def test_instance_url(self):
         field = AgnocompleteField(AutocompleteColor())
