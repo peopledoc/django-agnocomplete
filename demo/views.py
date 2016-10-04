@@ -18,7 +18,7 @@ from .forms import (
     PersonTagModelFormWithCreate,
     PersonContextTagModelForm,
     UrlProxyForm, UrlProxyConvertForm,
-    UrlProxyAuthForm,
+    UrlProxyAuthForm, UrlProxyErrors,
 )
 from .autocomplete import HiddenAutocomplete
 from .models import PersonTag
@@ -191,6 +191,12 @@ class UrlProxyAuthView(AutoView):
     template_name = "selectize.html"
 
 
+class UrlProxyErrorsView(AutoView):
+    form_class = UrlProxyErrors
+    title = 'URLs that will always return an error'
+    template_name = "selectize.html"
+
+
 index = IndexView.as_view()
 filled_form = FilledFormView.as_view()
 search_context = SearchContextFormView.as_view()
@@ -214,3 +220,4 @@ selectize_context_tag = PersonContextTagView.as_view()
 url_proxy_simple = UrlProxySimpleView.as_view()
 url_proxy_convert = UrlProxyConvertView.as_view()
 url_proxy_auth = UrlProxyAuthView.as_view()
+url_proxy_errors = UrlProxyErrorsView.as_view()

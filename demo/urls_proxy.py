@@ -18,4 +18,5 @@ urlpatterns = [
         views_proxy.convert_schema_list, name='convert-schema-list'),
     url(r'^simple-auth/$', views_proxy.simple_auth, name='simple-auth'),
     url(r'^headers-auth/$', views_proxy.headers_auth, name='headers-auth'),
+    url(r'^errors/$', views_proxy.errors, name='errors'),
 ]

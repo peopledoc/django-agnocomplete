@@ -228,6 +228,12 @@ class AutocompleteUrlSimplePost(AutocompleteUrlMixin):
     url_search_string = 'url-proxy:simple-post'
 
 
+class AutocompleteUrlErrors(AutocompleteUrlMixin):
+    url_search_string = 'url-proxy:errors'
+    query_size = 2
+    query_size_min = 2
+
+
 # Registration
 register(AutocompleteColor)
 register(AutocompleteColorExtra)
@@ -250,3 +256,4 @@ register(AutocompleteUrlConvertSchemaList)
 register(AutocompleteUrlSimpleAuth)
 register(AutocompleteUrlHeadersAuth)
 register(AutocompleteUrlSimplePost)
+register(AutocompleteUrlErrors)

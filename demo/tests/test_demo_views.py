@@ -4,7 +4,6 @@ from django.core.urlresolvers import reverse
 from django.test import override_settings
 
 import mock
-from requests.exceptions import HTTPError
 
 from agnocomplete import get_namespace
 from agnocomplete.views import AgnocompleteJSONView
@@ -632,49 +631,3 @@ class UrlProxyAuthTest(LoaddataLiveTestCase):
             result = json.loads(response.content.decode())
             data = result.get('data')
             self.assertEqual(len(data), 7)
-
-    def test_search_query_wrong_auth(self):
-        # URL construct
-        instance = AutocompleteUrlSimpleAuth()
-        search_url = instance.search_url
-        klass = 'demo.autocomplete.AutocompleteUrlSimpleAuth'
-        with mock.patch(klass + '.get_search_url') as mock_auto:
-            mock_auto.return_value = self.live_server_url + search_url
-            # Search using the URL proxy view
-            search_url = get_namespace() + ':agnocomplete'
-
-            with mock.patch(klass + '.get_http_call_kwargs') as mock_headers:
-                mock_headers.return_value = {
-                    'auth_token': 'BADAUTHTOKEN',
-                    'q': 'person',
-                }
-                # TODO: We'll probably have to handle a custom error process
-                # ATM we're passing the HTTPError back to the front-end.
-                with self.assertRaises(HTTPError):
-                    self.client.get(
-                        reverse(
-                            search_url, args=['AutocompleteUrlSimpleAuth']),
-                        data={'q': "person"}
-                    )
-
-    def test_search_headers_wrong_auth(self):
-        # URL construct
-        instance = AutocompleteUrlHeadersAuth()
-        search_url = instance.search_url
-        klass = 'demo.autocomplete.AutocompleteUrlHeadersAuth'
-        with mock.patch(klass + '.get_search_url') as mock_auto:
-            mock_auto.return_value = self.live_server_url + search_url
-            # Search using the URL proxy view
-            search_url = get_namespace() + ':agnocomplete'
-            with mock.patch(klass + '.get_http_headers') as mock_headers:
-                mock_headers.return_value = {
-                    'NOTHING': 'HERE'
-                }
-                # TODO: We'll probably have to handle a custom error process
-                # ATM we're passing the HTTPError back to the front-end.
-                with self.assertRaises(HTTPError):
-                    self.client.get(
-                        reverse(
-                            search_url, args=['AutocompleteUrlHeadersAuth']),
-                        data={'q': "person"}
-                    )

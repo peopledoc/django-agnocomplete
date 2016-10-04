@@ -3,7 +3,7 @@ Agnocomplete views.
 """
 from six import with_metaclass
 from abc import abstractmethod, ABCMeta
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, SuspiciousOperation
 from django.http import Http404, JsonResponse
 from django.utils.functional import cached_property
 from django.views.generic import View
@@ -13,6 +13,36 @@ from .exceptions import (
     AuthenticationRequiredAgnocompleteException,
     ImproperlyConfiguredView
 )
+from requests.exceptions import HTTPError, Timeout
+
+
+def get_error_status_code(exc):
+    """
+    Return the appropriate HTTP status code according to the Exception/Error.
+    """
+
+    if isinstance(exc, HTTPError):
+        # Returning the HTTP Error code coming from requests module
+        return exc.response.status_code
+
+    if isinstance(exc, Timeout):
+        # A timeout is a 408, and it's not a HTTPError (why? dunno).
+        return 408
+
+    if isinstance(exc, Http404):
+        # 404 is 404
+        return 404
+
+    if isinstance(exc, PermissionDenied):
+        # Permission denied is 403
+        return 403
+
+    if isinstance(exc, SuspiciousOperation):
+        # Shouldn't happen, but you never know
+        return 400
+
+    # The default error code is 500
+    return 500
 
 
 class AgnocompleteJSONView(with_metaclass(ABCMeta, View)):
@@ -45,10 +75,21 @@ class AgnocompleteJSONView(with_metaclass(ABCMeta, View)):
         return dict(extra)
 
     def get(self, *args, **kwargs):
-        return JsonResponse(
-            {'data': self.get_dataset(**self.get_extra_arguments())},
-            content_type=self.content_type,
-        )
+        try:
+            dataset = self.get_dataset(**self.get_extra_arguments())
+            return JsonResponse(
+                {'data': dataset},
+                content_type=self.content_type,
+            )
+        except Exception as exc:
+            return JsonResponse(
+                {"errors": [{
+                    "title": "An error has occured",
+                    "detail": "{}".format(exc)
+                }]},
+                content_type=self.content_type,
+                status=get_error_status_code(exc),
+            )
 
 
 class RegistryMixin(object):

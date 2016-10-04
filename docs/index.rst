@@ -34,6 +34,7 @@ So far, we've got it implemented using:
    url-proxy
    custom-views
    fields-widgets
+   error-handling
    demo-site
    admin-site
 

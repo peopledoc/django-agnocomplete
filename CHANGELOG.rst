@@ -10,6 +10,7 @@ master (unreleased)
 - Added support for extra arguments passed to the search URL, passed on the Agnocomplete class (#52).
 - Added the ``AgnocompleteUrlProxy`` class, handling autocomplete using a third-party HTTP API (#55, #62, #63).
 - Removed Django 1.10 deprecation warnings (#59).
+- Global Error Handling (#60).
 
 0.5.0 (2016-07-01)
 ==================

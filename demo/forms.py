@@ -138,3 +138,17 @@ class UrlProxyAuthForm(UrlProxyFormMixin, forms.Form):
     person_headers_auth = fields.AgnocompleteField(
         'AutocompleteUrlHeadersAuth',
         help_text='Headers-based authentication')
+
+
+class UrlProxyErrors(forms.Form):
+    help_text = """
+This form fields will call a URL that will **always** send a HTTP error.
+If you want a specific HTTP status to be returned, type it in the search bar.
+
+e.g.: "hello 404" will return a 404 NOT FOUND.
+
+Use your favorite Browser dev tool to inspect it.
+"""
+    person = fields.AgnocompleteField(
+        'AutocompleteUrlErrors',
+        help_text='will never find anybody')
