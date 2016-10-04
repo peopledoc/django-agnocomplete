@@ -18,7 +18,7 @@ It will provide:
 Status
 ======
 
-Under construction. Warning, fresh paint.
+Beta, used in production.
 
 Install
 =======
@@ -66,13 +66,16 @@ If you need to install a debugger (let's say `ipdb`), you can use the ``TOX_EXTR
 
     TOX_EXTRA=ipdb tox -e py27-django18
 
+.. note::
+
+    We've got a self documented Makefile for common tasks, such as running the tests, building the docs, etc.
 
 Run the demo
 ============
 
 The (draft) demo site can be browsed using the Django devserver. Run::
 
-    tox -e serve
+    make serve
 
 It will run a syncdb (it may ask you questions) and then a runserver with your current ``demo.settings``. You can browse the (very rough) website at http://127.0.0.1:8000/. You can add
 any runserver options you want using the `tox` positional parameters, like this::
@@ -81,6 +84,17 @@ any runserver options you want using the `tox` positional parameters, like this:
 
 
 Here you'll be able to see that ``django-agnocomplete`` has been easily and rapidly integrated with ``selectize.js``, ``select2``, ``jquery-autocomplete`` and ``typeahead``. With the same backend, you can plug the JS front-end you want.
+
+Troubles running the demo?
+--------------------------
+
+This demo project is not build as a production-ready application, models can change, but there's no migration in it. If you have database errors, you can try to remove it using::
+
+    make clean-db
+
+Or, for more radical cleanup::
+
+    make clean-all
 
 ----
 
