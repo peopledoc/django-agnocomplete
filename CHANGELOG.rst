@@ -2,7 +2,7 @@
 Changelog for django-agnocomplete
 =================================
 
-0.6rc2 (2016-09-28)
+0.6rc3 (2016-09-28)
 ===================
 
 - Dropped support for Django 1.6 / 1.7 (#54),
@@ -10,6 +10,7 @@ Changelog for django-agnocomplete
 - Added support for extra arguments passed to the search URL, passed on the Agnocomplete class (#52).
 - Added the ``AgnocompleteUrlProxy`` class, handling autocomplete using a third-party HTTP API (#55, #62).
 - Removed Django 1.10 deprecation warnings (#59).
+- Allowing Autocomplete class argument in AgnocompleteField to be either string (``str``) or unicode variables (#66).
 
 0.5.0 (2016-07-01)
 ==================
