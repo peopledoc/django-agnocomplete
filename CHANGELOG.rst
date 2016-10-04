@@ -11,6 +11,7 @@ master (unreleased)
 - Added the ``AgnocompleteUrlProxy`` class, handling autocomplete using a third-party HTTP API (#55, #62, #63).
 - Removed Django 1.10 deprecation warnings (#59).
 - Global Error Handling (#60).
+- Allowing Autocomplete class argument in AgnocompleteField to be either string (``str``) or unicode variables (#66).
 
 0.5.0 (2016-07-01)
 ==================
