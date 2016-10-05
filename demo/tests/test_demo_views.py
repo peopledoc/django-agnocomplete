@@ -238,6 +238,10 @@ class JSDemoViews(TestCase):
         response = self.client.get(reverse('url-proxy-auth'))
         self.assertEqual(response.status_code, 200)
 
+    def test_url_proxy_with_extra(self):
+        response = self.client.get(reverse('url-proxy-with-extra'))
+        self.assertEqual(response.status_code, 200)
+
 
 class FormValidationViewTest(LoaddataTestCase):
 

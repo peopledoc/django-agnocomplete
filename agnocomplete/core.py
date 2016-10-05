@@ -576,7 +576,7 @@ class AgnocompleteUrlProxy(with_metaclass(ABCMeta, AgnocompleteBase)):
         """
         return {'q': query}
 
-    def items(self, query=None):
+    def items(self, query=None, **kwargs):
         if not self.is_valid_query(query):
             return []
         # Call to search URL

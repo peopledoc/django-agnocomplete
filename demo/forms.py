@@ -138,3 +138,20 @@ class UrlProxyAuthForm(UrlProxyFormMixin, forms.Form):
     person_headers_auth = fields.AgnocompleteField(
         'AutocompleteUrlHeadersAuth',
         help_text='Headers-based authentication')
+
+
+class UrlProxyWithExtraForm(forms.Form):
+    help_text = UrlProxyFormMixin.help_text + """
+
+Please note that we're adding an extra argument to the search: `special`.
+"""
+
+    person_simple = fields.AgnocompleteField(
+        'AutocompleteUrlSimple',
+        help_text='Simple search using GET',
+    )
+
+    person_simple_extra = fields.AgnocompleteField(
+        'AutocompleteUrlSimpleWithExtra',
+        help_text='Simple search using GET, exploiting the "special" argument',
+    )

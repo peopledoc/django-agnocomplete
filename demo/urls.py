@@ -57,6 +57,8 @@ urlpatterns = [
         name='url-proxy-convert'),
     url(r'^url-proxy-auth/$', views.url_proxy_auth,
         name='url-proxy-auth'),
+    url(r'^url-proxy-with-extra/$', views.url_proxy_with_extra,
+        name='url-proxy-with-extra'),
 
     # Mock Third Party URLs
     url(r'^3rdparty/', include('demo.urls_proxy', namespace='url-proxy')),
