@@ -8,7 +8,7 @@ master (unreleased)
 - Dropped support for Django 1.6 / 1.7 (#54),
 - Added support for Django 1.9. Please note that the combination Python 3.3 and Django 1.9 is incompatible - `see Django 1.9 release notes <https://docs.djangoproject.com/en/1.10/releases/1.9/>`_ (#56).
 - Added support for extra arguments passed to the search URL, passed on the Agnocomplete class (#52).
-- Added the ``AgnocompleteUrlProxy`` class, handling autocomplete using a third-party HTTP API (#55, #62, #63).
+- Added the ``AgnocompleteUrlProxy`` class, handling autocomplete using a third-party HTTP API (#55, #62, #63, #67).
 - Removed Django 1.10 deprecation warnings (#59).
 - Global Error Handling (#60).
 - Allowing Autocomplete class argument in AgnocompleteField to be either string (``str``) or unicode variables (#66).

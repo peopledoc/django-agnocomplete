@@ -18,6 +18,7 @@ from ..autocomplete import (
     AutocompleteUrlSimpleAuth,
     AutocompleteUrlHeadersAuth,
     AutocompleteUrlSimplePost,
+    AutocompleteUrlSimpleWithExtra,
 )
 from .. import DATABASE, GOODAUTHTOKEN
 RESULT_DICT = [{'value': text(item['pk']), 'label': text(item['name'])} for item in DATABASE]  # noqa
@@ -251,3 +252,42 @@ class AutocompleteUrlSimplePostTest(LiveServerTestCase):
                     {'value': '1', 'label': 'first person'},
                 ],
             )
+
+
+@override_settings(HTTP_HOST='')
+class AutocompleteUrlWithExtraTest(LiveServerTestCase):
+    def test_search(self):
+        # Should work exactly like the AutocompleteUrlSimple
+        instance = AutocompleteUrlSimpleWithExtra()
+        # "mock" Change URL by adding the host
+        search_url = instance.search_url
+        with mock.patch('demo.autocomplete.AutocompleteUrlSimpleWithExtra'
+                        '.get_search_url') as mock_auto:
+            mock_auto.return_value = self.live_server_url + search_url
+            self.assertEqual(list(instance.items()), [])
+            # Limit is 2, a 1-char-long query should be empty
+            self.assertEqual(list(instance.items(query='p')), [])
+            # Starting from 2 chars, it's okay
+            self.assertEqual(
+                list(instance.items(query='person')), RESULT_DICT
+            )
+
+            self.assertEqual(
+                list(instance.items(query='first')), [
+                    {'value': '1', 'label': 'first person'},
+                ],
+            )
+            self.assertEqual(
+                list(instance.items(query='zzzzz')),
+                []
+            )
+
+    def test_search_extra(self):
+        instance = AutocompleteUrlSimpleWithExtra()
+        # "moo" is an easter egg value here
+        self.assertEqual(
+            list(instance.items(query='person', special='moo')),
+            [
+                {'value': 'moo', 'label': 'moo'}
+            ]
+        )
