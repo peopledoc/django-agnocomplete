@@ -567,7 +567,7 @@ class AgnocompleteUrlProxy(with_metaclass(ABCMeta, AgnocompleteBase)):
         """
         return http_result.get(self.data_key, [])
 
-    def get_http_call_kwargs(self, query):
+    def get_http_call_kwargs(self, query, **kwargs):
         """
         Return the HTTP query arguments.
 
@@ -580,8 +580,10 @@ class AgnocompleteUrlProxy(with_metaclass(ABCMeta, AgnocompleteBase)):
         if not self.is_valid_query(query):
             return []
         # Call to search URL
-        http_result = self.http_call(**self.get_http_call_kwargs(query))
         # TODO: Eventual error handling
+        http_result = self.http_call(
+            **self.get_http_call_kwargs(query, **kwargs)
+        )
         http_result = self.get_http_result(http_result)
         result = []
         for item in http_result:

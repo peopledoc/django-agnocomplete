@@ -6,6 +6,7 @@ from django.test import override_settings
 
 from agnocomplete import constants
 from agnocomplete.core import AgnocompleteModelBase, AgnocompleteBase
+from agnocomplete.core import AgnocompleteUrlProxy
 from agnocomplete.exceptions import AuthenticationRequiredAgnocompleteException
 
 from ..autocomplete import (
@@ -414,3 +415,38 @@ class PerformanceTest(LoaddataTestCase):
         items = instance.items(query="ali")
         self.assertEqual(len(items), 2)
         self.assertEqual(instance._count_item_calls, 2)
+
+
+# Mock class to test get_http_call_kwargs mechanics
+class AutocompleteUrlProxyKwargs(AgnocompleteUrlProxy):
+
+    def http_call(self, *args, **kwargs):
+        # A real fake HTTP call, that returns the queyr arguments
+        return {'data': [
+            {
+                'label': '{}'.format(kwargs),
+                'value': 'nothing',
+            }
+        ]}
+
+    def get_http_call_kwargs(self, query, **kwargs):
+        kw = super(AutocompleteUrlProxyKwargs, self).get_http_call_kwargs(
+            query, **kwargs)
+        kw.update(kwargs)
+        return kw
+
+
+class AutocompleteUrlProxyKwargsTest(TestCase):
+
+    def test_http_call_kwargs(self):
+        instance = AutocompleteUrlProxyKwargs()
+        result = instance.items(query='Nothing to ask', hello="world")
+        # Result is a list of one item
+        self.assertEqual(len(result), 1)
+        item = result[0]
+        self.assertEqual(item['value'], 'nothing')
+        kwargs = eval(item['label'])
+        self.assertEqual(
+            kwargs,
+            {'q': 'Nothing to ask', 'hello': 'world'}
+        )
