@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='django-agnocomplete',
-    version='0.6rc4',
+    version='0.6rc5',
     packages=['agnocomplete'],
     include_package_data=True,
     description='Frontend-agnostic Django autocomplete utilities',
