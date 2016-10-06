@@ -198,10 +198,9 @@ class UrlProxyErrorsView(AutoView):
     template_name = "selectize.html"
 
 
-class UrlProxyWithExtraView(AutoView):
+class UrlProxyWithExtraView(SelectizeExtraView):
     form_class = UrlProxyWithExtraForm
-    title = 'Authenticated URLs, returned normal data'
-    template_name = "selectize.html"
+    title = 'Using extra data and eventually processing it'
 
 
 index = IndexView.as_view()

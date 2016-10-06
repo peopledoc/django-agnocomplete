@@ -286,7 +286,7 @@ class AutocompleteUrlWithExtraTest(LiveServerTestCase):
         instance = AutocompleteUrlSimpleWithExtra()
         # "moo" is an easter egg value here
         self.assertEqual(
-            list(instance.items(query='person', special='moo')),
+            list(instance.items(query='person', extra_argument='moo')),
             [
                 {'value': 'moo', 'label': 'moo'}
             ]

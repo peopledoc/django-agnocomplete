@@ -239,9 +239,12 @@ class AutocompleteUrlErrors(AutocompleteUrlMixin):
 
 
 class AutocompleteUrlSimpleWithExtra(AutocompleteUrlSimple):
+    query_size = 2
+    query_size_min = 2
+
     def items(self, query=None, **kwargs):
         logger.debug("I am exploiting the kwargs [%s]", kwargs)
-        if 'special' in kwargs and kwargs['special'] == 'moo':
+        if 'extra_argument' in kwargs and kwargs['extra_argument'] == 'moo':
             return [{'value': 'moo', 'label': 'moo'}]
         return super(AutocompleteUrlSimple, self).items(query, **kwargs)
 

@@ -31,9 +31,9 @@ class SearchForm(forms.Form):
 
 
 class SearchFormExtra(forms.Form):
+    extra_argument = forms.CharField(required=False)
     search_color = fields.AgnocompleteField(AutocompleteColorExtra)
     search_person = fields.AgnocompleteModelField(AutocompletePersonExtra)
-    extra_argument = forms.CharField(required=False)
 
 
 class SearchFormTextInput(forms.Form):
@@ -157,15 +157,14 @@ Use your favorite Browser dev tool to inspect it.
 class UrlProxyWithExtraForm(forms.Form):
     help_text = UrlProxyFormMixin.help_text + """
 
-Please note that we're adding an extra argument to the search: `special`.
+Note: that we're adding an extra argument to the search: `extra_argument`.
 """
-
+    extra_argument = forms.CharField(required=False)
     person_simple = fields.AgnocompleteField(
         'AutocompleteUrlSimple',
         help_text='Simple search using GET',
     )
-
     person_simple_extra = fields.AgnocompleteField(
         'AutocompleteUrlSimpleWithExtra',
-        help_text='Simple search using GET, exploiting the "special" argument',
+        help_text='Simple search using GET, processing the "extra_argument"',
     )
