@@ -1,6 +1,7 @@
 """
 Autocomplete classes
 """
+import logging
 from django.core.urlresolvers import reverse_lazy
 from django.utils.encoding import force_text as text
 from django.conf import settings
@@ -14,6 +15,9 @@ from agnocomplete.core import (
 from .models import Person, Tag, ContextTag
 from .common import COLORS
 from . import GOODAUTHTOKEN
+
+
+logger = logging.getLogger(__name__)
 
 
 class AutocompleteColor(AgnocompleteChoices):
@@ -234,6 +238,17 @@ class AutocompleteUrlErrors(AutocompleteUrlMixin):
     query_size_min = 2
 
 
+class AutocompleteUrlSimpleWithExtra(AutocompleteUrlSimple):
+    query_size = 2
+    query_size_min = 2
+
+    def items(self, query=None, **kwargs):
+        logger.debug("I am exploiting the kwargs [%s]", kwargs)
+        if 'extra_argument' in kwargs and kwargs['extra_argument'] == 'moo':
+            return [{'value': 'moo', 'label': 'moo'}]
+        return super(AutocompleteUrlSimple, self).items(query, **kwargs)
+
+
 # Registration
 register(AutocompleteColor)
 register(AutocompleteColorExtra)
@@ -257,3 +272,4 @@ register(AutocompleteUrlSimpleAuth)
 register(AutocompleteUrlHeadersAuth)
 register(AutocompleteUrlSimplePost)
 register(AutocompleteUrlErrors)
+register(AutocompleteUrlSimpleWithExtra)

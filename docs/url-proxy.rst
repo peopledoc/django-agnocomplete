@@ -155,7 +155,7 @@ The :meth:`get_http_call_kwargs()` method is completely overridable like this:
     class AutocompleteUrlExtraArgs(AgnocompleteProxy):
         search_url = 'http://api.example.com/search'
 
-        def get_http_call_kwargs(self, query):
+        def get_http_call_kwargs(self, query, **kwargs):
             query_args = super(
                 AutocompleteUrlExtraArgs, self).get_http_call_kwargs(query)
             query_args['auth_token'] = 'GOODAUTHTOKEN'
@@ -167,11 +167,16 @@ The :meth:`get_http_call_kwargs()` method is completely overridable like this:
 
     .. code-block:: python
 
-        def get_http_call_kwargs(self, query):
+        def get_http_call_kwargs(self, query, **kwargs):
             return {
                 'search': query,
                 'auth_token': 'GOODAUTHTOKEN',
             }
+
+.. note::
+
+    Please note that the ``**kwargs`` argument passed into :meth:`get_http_call_kwargs` will be the same arguments passed to the :meth:`items` method. This way, you can manipulate the argument transmitted by the view to the Agnocomplete class and extract them, manipulate them using your context, etc.
+
 
 Adding headers to the HTTP call
 -------------------------------

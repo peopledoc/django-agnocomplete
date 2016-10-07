@@ -567,7 +567,7 @@ class AgnocompleteUrlProxy(with_metaclass(ABCMeta, AgnocompleteBase)):
         """
         return http_result.get(self.data_key, [])
 
-    def get_http_call_kwargs(self, query):
+    def get_http_call_kwargs(self, query, **kwargs):
         """
         Return the HTTP query arguments.
 
@@ -576,11 +576,13 @@ class AgnocompleteUrlProxy(with_metaclass(ABCMeta, AgnocompleteBase)):
         """
         return {'q': query}
 
-    def items(self, query=None):
+    def items(self, query=None, **kwargs):
         if not self.is_valid_query(query):
             return []
         # Call to search URL
-        http_result = self.http_call(**self.get_http_call_kwargs(query))
+        http_result = self.http_call(
+            **self.get_http_call_kwargs(query, **kwargs)
+        )
         # In case of error, on the API side, the error is raised and handled
         # in the view.
         http_result = self.get_http_result(http_result)

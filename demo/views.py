@@ -19,6 +19,7 @@ from .forms import (
     PersonContextTagModelForm,
     UrlProxyForm, UrlProxyConvertForm,
     UrlProxyAuthForm, UrlProxyErrors,
+    UrlProxyWithExtraForm,
 )
 from .autocomplete import HiddenAutocomplete
 from .models import PersonTag
@@ -197,6 +198,11 @@ class UrlProxyErrorsView(AutoView):
     template_name = "selectize.html"
 
 
+class UrlProxyWithExtraView(SelectizeExtraView):
+    form_class = UrlProxyWithExtraForm
+    title = 'Using extra data and eventually processing it'
+
+
 index = IndexView.as_view()
 filled_form = FilledFormView.as_view()
 search_context = SearchContextFormView.as_view()
@@ -221,3 +227,4 @@ url_proxy_simple = UrlProxySimpleView.as_view()
 url_proxy_convert = UrlProxyConvertView.as_view()
 url_proxy_auth = UrlProxyAuthView.as_view()
 url_proxy_errors = UrlProxyErrorsView.as_view()
+url_proxy_with_extra = UrlProxyWithExtraView.as_view()
