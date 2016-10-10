@@ -2,8 +2,8 @@
 Changelog for django-agnocomplete
 =================================
 
-master (unreleased)
-===================
+0.6.0 (2016-10-10)
+==================
 
 - Dropped support for Django 1.6 / 1.7 (#54),
 - Added support for Django 1.9. Please note that the combination Python 3.3 and Django 1.9 is incompatible - `see Django 1.9 release notes <https://docs.djangoproject.com/en/1.10/releases/1.9/>`_ (#56).
@@ -18,7 +18,6 @@ master (unreleased)
 
 - Removed Django deprecation (#49)
 - Now ready for Python 3.5. (#19) - Note: Only available for Django 1.8 and above.
-
 
 0.4.0 (2016-02-04)
 ==================
