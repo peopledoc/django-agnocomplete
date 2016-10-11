@@ -142,6 +142,13 @@ def simple_post(request, *args, **kwargs):
     return HttpResponse(response)
 
 
+MESSAGE_400 = "I am a bad request"
+MESSAGE_403 = "You shall not pass"
+MESSAGE_404 = "I must have put it there, where is it?"
+MESSAGE_405 = "Can't touch this"
+MESSAGE_500 = "Server error, probably our fault"
+
+
 @require_GET
 def errors(request, *args, **kwargs):
     """
@@ -151,14 +158,14 @@ def errors(request, *args, **kwargs):
     """
     search_term = request.GET.get('q', None)
     if '400' in search_term:
-        return HttpResponseBadRequest()
+        return HttpResponseBadRequest(MESSAGE_400)
     elif '403' in search_term:
-        return HttpResponseForbidden()
+        return HttpResponseForbidden(MESSAGE_403)
     elif '404' in search_term:
-        return HttpResponseNotFound()
+        return HttpResponseNotFound(MESSAGE_404)
     elif '405' in search_term:
-        return HttpResponseNotAllowed()
-    return HttpResponseServerError()
+        return HttpResponseNotAllowed(['PATCH'], MESSAGE_405)
+    return HttpResponseServerError(MESSAGE_500)
 
 
 @require_GET

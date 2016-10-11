@@ -2,8 +2,16 @@ import json
 
 from django.test import TestCase
 from django.core.urlresolvers import reverse
+from django.utils.encoding import force_text as text
 
 from .. import DATABASE, GOODAUTHTOKEN
+from ..views_proxy import (
+    MESSAGE_400,
+    MESSAGE_403,
+    MESSAGE_404,
+    MESSAGE_405,
+    MESSAGE_500,
+)
 
 
 class UrlProxyGenericTest(object):
@@ -217,18 +225,28 @@ class UrlProxyErrorsTest(TestCase):
         response = self.client.get(
             reverse('url-proxy:errors'), {'q': '400'})
         self.assertEqual(response.status_code, 400)
+        self.assertEqual(text(response.content), MESSAGE_400)
 
     def test_403(self):
         response = self.client.get(
             reverse('url-proxy:errors'), {'q': '403'})
         self.assertEqual(response.status_code, 403)
+        self.assertEqual(text(response.content), MESSAGE_403)
 
     def test_404(self):
         response = self.client.get(
             reverse('url-proxy:errors'), {'q': '404'})
         self.assertEqual(response.status_code, 404)
+        self.assertEqual(text(response.content), MESSAGE_404)
+
+    def test_405(self):
+        response = self.client.get(
+            reverse('url-proxy:errors'), {'q': '405'})
+        self.assertEqual(response.status_code, 405)
+        self.assertEqual(text(response.content), MESSAGE_405)
 
     def test_500(self):
         response = self.client.get(
             reverse('url-proxy:errors'), {'q': 'whatever'})
         self.assertEqual(response.status_code, 500)
+        self.assertEqual(text(response.content), MESSAGE_500)
