@@ -1,4 +1,20 @@
 $(document).ready(function() {
+
+    function errorCallback(resp) {
+        $('.error').remove();
+        errors = resp.responseJSON.errors;
+        status = resp.status;
+        console.debug(status);
+        console.debug(errors);
+        content = '<div class="error">Error status code: ' + status;
+        content += '<ul>';
+        for (var i = 0; i < errors.length; i++) {
+            content += '<li>' + errors[i].title + ': ' + errors[i].detail + '</li>';
+        }
+        content += '<ul></div>';
+        $('#search-form').after(content);
+    }
+
     $('[data-agnocomplete]').each(function(index, select) {
 
         function getMaxItems() {
@@ -24,8 +40,8 @@ $(document).ready(function() {
                 $.ajax({
                     url: $(select).data('url') + '?q=' + encodeURIComponent(query),
                     type: 'GET',
-                    error: function() {
-                        callback();
+                    error: function(resp) {
+                        errorCallback(resp);
                     },
                     success: function(res) {
                         callback(res.data);
