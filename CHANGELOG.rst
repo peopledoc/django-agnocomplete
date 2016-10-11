@@ -5,7 +5,7 @@ Changelog for django-agnocomplete
 master (unreleased)
 ===================
 
-- Nothing changed yet.
+- Added a ``make clean`` command to remove junk assets (#64).
 
 
 0.6.0 (2016-10-10)
