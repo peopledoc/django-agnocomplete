@@ -6,6 +6,7 @@ master (unreleased)
 ===================
 
 - Added a ``make clean`` command to remove junk assets (#64).
+- Added a ``doclint`` job to check documentation build (#69).
 
 
 0.6.0 (2016-10-10)

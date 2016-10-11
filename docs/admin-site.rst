@@ -12,7 +12,7 @@ Let's imagine that you're building a new Django model, ``FavoriteColor``, that w
 
 .. literalinclude:: ../demo/models.py
    :language: python
-   :lines: 15-22
+   :lines: 32-38
 
 The Admin module
 ================

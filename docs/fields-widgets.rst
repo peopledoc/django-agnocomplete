@@ -70,7 +70,7 @@ Creation mode for Model Multiple Selectors
 
 The "create" mode with model-based fields is a bit different from the regular one. At the moment, ``agnocomplete`` is supporting a "one-field-model instance creation" only. And there are no plans yet to upgrade this.
 
-Here is the reason why: in your interface, you can search for one string, for example: "hello" and either this string corresponds to a known value in your database or not. This string is your "identifier" on the front-end that you'll pass to your backend to create a new item if this one doesn't exist yet. This will just work for small models, like :class:`Tag`s. A primary key, a name, and that's it. If the tag name you're typing in your search field is unknown, your backend will be able to perform a basic Django creation like this:
+Here is the reason why: in your interface, you can search for one string, for example: "hello" and either this string corresponds to a known value in your database or not. This string is your "identifier" on the front-end that you'll pass to your backend to create a new item if this one doesn't exist yet. This will just work for small models, like :class:`Tags <Tag>`. A primary key, a name, and that's it. If the tag name you're typing in your search field is unknown, your backend will be able to perform a basic Django creation like this:
 
 .. code-block:: python
 
