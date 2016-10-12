@@ -10,8 +10,16 @@ from agnocomplete.views import AgnocompleteJSONView
 from ..autocomplete import (
     AutocompleteUrlSimpleAuth,
     AutocompleteUrlHeadersAuth,
+    AutocompleteUrlErrors,
 )
 from ..models import Person, Tag, PersonTag, ContextTag, PersonContextTag
+from ..views_proxy import (
+    MESSAGE_400,
+    MESSAGE_403,
+    MESSAGE_404,
+    MESSAGE_405,
+    MESSAGE_500,
+)
 from . import LoaddataTestCase, LoaddataLiveTestCase
 
 
@@ -635,3 +643,45 @@ class UrlProxyAuthTest(LoaddataLiveTestCase):
             result = json.loads(response.content.decode())
             data = result.get('data')
             self.assertEqual(len(data), 7)
+
+
+@override_settings(HTTP_HOST='')
+class UrlProxyErrorsTest(LoaddataLiveTestCase):
+
+    def _test_error(self, status_code, message):
+        instance = AutocompleteUrlErrors()
+        search_url = instance.search_url
+        klass = 'demo.autocomplete.AutocompleteUrlErrors'
+        with mock.patch(klass + '.get_search_url') as mock_auto:
+            mock_auto.return_value = self.live_server_url + search_url
+            # Search using the URL proxy view
+            search_url = get_namespace() + ':agnocomplete'
+            response = self.client.get(
+                reverse(search_url, args=['AutocompleteUrlErrors']),
+                data={'q': "hello {}".format(status_code)}
+            )
+            # Status code by default
+            self.assertEqual(response.status_code, status_code)
+            # Result is a JSON
+            result = json.loads(response.content.decode())
+            self.assertIn('errors', result)
+            errors = result['errors']
+            self.assertEqual(len(errors), 1)
+            error = errors[0]
+            self.assertEqual(error['detail'], message)
+            self.assertEqual(error['title'], "An error has occurred")
+
+    def test_500(self):
+        self._test_error(500, MESSAGE_500)
+
+    def test_400(self):
+        self._test_error(400, MESSAGE_400)
+
+    def test_403(self):
+        self._test_error(403, MESSAGE_403)
+
+    def test_404(self):
+        self._test_error(404, MESSAGE_404)
+
+    def test_405(self):
+        self._test_error(405, MESSAGE_405)
