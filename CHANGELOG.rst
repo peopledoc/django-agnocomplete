@@ -7,6 +7,7 @@ master (unreleased)
 
 - Added a ``make clean`` command to remove junk assets (#64).
 - Added a ``doclint`` job to check documentation build (#69).
+- Return the eventual HTTP error message to the front-end in the context of a HTTP error in a ``AgnocompleteURLProxy`` field (#71).
 
 
 0.6.0 (2016-10-10)

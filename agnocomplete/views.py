@@ -5,6 +5,7 @@ from six import with_metaclass
 from abc import abstractmethod, ABCMeta
 from django.core.exceptions import PermissionDenied, SuspiciousOperation
 from django.http import Http404, JsonResponse
+from django.utils.encoding import force_text as text
 from django.utils.functional import cached_property
 from django.views.generic import View
 
@@ -16,33 +17,33 @@ from .exceptions import (
 from requests.exceptions import HTTPError, Timeout
 
 
-def get_error_status_code(exc):
+def get_error(exc):
     """
     Return the appropriate HTTP status code according to the Exception/Error.
     """
 
     if isinstance(exc, HTTPError):
         # Returning the HTTP Error code coming from requests module
-        return exc.response.status_code
+        return exc.response.status_code, text(exc.response.content)
 
     if isinstance(exc, Timeout):
         # A timeout is a 408, and it's not a HTTPError (why? dunno).
-        return 408
+        return 408, exc
 
     if isinstance(exc, Http404):
         # 404 is 404
-        return 404
+        return 404, exc
 
     if isinstance(exc, PermissionDenied):
         # Permission denied is 403
-        return 403
+        return 403, exc
 
     if isinstance(exc, SuspiciousOperation):
         # Shouldn't happen, but you never know
-        return 400
+        return 400, exc
 
     # The default error code is 500
-    return 500
+    return 500, exc
 
 
 class AgnocompleteJSONView(with_metaclass(ABCMeta, View)):
@@ -82,13 +83,14 @@ class AgnocompleteJSONView(with_metaclass(ABCMeta, View)):
                 content_type=self.content_type,
             )
         except Exception as exc:
+            status, message = get_error(exc)
             return JsonResponse(
                 {"errors": [{
-                    "title": "An error has occured",
-                    "detail": "{}".format(exc)
+                    "title": "An error has occurred",
+                    "detail": "{}".format(message)
                 }]},
                 content_type=self.content_type,
-                status=get_error_status_code(exc),
+                status=status,
             )
 
 
