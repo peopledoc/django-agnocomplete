@@ -10,6 +10,11 @@ It will provide:
 * a REST-like HTTP API to search for results,
 * Fields and widgets that will make the interface between our Django code and *your* Javascript.
 
+Useful links:
+
+* `See its source code here <https://github.com/novafloss/django-agnocomplete>`_
+* `File issues (or praise this library) <https://github.com/novafloss/django-agnocomplete/issues/>`_
+
 Demo
 ====
 
