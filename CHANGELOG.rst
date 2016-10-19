@@ -9,6 +9,7 @@ master (unreleased)
 - Added a ``doclint`` job to check documentation build (#69).
 - Return the eventual HTTP error message to the front-end in the context of a HTTP error in a ``AgnocompleteURLProxy`` field (#71).
 - Link the Github project on the documentation homepage (#73).
+- Mention the version of `django-autocomplete-light` it reuses concepts from (#74).
 
 
 0.6.0 (2016-10-10)
