@@ -33,7 +33,11 @@ if __name__ == '__main__':
     expected_html_files = get_expected_html_files(rootdir, files)
 
     # Manually fed:
-    html_files = ['admin-site.html', 'autocomplete-definition.html']
+    html_files = [
+        'admin-site.html',
+        'autocomplete-definition.html',
+        'error-handling.html',
+    ]
     # CHECK!
     files = copy(html_files)
     files = map(lambda item: "{}/{}".format("/_build/html", item), files)

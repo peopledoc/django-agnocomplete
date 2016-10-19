@@ -19,7 +19,7 @@
         {% if form.help_text %}
         <p style="color: #444;">{{ form.help_text|safe|linebreaks }}</p>
         {% endif %}
-        <form action="." method="post">
+        <form action="." method="post" id="search-form">
             {{ form.as_p }}
             <p><input type="submit" value="OK">
         </form>

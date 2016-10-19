@@ -10,6 +10,7 @@ master (unreleased)
 - Return the eventual HTTP error message to the front-end in the context of a HTTP error in a ``AgnocompleteURLProxy`` field (#71).
 - Link the Github project on the documentation homepage (#73).
 - Mention the version of `django-autocomplete-light` it reuses concepts from (#74).
+- In the "error" demo, display the error message returned by the Agnocomplete call (#65).
 
 
 0.6.0 (2016-10-10)
