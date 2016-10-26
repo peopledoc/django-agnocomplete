@@ -11,6 +11,7 @@ master (unreleased)
 - Link the Github project on the documentation homepage (#73).
 - Mention the version of `django-autocomplete-light` it reuses concepts from (#74).
 - In the "error" demo, display the error message returned by the Agnocomplete call (#65).
+- Update README (typos, syntax HL on commands) (#75).
 
 
 0.6.0 (2016-10-10)
