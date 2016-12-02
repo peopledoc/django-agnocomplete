@@ -207,6 +207,11 @@ class AutocompleteModelTest(LoaddataTestCase):
 
 class AutocompletePersonTest(LoaddataTestCase):
 
+    def _set_email_field(self, instance):
+        class FakeEmailField(object):
+            to_field_name = 'email'
+        instance.set_agnocomplete_field(FakeEmailField())
+
     def test_items(self):
         instance = AutocompletePerson()
         items = instance.items()
@@ -222,6 +227,11 @@ class AutocompletePersonTest(LoaddataTestCase):
         items = instance.items(query="zzzzz")
         self.assertEqual(len(items), 0)
 
+        self._set_email_field(instance)
+        items = instance.items(query="bob")
+        self.assertEqual(len(items), 1)
+        self.assertEqual(items[0]['value'], 'bob@demo.com')
+
     def test_item(self):
         instance = AutocompletePersonLabel()
         qs = instance.get_queryset()
@@ -231,6 +241,9 @@ class AutocompletePersonTest(LoaddataTestCase):
         label = u'{item} {mail}'.format(item=text(people), mail=people.email)
 
         self.assertEqual(instance.item(items.first())['label'], label)
+
+        self._set_email_field(instance)
+        self.assertEqual(instance.item(items.first())['value'], people.email)
 
     def test_get_page_size(self):
         instance = AutocompletePerson()
@@ -270,6 +283,14 @@ class AutocompletePersonTest(LoaddataTestCase):
         self.assertEqual(result, [(text('2'), text('Alice Inchains'))])
         result = instance.selected(['MEUH'])
         self.assertEqual(result, [])
+
+        self._set_email_field(instance)
+        result = instance.selected(['2'])
+        self.assertEqual(result, [])
+        result = instance.selected(['alice2@example.com'])
+        self.assertEqual(result, [
+            (text('alice2@example.com'), text('Alice Inchains'))]
+        )
 
 
 class RequiresAuthenticationTest(LoaddataTestCase):

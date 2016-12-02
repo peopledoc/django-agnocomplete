@@ -76,14 +76,9 @@ class AutocompletePersonShort(AutocompletePerson):
 
 
 class AutocompletePersonLabel(AutocompletePerson):
-    def item(self, current_item):
-        label = {
-            'value': text(current_item.pk),
-            'label': u'{item} {mail}'.format(
-                item=text(current_item), mail=current_item.email)
-        }
-
-        return label
+    def label(self, current_item):
+        return u'{item} {mail}'.format(
+            item=text(current_item), mail=current_item.email)
 
 
 # Special: not integrated into the registry (yet)

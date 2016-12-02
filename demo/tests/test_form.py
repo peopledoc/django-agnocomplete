@@ -1,4 +1,4 @@
-from ..forms import SearchContextForm
+from ..forms import PersonEmailSearchForm, SearchContextForm
 from ..models import Person
 from . import LoaddataTestCase
 
@@ -37,4 +37,20 @@ class TestSearchContext(LoaddataTestCase):
             user=self.alice,
             data={'search_person': self.bob.pk},
         )
+        self.assertFalse(form.is_valid())
+
+
+class TestFieldName(LoaddataTestCase):
+
+    def setUp(self):
+        super(TestFieldName, self).setUp()
+        self.bob = Person.objects.get(email='bob@demo.com')
+
+    def test_valid(self):
+        form = PersonEmailSearchForm(data={'search_person': self.bob.email})
+        self.assertTrue(form.is_valid())
+        self.assertEqual(form.cleaned_data['search_person'], self.bob)
+
+    def test_invalid(self):
+        form = PersonEmailSearchForm(data={'search_person': self.bob.pk})
         self.assertFalse(form.is_valid())
