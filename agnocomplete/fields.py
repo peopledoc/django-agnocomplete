@@ -67,6 +67,9 @@ class AgnocompleteMixin(object):
         # If not an instance, instanciate this
         if not isinstance(klass_or_instance, AgnocompleteBase):
             klass_or_instance = klass_or_instance(user=user)
+        # Pass the field when we have an AgnocompleteBase instance
+        if isinstance(klass_or_instance, AgnocompleteBase):
+            klass_or_instance.set_agnocomplete_field(self)
         # Store it in the instance
         self.agnocomplete = klass_or_instance
         self.agnocomplete.user = user

@@ -153,6 +153,9 @@ class AgnocompleteBase(with_metaclass(ABCMeta, object)):
         # Eventual custom URL
         self._url = url
 
+    def set_agnocomplete_field(self, field):
+        self.agnocomplete_field = field
+
     @classproperty
     def slug(cls):
         """
@@ -317,6 +320,15 @@ class AgnocompleteModelBase(with_metaclass(ABCMeta, AgnocompleteBase)):
         return self.get_model().objects.all()
     get_choices = get_model_queryset
 
+    def get_field_name(self):
+        """
+        Return the model field name to be used as a value, or 'pk' if unset
+        """
+        if hasattr(self, 'agnocomplete_field') and \
+           hasattr(self.agnocomplete_field, 'to_field_name'):
+            return self.agnocomplete_field.to_field_name or 'pk'
+        return 'pk'
+
 
 class AgnocompleteModel(AgnocompleteModelBase):
     """
@@ -406,13 +418,25 @@ class AgnocompleteModel(AgnocompleteModelBase):
         @param current_item: Current item
         @type  param: django.models
 
-        @return: Label of the current item
+        @return: Value and label of the current item
         @rtype : dict
         """
         return {
-            'value': text(current_item.pk),
-            'label': text(current_item)
+            'value': text(getattr(current_item, self.get_field_name())),
+            'label': self.label(current_item)
         }
+
+    def label(self, current_item):
+        """
+        Return a label for the current item.
+
+        @param current_item: Current item
+        @type  param: django.models
+
+        @return: Label of the current item
+        @rtype : text
+        """
+        return text(current_item)
 
     def build_extra_filtered_queryset(self, queryset, **kwargs):
         """
@@ -471,15 +495,20 @@ class AgnocompleteModel(AgnocompleteModelBase):
         """
         Return the selected options as a list of tuples
         """
-        # cleanup the id list
-        ids = filter(lambda x: "{}".format(x).isdigit(), copy(ids))
+        # Cleanup the ID list
+        if self.get_field_name() == 'pk':
+            ids = filter(lambda x: "{}".format(x).isdigit(), copy(ids))
+        else:
+            ids = filter(lambda x: len("{}".format(x)) > 0, copy(ids))
         # Prepare the QS
         # TODO: not contextually filtered, check if it's possible at some point
-        qs = self.get_model_queryset().filter(pk__in=ids)
+        qs = self.get_model_queryset().filter(
+            **{'{}__in'.format(self.get_field_name()): ids})
         result = []
         for item in qs:
+            item_repr = self.item(item)
             result.append(
-                (text(item.pk), text(item))
+                (item_repr['value'], item_repr['label'])
             )
         return result
 

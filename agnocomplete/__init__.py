@@ -37,4 +37,5 @@ def autodiscover():
                 logger.warning(ex)
                 raise ImportError(ex)
 
+
 default_app_config = 'agnocomplete.app.AgnocompleteConfig'
