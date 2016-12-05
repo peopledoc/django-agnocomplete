@@ -12,6 +12,7 @@ master (unreleased)
 - Mention the version of `django-autocomplete-light` it reuses concepts from (#74).
 - In the "error" demo, display the error message returned by the Agnocomplete call (#65).
 - Update README (typos, syntax HL on commands) (#75).
+- Handle the ``to_field_name`` parameter with ``AgnocompleteModel`` and allow customization of the label alone by overriding ``AgnocompleteModel.label()`` (#77).
 
 
 0.6.0 (2016-10-10)

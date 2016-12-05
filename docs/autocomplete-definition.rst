@@ -167,14 +167,9 @@ For example:
         fields = ['first_name', 'last_name']
         query_size_min = 2
 
-        def item(self, current_item):
-            label = {
-                'value': force_text(current_item.pk),
-                'label': u'{item} {mail}'.format(
-                    item=force_text(current_item), mail=current_item.email)
-            }
-
-            return label
+        def label(self, current_item):
+            return u'{item} {mail}'.format(
+                item=force_text(current_item), mail=current_item.email)
 
 
 Extract extra-information
@@ -197,18 +192,13 @@ You may want to add extra fields to your returned records, fields that belong to
             # This returns a dict of friends count, the keys being the PKs
             return count_friends([item.pk for item in queryset])
 
-        def item(self, current_item):
+        def label(self, current_item):
             friends = self.friends
-            label = {
-                'value': force_text(current_item.pk),
-                'label': u'{item} {mail} ({friends})'.format(
-                    item=force_text(current_item),
-                    mail=current_item.email,
-                    friends=friends.get(current_item.pk, 0)
-                )
-            }
-
-            return label
+            return u'{item} {mail} ({friends})'.format(
+                item=force_text(current_item),
+                mail=current_item.email,
+                friends=friends.get(current_item.pk, 0)
+            )
 
 
 .. important::
@@ -225,6 +215,17 @@ You may want to add extra fields to your returned records, fields that belong to
 
         queryset = self.final_raw_queryset.filter(field="something")
         queryset = queryset[:2]
+
+Using a different field for values
+----------------------------------
+
+As with a standard ``ModelChoiceField``, you may set the :attr:`to_field_name` attribute on ``AgnocompleteField`` to use a specific model field for form values instead of the primary key.  Be sure to use a unique field for the model.
+
+.. code-block:: python
+
+    class SearchForm(forms.Form):
+        search_person = fields.AgnocompleteField(
+            AutocompletePerson, to_field_name='email')
 
 Extra arguments
 ===============
