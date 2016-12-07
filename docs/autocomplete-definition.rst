@@ -171,6 +171,10 @@ For example:
             return u'{item} {mail}'.format(
                 item=force_text(current_item), mail=current_item.email)
 
+.. versionchanged:: 0.7
+
+    Prior to that version, the :meth:`item()` method was to be overriden
+    instead.
 
 Extract extra-information
 -------------------------
@@ -200,7 +204,6 @@ You may want to add extra fields to your returned records, fields that belong to
                 friends=friends.get(current_item.pk, 0)
             )
 
-
 .. important::
 
     The :attr:`final_queryset` property is **paginated**, which means that you won't be able to re-paginate it again. For example, this won't work:
@@ -218,6 +221,8 @@ You may want to add extra fields to your returned records, fields that belong to
 
 Using a different field for values
 ----------------------------------
+
+.. versionadded:: 0.7
 
 As with a standard ``ModelChoiceField``, you may set the :attr:`to_field_name` attribute on ``AgnocompleteField`` to use a specific model field for form values instead of the primary key.  Be sure to use a unique field for the model.
 

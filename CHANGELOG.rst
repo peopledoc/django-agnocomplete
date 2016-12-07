@@ -2,8 +2,8 @@
 Changelog for django-agnocomplete
 =================================
 
-master (unreleased)
-===================
+0.7.0rc1 (2016-12-07)
+=====================
 
 - Added a ``make clean`` command to remove junk assets (#64).
 - Added a ``doclint`` job to check documentation build (#69).
