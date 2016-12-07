@@ -101,6 +101,11 @@ class PersonContextTagModelForm(UserContextFormMixin, forms.ModelForm):
         fields = '__all__'
 
 
+class PersonEmailSearchForm(forms.Form):
+    search_person = fields.AgnocompleteModelField(AutocompletePerson,
+                                                  to_field_name='email')
+
+
 class UrlProxyFormMixin(object):
     help_text = """
 We're not using the usual fixture here. Here's our "database":
