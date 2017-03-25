@@ -42,7 +42,13 @@ class AgnocompleteWidgetMixin(object):
         })
         return attrs
 
-    def render_options(self, choices, selected_choices):
+    def render_options(self, *args):
+        # Django >= 1.10, only "selected_choices" in the arg list
+        if len(args) == 1:
+            selected_choices = args[0]
+        else:
+            # Django < 1.10 - selected_choices is the second arg.
+            _, selected_choices = args
         selected_choices = set(text(v) for v in selected_choices)
         selected_choices_tuples = self.agnocomplete.selected(selected_choices)
         output = []
