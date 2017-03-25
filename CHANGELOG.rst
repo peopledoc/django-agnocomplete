@@ -6,6 +6,7 @@ master (unreleased)
 ===================
 
 - Drop Python 3.3 support (#81).
+- Add Django 1.10 support (#80).
 
 
 0.7.0 (2016-12-13)
