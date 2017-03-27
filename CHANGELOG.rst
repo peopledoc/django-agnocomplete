@@ -2,8 +2,8 @@
 Changelog for django-agnocomplete
 =================================
 
-master (unreleased)
-===================
+0.8.0 (2017-03-27)
+==================
 
 - Drop Python 3.3 support (#81).
 - Add Django 1.10 support (#80).
