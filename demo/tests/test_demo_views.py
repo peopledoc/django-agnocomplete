@@ -423,15 +423,44 @@ class MultipleModelSelectWithCreateTest(MultipleModelSelectGeneric):
                     self.random2.pk,
                     'newtag1',
                     'newtag2',
+                    self.random.name,
                 ],
             }
         )
         self.assertRedirects(response, reverse('home'))
         self.assertEqual(PersonTag.objects.count(), count + 1)
-        # Two tags added to the tag table
+        # Two tags added to the tag table, even if we added a tag with a name
+        # that already exists self.random.name
         self.assertEqual(Tag.objects.count(), count_tag + 2)
         new_person_tag = PersonTag.objects.order_by('pk').last()
         self.assertEqual(new_person_tag.tags.count(), 4)
+
+    def test_tag_with_duplicate_create(self):
+        count = PersonTag.objects.count()
+        count_tag = Tag.objects.count()
+        response = self.client.get(
+            reverse('selectize-model-tag-with-duplicate-create'))
+        self.assertEqual(response.status_code, 200)
+        response = self.client.post(
+            reverse('selectize-model-tag-with-duplicate-create'),
+            data={
+                u'person': self.alice.pk,
+                u'tags': [
+                    self.random.pk,
+                    self.random2.pk,
+                    'newtag1',
+                    'newtag2',
+                    self.random.name,
+                ],
+            }
+        )
+        self.assertRedirects(response, reverse('home'))
+        self.assertEqual(PersonTag.objects.count(), count + 1)
+        # Three tags added to the tag table, even if we added an existing tag
+        # name because we do not care about duplicate here
+        self.assertEqual(Tag.objects.count(), count_tag + 3)
+        new_person_tag = PersonTag.objects.order_by('pk').last()
+        self.assertEqual(new_person_tag.tags.count(), 5)
 
 
 class ContextTagTestCase(MultipleModelSelectGeneric):

@@ -21,7 +21,7 @@ from .autocomplete import (
     AutocompleteContextTag,
 )
 from .models import PersonTag, PersonContextTag
-from .fields import ModelMultipleDomainField
+from .fields import ModelMultipleDomainField, ModelMultipleObjectsField
 from . import DATABASE
 
 
@@ -82,6 +82,14 @@ class PersonTagModelForm(forms.ModelForm):
 
 class PersonTagModelFormWithCreate(PersonTagModelForm):
     tags = fields.AgnocompleteModelMultipleField(
+        AutocompleteTag,
+        create_field="name",
+        required=False
+    )
+
+
+class PersonTagModelFormWithDuplicateCreate(PersonTagModelForm):
+    tags = ModelMultipleObjectsField(
         AutocompleteTag,
         create_field="name",
         required=False

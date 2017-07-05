@@ -172,6 +172,13 @@ class AgnocompleteModelMultipleField(AgnocompleteMultipleMixin,
         """
         return self.queryset.model.objects.none()
 
+    def create_item(self, **kwargs):
+        """
+        Return a model instance created from kwargs.
+        """
+        item, created = self.queryset.model.objects.get_or_create(**kwargs)
+        return item
+
     def extra_create_kwargs(self):
         """
         Return extra arguments to create the new model instance.
@@ -191,7 +198,7 @@ class AgnocompleteModelMultipleField(AgnocompleteMultipleMixin,
         for value in self._new_values:
             create_kwargs = {self.create_field: value}
             create_kwargs.update(extra_create_kwargs)
-            new_item = model.objects.create(**create_kwargs)
+            new_item = self.create_item(**create_kwargs)
             pks.append(new_item.pk)
         return model.objects.filter(pk__in=pks)
 

@@ -116,3 +116,18 @@ We're half way here: the view needs to know that, when the form & fields will be
     You **must** override ``form_valid()``, there's no other method that will guarantee that these new values will be added to the database **and** linked to the current record.
 
     We know... it doesn't look very elegant.
+
+By default, we create objects via ``get_or_create()`` to avoid any constraint errors such as duplicates (IntegrityError).
+If your model does not have such constraints, you can choose to override the ``create_item`` method of :class:`AgnocompleteModelMultipleField`.
+
+.. code-block:: python
+
+    class ModelMultipleObjectsField(fields.AgnocompleteModelMultipleField):
+    """
+    Field with a create method that allows duplicates
+    """
+    def create_item(self, **kwargs):
+        """
+        Return the created model instance.
+        """
+        return self.queryset.model.objects.create(**kwargs)

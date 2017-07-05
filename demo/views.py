@@ -20,6 +20,7 @@ from .forms import (
     UrlProxyForm, UrlProxyConvertForm,
     UrlProxyAuthForm, UrlProxyErrors,
     UrlProxyWithExtraForm,
+    PersonTagModelFormWithDuplicateCreate,
 )
 from .autocomplete import HiddenAutocomplete
 from .models import PersonTag
@@ -159,6 +160,18 @@ class PersonTagModelViewWithCreate(PersonTagModelView):
         return super(PersonTagModelViewWithCreate, self).form_valid(form)
 
 
+class PersonTagModelViewWithDuplicateCreate(PersonTagModelView):
+    title = ("Multi select with Models & Modelforms duplicate "
+             "create mode (Create View)")
+    form_class = PersonTagModelFormWithDuplicateCreate
+
+    # See documentation about this decorated method.
+    @method_decorator(allow_create)
+    def form_valid(self, form):
+        return super(PersonTagModelViewWithDuplicateCreate, self) \
+            .form_valid(form)
+
+
 class PersonContextTagView(AutoTitleMixin,
                            UserContextFormViewMixin,
                            CreateView):
@@ -221,6 +234,8 @@ selectize_tag = PersonTagView.as_view()
 selectize_model_tag = PersonTagModelView.as_view()
 selectize_model_tag_edit = PersonTagModelViewEdit.as_view()
 selectize_model_tag_with_create = PersonTagModelViewWithCreate.as_view()
+selectize_model_tag_with_duplicate_create = \
+    PersonTagModelViewWithDuplicateCreate.as_view()
 selectize_context_tag = PersonContextTagView.as_view()
 # URL proxies
 url_proxy_simple = UrlProxySimpleView.as_view()

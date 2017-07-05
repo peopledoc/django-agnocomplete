@@ -42,6 +42,9 @@ urlpatterns = [
     url(r'^selectize-model-tag-with-create/$',
         views.selectize_model_tag_with_create,
         name='selectize-model-tag-with-create'),
+    url(r'^selectize-model-tag-with-duplicate-create/$',
+        views.selectize_model_tag_with_duplicate_create,
+        name='selectize-model-tag-with-duplicate-create'),
     url(r'^selectize-context-tag/$',
         views.selectize_context_tag, name='selectize-context-tag'),
     # Select 2, jquery-autocomplete, typeahead
