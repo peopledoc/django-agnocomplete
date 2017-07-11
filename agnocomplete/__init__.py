@@ -28,14 +28,8 @@ def autodiscover():
         module = '{}.{}'.format(app, module_name)
         try:
             import_module(module)
-        except ImportError as ex:
-            reason = ex.args[0]
-            if 'No module named {}'.format(module_name) in reason \
-                    or "No module named '{}'".format(module) in reason:
-                logger.info('No module named {}'.format(module))
-            else:  # re-raise - something's wrong
-                logger.warning(ex)
-                raise ImportError(ex)
+        except ImportError:
+            pass
 
 
 default_app_config = 'agnocomplete.app.AgnocompleteConfig'
