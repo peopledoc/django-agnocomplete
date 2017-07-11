@@ -5,7 +5,7 @@ Changelog for django-agnocomplete
 master (unreleased)
 ===================
 
-Nothing here yet.
+- Added a more flexible way to create new values in AgnocompleteModelMultipleField (#82).
 
 0.8.0 (2017-03-27)
 ==================
