@@ -21,9 +21,9 @@ class AgnocompleteWidgetMixin(object):
     """
     Generic toolset for building Agnocomplete-ready widgets
     """
-    def build_attrs(self, extra_attrs=None, **kwargs):
-        attrs = super(AgnocompleteWidgetMixin, self).build_attrs(
-            extra_attrs, **kwargs)
+    def build_attrs(self, base_attrs, extra_attrs=None):
+        attrs = super(AgnocompleteWidgetMixin, self).build_attrs(base_attrs,
+            extra_attrs)
         data_url = reverse_lazy(
             '{}:agnocomplete'.format(get_namespace()),
             args=[self.agnocomplete.slug]
@@ -81,9 +81,9 @@ class AgnocompleteMultiSelect(AgnocompleteWidgetMixin, widgets.SelectMultiple):
         super(AgnocompleteMultiSelect, self).__init__(*args, **kwargs)
         self.create = create
 
-    def build_attrs(self, extra_attrs=None, **kwargs):
-        attrs = super(AgnocompleteMultiSelect, self).build_attrs(
-            extra_attrs, **kwargs)
+    def build_attrs(self, base_attrs, extra_attrs=None):
+        attrs = super(AgnocompleteMultiSelect, self).build_attrs(base_attrs,
+            extra_attrs)
         if self.create:
             attrs.update({'data-create': 'on'})
         return attrs
