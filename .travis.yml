@@ -16,6 +16,6 @@ env:
 #  - TOX_ENV=py35-django110
 #  - TOX_ENV=py35-django111
 script:
-  tox -e {TOX_ENV}
+  tox -e $TOX_ENV
 install:
   - pip install tox
