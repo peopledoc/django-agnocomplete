@@ -5,7 +5,7 @@ Changelog for django-agnocomplete
 master (unreleased)
 ===================
 
-Nothing here yet.
+- Add Django 1.11 support (#85).
 
 0.9.0 (2017-07-11)
 ==================
