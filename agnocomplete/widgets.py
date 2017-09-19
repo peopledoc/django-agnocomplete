@@ -1,6 +1,10 @@
 """
 Agnocomplete Widgets
 """
+from distutils.version import StrictVersion
+
+from django import get_version
+
 from django.forms import widgets
 from django.core.urlresolvers import reverse_lazy
 from django.utils.encoding import force_text as text
@@ -16,14 +20,11 @@ __all__ = [
     'AgnocompleteMultiSelect'
 ]
 
-
-class AgnocompleteWidgetMixin(object):
+class _AgnocompleteWidgetMixin(object):
     """
     Generic toolset for building Agnocomplete-ready widgets
     """
-    def build_attrs(self, extra_attrs=None, **kwargs):
-        attrs = super(AgnocompleteWidgetMixin, self).build_attrs(
-            extra_attrs, **kwargs)
+    def _agnocomplete_build_attrs(self, attrs):
         data_url = reverse_lazy(
             '{}:agnocomplete'.format(get_namespace()),
             args=[self.agnocomplete.slug]
@@ -40,8 +41,9 @@ class AgnocompleteWidgetMixin(object):
             'data-query-size': self.agnocomplete.get_query_size(),
             data_attribute: 'on',
         })
-        return attrs
 
+        return attrs
+    
     def render_options(self, *args):
         # Django >= 1.10, only "selected_choices" in the arg list
         if len(args) == 1:
@@ -55,6 +57,24 @@ class AgnocompleteWidgetMixin(object):
         for option_value, option_label in selected_choices_tuples:
             output.append(self.render_option(selected_choices, option_value, option_label))  # noqa
         return '\n'.join(output)
+
+
+if StrictVersion(get_version()) < StrictVersion('1.11'):
+    class AgnocompleteWidgetMixin(_AgnocompleteWidgetMixin):
+        """
+        Generic toolset for building Agnocomplete-ready widgets
+        """
+        def build_attrs(self, extra_attrs=None, **kwargs):
+            attrs = super(AgnocompleteWidgetMixin, self).build_attrs(extra_attrs, **kwargs)
+            return self._agnocomplete_build_attrs(attrs)
+else:
+    class AgnocompleteWidgetMixin(_AgnocompleteWidgetMixin):
+        """
+        Generic toolset for building Agnocomplete-ready widgets
+        """
+        def build_attrs(self, base_attrs, extra_attrs=None):
+            attrs = super(AgnocompleteWidgetMixin, self).build_attrs(base_attrs, extra_attrs)
+            return self._agnocomplete_build_attrs(attrs)
 
 
 class AgnocompleteSelect(AgnocompleteWidgetMixin, widgets.Select):
@@ -81,9 +101,10 @@ class AgnocompleteMultiSelect(AgnocompleteWidgetMixin, widgets.SelectMultiple):
         super(AgnocompleteMultiSelect, self).__init__(*args, **kwargs)
         self.create = create
 
-    def build_attrs(self, extra_attrs=None, **kwargs):
-        attrs = super(AgnocompleteMultiSelect, self).build_attrs(
-            extra_attrs, **kwargs)
+    def _agnocomplete_build_attrs(self, attrs):
+        attrs = super(AgnocompleteMultiSelect, self)._agnocomplete_build_attrs(attrs)
+
         if self.create:
             attrs.update({'data-create': 'on'})
+
         return attrs
