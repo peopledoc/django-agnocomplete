@@ -6,6 +6,7 @@ master (unreleased)
 ===================
 
 - Add Django 1.11 support (#85).
+- Moving Github organization from ``novafloss`` to ``peopledoc``
 
 0.9.0 (2017-07-11)
 ==================
