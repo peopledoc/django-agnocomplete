@@ -12,8 +12,8 @@ It will provide:
 
 Useful links:
 
-* `See its source code here <https://github.com/novafloss/django-agnocomplete>`_
-* `File issues (or praise this library) <https://github.com/novafloss/django-agnocomplete/issues/>`_
+* `See its source code here <https://github.com/peopledoc/django-agnocomplete>`_
+* `File issues (or praise this library) <https://github.com/peopledoc/django-agnocomplete/issues/>`_
 
 Demo
 ====
