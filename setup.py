@@ -7,7 +7,7 @@ setup(
     include_package_data=True,
     description='Frontend-agnostic Django autocomplete utilities',
     url="https://github.com/peopledoc/django-agnocomplete",
-    author='Novapost',
+    author='PeopleDoc Inc.',
     license='MIT',
     install_requires=[
         'Django',
