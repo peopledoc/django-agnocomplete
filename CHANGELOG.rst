@@ -5,6 +5,10 @@ Changelog for django-agnocomplete
 master (unreleased)
 ===================
 
+
+0.10.0 (2018-01-10)
+==================
+
 - Add Django 1.11 support (#85).
 - Moving Github organization from ``novafloss`` to ``peopledoc`` (#86).
 
