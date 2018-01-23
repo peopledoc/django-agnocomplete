@@ -176,6 +176,10 @@ class SearchContextFormTest(AutocompleteViewTestGeneric,
         self.assertTrue(data)
 
 
+class SearchContextFormMultipleTest(SearchContextFormTest):
+    view_key = 'AutocompletePersonDomainSpecial'
+
+
 class CustomizedViewsTest(RegistryTestGeneric):
 
     @property

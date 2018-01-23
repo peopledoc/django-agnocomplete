@@ -49,6 +49,10 @@ class SearchFormTextInput(forms.Form):
 
 class SearchContextForm(UserContextFormMixin, forms.Form):
     search_person = fields.AgnocompleteModelField('AutocompletePersonDomain')
+    search_person_multiple = fields.AgnocompleteModelMultipleField(
+        'AutocompletePersonDomainSpecial',
+        required=False
+    )
 
 
 class SearchCustom(forms.Form):
