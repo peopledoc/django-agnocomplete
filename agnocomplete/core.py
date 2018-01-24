@@ -306,7 +306,7 @@ class AgnocompleteModelBase(with_metaclass(ABCMeta, AgnocompleteBase)):
         try:
             none = self.get_queryset().none()
             return none.model
-        except:
+        except Exception:
             raise ImproperlyConfigured(
                 "Integrator: Unable to determine the model with this queryset."
                 " Please add a `model` property")
