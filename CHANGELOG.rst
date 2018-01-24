@@ -5,6 +5,7 @@ Changelog for django-agnocomplete
 master (unreleased)
 ===================
 
+* Various Flake8 fixes (#89).
 
 0.10.0 (2018-01-10)
 ==================
