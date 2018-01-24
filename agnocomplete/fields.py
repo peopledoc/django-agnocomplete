@@ -80,17 +80,18 @@ class AgnocompleteMixin(object):
         """
         return getattr(self, AGNOCOMPLETE_USER_ATTRIBUTE, None)
 
+    def transmit_agnocomplete_context(self):
+        """
+        Assign the user context to the agnocomplete class, if any.
+        """
+        # Only if the field has this attribute set.
+        if hasattr(self, AGNOCOMPLETE_USER_ATTRIBUTE):
+            user = self.get_agnocomplete_context()
+            if user:
+                self.agnocomplete.user = user
+            return user
+        # if not, would implicitly return None.
 
-class AgnocompleteField(AgnocompleteMixin, forms.ChoiceField):
-    """
-    Agnocomplete Field class for simple Choice fields.
-    """
-
-
-class AgnocompleteModelField(AgnocompleteMixin, forms.ModelChoiceField):
-    """
-    Agnocomplete Field class for Choice fields based on models / querysets.
-    """
     def clean(self, *args, **kwargs):
         """
         Potentially, these fields should validate against context-based
@@ -100,12 +101,34 @@ class AgnocompleteModelField(AgnocompleteMixin, forms.ModelChoiceField):
         used to 'reset' the queryset and make sure the chosen item fits to
         the user context.
         """
-        if hasattr(self, AGNOCOMPLETE_USER_ATTRIBUTE):
-            user = getattr(self, AGNOCOMPLETE_USER_ATTRIBUTE, None)
-            if user:
-                self.agnocomplete.user = user
-                self.queryset = self.agnocomplete.get_queryset()
-        return super(AgnocompleteModelField, self).clean(*args, **kwargs)
+        self.transmit_agnocomplete_context()
+        return super(AgnocompleteMixin, self).clean(*args, **kwargs)
+
+
+class AgnocompleteContextQuerysetMixin(object):
+    def transmit_agnocomplete_context(self):
+        """
+        We'll reset the current queryset only if the user is set.
+        """
+        user = super(AgnocompleteContextQuerysetMixin, self) \
+            .transmit_agnocomplete_context()
+        if user:
+            self.queryset = self.agnocomplete.get_queryset()
+        return user
+
+
+class AgnocompleteField(AgnocompleteMixin, forms.ChoiceField):
+    """
+    Agnocomplete Field class for simple Choice fields.
+    """
+
+
+class AgnocompleteModelField(AgnocompleteContextQuerysetMixin,
+                             AgnocompleteMixin,
+                             forms.ModelChoiceField):
+    """
+    Agnocomplete Field class for Choice fields based on models / querysets.
+    """
 
 
 class AgnocompleteMultipleMixin(AgnocompleteMixin):
@@ -156,7 +179,8 @@ class AgnocompleteMultipleField(AgnocompleteMultipleMixin,
     """
 
 
-class AgnocompleteModelMultipleField(AgnocompleteMultipleMixin,
+class AgnocompleteModelMultipleField(AgnocompleteContextQuerysetMixin,
+                                     AgnocompleteMultipleMixin,
                                      forms.ModelMultipleChoiceField):
     """
     Field class for multiple selection on Django models.
