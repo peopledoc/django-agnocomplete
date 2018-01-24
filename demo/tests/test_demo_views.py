@@ -38,7 +38,8 @@ class HomeTest(TestCase):
         self.assertIn('search_color', form.fields)
         self.assertIn('search_person', form.fields)
         search_color = form.fields['search_color']
-        attrs_color = search_color.widget.build_attrs(search_color.widget.attrs)
+        attrs_color = search_color.widget.build_attrs(
+            search_color.widget.attrs)
         self.assertIn('data-url', attrs_color)
         self.assertIn('data-query-size', attrs_color)
         self.assertIn('data-agnocomplete', attrs_color)
@@ -50,7 +51,8 @@ class HomeTest(TestCase):
         response = self.client.get(reverse('home'))
         form = response.context['form']
         search_color = form.fields['search_color']
-        attrs_color = search_color.widget.build_attrs(search_color.widget.attrs)
+        attrs_color = search_color.widget.build_attrs(
+            search_color.widget.attrs)
         self.assertIn('data-url', attrs_color)
         self.assertIn('data-query-size', attrs_color)
         self.assertIn('data-wow', attrs_color)
@@ -60,7 +62,8 @@ class HomeTest(TestCase):
         form = response.context['form']
         # Color
         search_color = form.fields['search_color']
-        attrs_color = search_color.widget.build_attrs(search_color.widget.attrs)
+        attrs_color = search_color.widget.build_attrs(
+            search_color.widget.attrs)
         url_color = attrs_color['data-url']
         self.assertEqual(
             url_color,
@@ -71,7 +74,8 @@ class HomeTest(TestCase):
         )
         # Person
         search_person = form.fields['search_person']
-        attrs_person = search_person.widget.build_attrs(search_color.widget.attrs)
+        attrs_person = search_person.widget.build_attrs(
+            search_color.widget.attrs)
         url_person = attrs_person['data-url']
         self.assertEqual(
             url_person,
@@ -88,7 +92,7 @@ class HomeTest(TestCase):
             with self.assertNumQueries(0):
                 self.client.get(reverse('home'))
         else:
-            # The queryset of choices apparently not lazy from Django 1.11 version.
+            # The queryset of choices apparently not lazy as of Django 1.11.
             with self.assertNumQueries(1):
                 self.client.get(reverse('home'))
 
@@ -133,7 +137,8 @@ class CustomSearchTest(TestCase):
         form = response.context['form']
         self.assertIn('search_color', form.fields)
         search_color = form.fields['search_color']
-        attrs_color = search_color.widget.build_attrs(search_color.widget.attrs)
+        attrs_color = search_color.widget.build_attrs(
+            search_color.widget.attrs)
         self.assertIn('data-url', attrs_color)
         self.assertEqual(
             attrs_color['data-url'],
@@ -153,7 +158,8 @@ class MultiSearchTest(TestCase):
         # Specific: this is a multi
         self.assertTrue(search_color.widget.allow_multiple_selected)
         # But it's also a "create-enabled"
-        attrs_color = search_color.widget.build_attrs(search_color.widget.attrs)
+        attrs_color = search_color.widget.build_attrs(
+            search_color.widget.attrs)
         self.assertIn('data-create', attrs_color)
         self.assertTrue(attrs_color['data-create'])
 
@@ -167,7 +173,8 @@ class MultiSearchTest(TestCase):
         # Specific: this is a multi
         self.assertTrue(search_color.widget.allow_multiple_selected)
         # But it's not "create-enabled"
-        attrs_color = search_color.widget.build_attrs(search_color.widget.attrs)
+        attrs_color = search_color.widget.build_attrs(
+            search_color.widget.attrs)
         self.assertNotIn('data-create', attrs_color)
 
     def test_tag_multi(self):
