@@ -167,7 +167,7 @@ class AgnocompleteGenericView(AgnocompleteJSONView):
         # Optional Page size
         try:
             page_size = int(self.request.GET.get('page_size', None))
-        except:
+        except Exception:
             page_size = None
 
         # Agnocomplete instance is ready
@@ -177,7 +177,7 @@ class AgnocompleteGenericView(AgnocompleteJSONView):
         except AuthenticationRequiredAgnocompleteException:
             raise PermissionDenied(
                 "Unauthorized access to this Autocomplete")
-        except:
+        except Exception:
             # re-raise the unknown exception
             raise
 
