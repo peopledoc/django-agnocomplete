@@ -34,7 +34,7 @@ class LoaddataLiveTestCase(LoaddataMixin, LiveServerTestCase):
 class RegistryTestGeneric(LoaddataTestCase):
 
     def _test_registry_keys(self, keys):
-        self.assertEqual(len(keys), 22)
+        self.assertEqual(len(keys), 23)
         self.assertIn("AutocompleteColor", keys)
         self.assertIn("AutocompleteColorExtra", keys)
         self.assertIn("AutocompletePerson", keys)
@@ -43,6 +43,7 @@ class RegistryTestGeneric(LoaddataTestCase):
         self.assertIn("AutocompleteChoicesPages", keys)
         self.assertIn("AutocompleteChoicesPagesOverride", keys)
         self.assertIn("AutocompletePersonDomain", keys)
+        self.assertIn("AutocompletePersonDomainSpecial", keys)
         self.assertIn("AutocompleteTag", keys)
         # Multiselect
         self.assertIn("AutocompleteColorShort", keys)

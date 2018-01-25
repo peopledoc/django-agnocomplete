@@ -6,6 +6,7 @@ master (unreleased)
 ===================
 
 * Various Flake8 fixes (#89).
+* Fix the multiple Model Field search with authentication behaviour. Please note that this bug would only occur if ``Django<1.11`` (#91).
 
 0.10.0 (2018-01-10)
 ==================

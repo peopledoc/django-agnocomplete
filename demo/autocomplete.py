@@ -107,6 +107,19 @@ class AutocompletePersonDomain(AgnocompleteModel):
         return Person.objects.filter(email__endswith=domain)
 
 
+class AutocompletePersonDomainSpecial(AutocompletePersonDomain):
+    """
+    A special domain-related search
+
+    We'll do silly things in the "selected" method.
+    """
+    def selected(self, ids):
+        # Introducing a new variable here, to make sure the
+        # "account_registrations" property is able to fetch the matricules.
+        self._selected_queryset = self.get_queryset()
+        return super(AutocompletePersonDomainSpecial, self).selected(ids)
+
+
 # Do not register this, it's for custom view demo
 class HiddenAutocomplete(AutocompleteColor):
     query_size_min = 2
@@ -254,6 +267,7 @@ register(AutocompletePersonShort)
 register(AutocompleteChoicesPages)
 register(AutocompleteChoicesPagesOverride)
 register(AutocompletePersonDomain)
+register(AutocompletePersonDomainSpecial)
 register(AutocompleteCustomUrl)
 register(AutocompleteTag)
 register(AutocompleteContextTag)
