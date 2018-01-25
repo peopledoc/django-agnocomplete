@@ -91,7 +91,7 @@ else:
                 opt_selected = (opt_value in value)
 
                 opt['selected'] = opt_selected
-                opt['attrs'][u'selected'] = opt_selected
+                opt['attrs']['selected'] = opt_selected
 
                 if opt_selected:
                     selected_options[opt_value] = opt
