@@ -2,7 +2,7 @@
 Changelog for django-agnocomplete
 =================================
 
-master (unreleased)
+0.12.0 (2018-01-26)
 ===================
 
 * Fix bug in AgnocompleteWidgetMixin when template-based widgets are used (Django>=1.11).
