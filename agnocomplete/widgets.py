@@ -45,20 +45,6 @@ class _AgnocompleteWidgetMixin(object):
 
         return attrs
 
-    def render_options(self, *args):
-        # Django >= 1.10, only "selected_choices" in the arg list
-        if len(args) == 1:
-            selected_choices = args[0]
-        else:
-            # Django < 1.10 - selected_choices is the second arg.
-            _, selected_choices = args
-        selected_choices = set(text(v) for v in selected_choices)
-        selected_choices_tuples = self.agnocomplete.selected(selected_choices)
-        output = []
-        for option_value, option_label in selected_choices_tuples:
-            output.append(self.render_option(selected_choices, option_value, option_label))  # noqa
-        return '\n'.join(output)
-
 
 if StrictVersion(get_version()) < StrictVersion('1.11'):
     class AgnocompleteWidgetMixin(_AgnocompleteWidgetMixin):
@@ -69,6 +55,20 @@ if StrictVersion(get_version()) < StrictVersion('1.11'):
             attrs = super(AgnocompleteWidgetMixin, self).build_attrs(
                 extra_attrs, **kwargs)
             return self._agnocomplete_build_attrs(attrs)
+
+        def render_options(self, *args):
+            # Django >= 1.10, only "selected_choices" in the arg list
+            if len(args) == 1:
+                selected_choices = args[0]
+            else:
+                # Django < 1.10 - selected_choices is the second arg.
+                _, selected_choices = args
+            selected_choices = set(text(v) for v in selected_choices)
+            selected_choices_tuples = self.agnocomplete.selected(selected_choices)
+            output = []
+            for option_value, option_label in selected_choices_tuples:
+                output.append(self.render_option(selected_choices, option_value, option_label))  # noqa
+            return '\n'.join(output)
 else:
     class AgnocompleteWidgetMixin(_AgnocompleteWidgetMixin):
         """
@@ -78,6 +78,33 @@ else:
             attrs = super(AgnocompleteWidgetMixin, self).build_attrs(
                 base_attrs, extra_attrs)
             return self._agnocomplete_build_attrs(attrs)
+
+        """
+        Returns the selected option set in order to retrieve the behaviour of
+        AgnocompleteWidgetMixin.render_options()
+        """
+        def _agnocomplete_selected_options(self, options, value):
+            selected_options = {}
+
+            for opt in options:
+                opt_value = text(opt.get('value'))
+                opt_selected = (opt_value in value)
+
+                opt['selected'] = opt_selected
+                opt['attrs']['selected'] = opt_selected
+
+                if opt_selected:
+                    selected_options[opt_value] = opt
+
+            return list(selected_options.values())
+
+        """
+        Render only selected options
+        """
+        def optgroups(self, name, value, attrs=None):
+            _selected_options = self._agnocomplete_selected_options
+            for name, options, index in super(AgnocompleteWidgetMixin, self).optgroups(name, value, attrs):
+                yield (name, _selected_options(options, value), index)
 
 
 class AgnocompleteSelect(AgnocompleteWidgetMixin, widgets.Select):
