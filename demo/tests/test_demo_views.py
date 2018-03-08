@@ -86,15 +86,10 @@ class HomeTest(TestCase):
         )
 
     def test_queries(self):
-        if StrictVersion(get_version()) < StrictVersion('1.11'):
-            # This view should not trigger any SQL query
-            # It has no selected value
-            with self.assertNumQueries(0):
-                self.client.get(reverse('home'))
-        else:
-            # The queryset of choices apparently not lazy as of Django 1.11.
-            with self.assertNumQueries(1):
-                self.client.get(reverse('home'))
+        # This view should not trigger any SQL query
+        # It has no selected value
+        with self.assertNumQueries(0):
+            self.client.get(reverse('home'))
 
 
 class FilledFormTest(LoaddataTestCase):

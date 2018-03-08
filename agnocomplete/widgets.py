@@ -80,31 +80,25 @@ else:
             return self._agnocomplete_build_attrs(attrs)
 
         """
-        Returns the selected option set in order to retrieve the behaviour of
-        AgnocompleteWidgetMixin.render_options()
-        """
-        def _agnocomplete_selected_options(self, options, value):
-            selected_options = {}
-
-            for opt in options:
-                opt_value = text(opt.get('value'))
-                opt_selected = (opt_value in value)
-
-                opt['selected'] = opt_selected
-                opt['attrs']['selected'] = opt_selected
-
-                if opt_selected:
-                    selected_options[opt_value] = opt
-
-            return list(selected_options.values())
-
-        """
         Render only selected options
         """
         def optgroups(self, name, value, attrs=None):
-            _selected_options = self._agnocomplete_selected_options
-            for name, options, index in super(AgnocompleteWidgetMixin, self).optgroups(name, value, attrs):
-                yield (name, _selected_options(options, value), index)
+            selected_ids = set(text(v) for v in value)
+            selected_choices = self.agnocomplete.selected(selected_ids)
+            options = []
+            groups = [
+                (None, options, 0)  # single unnamed group
+            ]
+
+            for option_value, option_label in selected_choices:
+                opt = self.create_option(
+                    name, option_value, option_label, True, 0,
+                    subindex=None, attrs=attrs,
+                )
+                opt['attrs']['selected'] = True
+                options.append(opt)
+
+            return groups
 
 
 class AgnocompleteSelect(AgnocompleteWidgetMixin, widgets.Select):
