@@ -2,11 +2,10 @@
 Changelog for django-agnocomplete
 =================================
 
-0.13.0 (unreleased)
+0.12.1 (2018-03-08)
 ===================
 
-- Nothing changed yet.
-
+* Fix AgnocompleteWidgetMixin running unfiltered queries on django>=1.11
 
 0.12.0 (2018-01-26)
 ===================
