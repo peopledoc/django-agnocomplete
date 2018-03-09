@@ -2,15 +2,18 @@
 Changelog for django-agnocomplete
 =================================
 
-0.13.0 (unreleased)
+0.12.2 (2018-03-09)
 ===================
 
-* Nothing yet
+* Fix AgnocompleteWidgetMixin running unfiltered queries on django>=1.11
 
 0.12.1 (2018-03-08)
 ===================
 
-* Fix AgnocompleteWidgetMixin running unfiltered queries on django>=1.11
+**THIS VERSION IS CANCELLED**. We messed up a bit with branches and releases, and it resulted in a bad release.
+Please consider that this release has never existed.
+
+We're deeply sorry about the inconvenience.
 
 0.12.0 (2018-01-26)
 ===================
