@@ -64,10 +64,12 @@ if StrictVersion(get_version()) < StrictVersion('1.11'):
                 # Django < 1.10 - selected_choices is the second arg.
                 _, selected_choices = args
             selected_choices = set(text(v) for v in selected_choices)
-            selected_choices_tuples = self.agnocomplete.selected(selected_choices)
+            selected_choices_tuples = self.agnocomplete.selected(
+                selected_choices)
             output = []
             for option_value, option_label in selected_choices_tuples:
-                output.append(self.render_option(selected_choices, option_value, option_label))  # noqa
+                output.append(self.render_option(
+                    selected_choices, option_value, option_label))
             return '\n'.join(output)
 else:
     class AgnocompleteWidgetMixin(_AgnocompleteWidgetMixin):
