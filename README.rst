@@ -47,13 +47,9 @@ Install ``tox`` in your environment (it could be a virtualenv) and run:
 It'll run the tests for all the combinations of the following:
 
 * Python 2.7, 3.4, 3.5.
-* Django 1.8, 1.9, 1.10, 1.11.
+* Django 1.11.
 
 and a ``flake8`` check.
-
-.. note::
-
-    The combination Python 3.3 and Django 1.9 is incompatible - `see Django 1.9 release notes <https://docs.djangoproject.com/en/1.10/releases/1.9/>`_
 
 Are you a developer?
 --------------------
@@ -62,7 +58,7 @@ To target a specific test case, use the following:
 
 .. code:: sh
 
-    $ tox -e py27-django18 --  demo.tests.test_core.AutocompleteChoicesPagesOverrideTest
+    $ tox -e py27-django110 --  demo.tests.test_core.AutocompleteChoicesPagesOverrideTest
 
 Everything after the double-dash will be passed to the django-admin.py test command.
 
@@ -70,7 +66,7 @@ If you need to install a debugger (let's say `ipdb`), you can use the ``TOX_EXTR
 
 .. code:: sh
 
-    $ TOX_EXTRA=ipdb tox -e py27-django18
+    $ TOX_EXTRA=ipdb tox -e py27-django110
 
 .. note::
 

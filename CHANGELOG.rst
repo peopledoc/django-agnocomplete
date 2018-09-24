@@ -7,6 +7,7 @@ master (unreleased)
 
 * Added ``doclint`` & ``flake8`` to travis builds (#99).
 * Fixed numerous flake8 errors (#99).
+* Dropped support for Django 1.8, 1.9, 1.10 (#98).
 
 0.12.2 (2018-03-09)
 ===================
