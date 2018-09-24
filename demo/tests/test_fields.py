@@ -102,10 +102,15 @@ class ModelSelectTest(LoaddataTestCase):
 
         # bob is selected => only bob <option>
         html_form = "{}".format(form)
-        self.assertIn('<option value="{}" {}>'.format(self.bob.email, is_selected_attr()),
+        option = '<option value="{}" {}>'.format(
+            self.bob.email, is_selected_attr())
+        self.assertIn(
+            option,
             html_form
         )
-        self.assertNotIn('<option value="{}">'.format(self.alice.email),
+
+        self.assertNotIn(
+            '<option value="{}">'.format(self.alice.email),
             html_form
         )
 
@@ -115,10 +120,12 @@ class ModelSelectTest(LoaddataTestCase):
             data={'person': self.alice.email},
         )
         html_form = "{}".format(form)
-        self.assertIn('<option value="{}" {}>'.format(self.alice.email, is_selected_attr()),
-            html_form
-        )
-        self.assertNotIn('<option value="{}">'.format(self.bob.email),
+        option = '<option value="{}" {}>'.format(
+            self.alice.email, is_selected_attr())
+        self.assertIn(option, html_form)
+
+        self.assertNotIn(
+            '<option value="{}">'.format(self.bob.email),
             html_form
         )
 
@@ -145,8 +152,10 @@ class MultipleSelectTest(TestCase):
 
 class MultipleModelSelectTest(LoaddataTestCase):
     class _Form(forms.Form):
-        persons = fields.AgnocompleteModelMultipleField(AutocompletePersonDomain,
-                                                        to_field_name='email')
+        persons = fields.AgnocompleteModelMultipleField(
+            AutocompletePersonDomain,
+            to_field_name='email'
+        )
 
     def setUp(self):
         super(MultipleModelSelectTest, self).setUp()
@@ -177,10 +186,12 @@ class MultipleModelSelectTest(LoaddataTestCase):
 
         # linux is selected => only linux <option>
         html_form = "{}".format(form)
-        self.assertIn('<option value="{}" {}>'.format(self.alice.email, is_selected_attr()),
-            html_form
-        )
-        self.assertNotIn('<option value="{}">'.format(self.bob.email),
+        option = '<option value="{}" {}>'.format(
+            self.alice.email, is_selected_attr())
+        self.assertIn(option, html_form)
+
+        self.assertNotIn(
+            '<option value="{}">'.format(self.bob.email),
             html_form
         )
 
@@ -189,10 +200,11 @@ class MultipleModelSelectTest(LoaddataTestCase):
             data={'persons': [self.bob.email]},
         )
         html_form = "{}".format(form)
-        self.assertIn('<option value="{}" {}>'.format(self.bob.email, is_selected_attr()),
-            html_form
-        )
-        self.assertNotIn('<option value="{}">'.format(self.alice.email),
+        option = '<option value="{}" {}>'.format(
+            self.bob.email, is_selected_attr())
+        self.assertIn(option, html_form)
+        self.assertNotIn(
+            '<option value="{}">'.format(self.alice.email),
             html_form
         )
 
@@ -202,12 +214,13 @@ class MultipleModelSelectTest(LoaddataTestCase):
             data={'persons': [self.alice.email, self.bob.email]},
         )
         html_form = "{}".format(form)
-        self.assertIn('<option value="{}" {}>'.format(self.alice.email, is_selected_attr()),
-            html_form
-        )
-        self.assertIn('<option value="{}" {}>'.format(self.bob.email, is_selected_attr()),
-            html_form
-        )
+        option = '<option value="{}" {}>'.format(
+            self.alice.email, is_selected_attr())
+        self.assertIn(option, html_form)
+
+        option = '<option value="{}" {}>'.format(
+            self.bob.email, is_selected_attr())
+        self.assertIn(option, html_form)
 
     def test_render_same_key(self):
         # both linux and python are selected => all <option>
@@ -215,11 +228,11 @@ class MultipleModelSelectTest(LoaddataTestCase):
             data={'persons': [self.alice.email, self.aliceinchains.email]},
         )
         html_form = "{}".format(form)
-        self.assertIn('<option value="{}" {}>{}</option>'.format(
-                self.aliceinchains.email, is_selected_attr(), self.aliceinchains
-            ),
-            html_form
+        option = '<option value="{}" {}>{}</option>'.format(
+            self.aliceinchains.email, is_selected_attr(),
+            self.aliceinchains
         )
+        self.assertIn(option, html_form)
 
     def test_render_no_selection(self):
         # none is selected => no <option>
