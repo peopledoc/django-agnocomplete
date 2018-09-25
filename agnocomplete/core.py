@@ -481,7 +481,7 @@ class AgnocompleteModel(AgnocompleteModelBase):
                 raise AuthenticationRequiredAgnocompleteException(
                     "Authentication is required to use this autocomplete"
                 )
-            if not self.user.is_authenticated():
+            if not self.user.is_authenticated:
                 raise AuthenticationRequiredAgnocompleteException(
                     "Authentication is required to use this autocomplete"
                 )

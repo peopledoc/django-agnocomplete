@@ -72,6 +72,7 @@ class MockRequestUser(object):
         self.email = email
         self._is_authenticated = is_authenticated
 
+    @property
     def is_authenticated(self):
         return self._is_authenticated
 

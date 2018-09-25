@@ -1,12 +1,17 @@
 language: python
 python:
   - "3.5"
-env:
-  - TOX_ENV=py27-django111
-  - TOX_ENV=py34-django111
-  - TOX_ENV=py35-django111
-  - TOX_ENV=flake8
-  - TOX_ENV=doclint
+matrix:
+  include:
+    - python: "2.7"
+      env: TOX_ENV=py27-django111
+    - python: "3.4"
+      env: TOX_ENV=py34-django111
+    - env: TOX_ENV=py35-django111
+    - python: "3.6"
+      env: TOX_ENV=py36-django111
+    - env: TOX_ENV=flake8
+    - env: TOX_ENV=doclint
 script:
   tox -e $TOX_ENV
 install:
