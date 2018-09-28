@@ -17,6 +17,7 @@ class Person(models.Model):
         # Property needed by the authentication backend
         return True
 
+    @property
     def is_authenticated(self):
         return True
 
