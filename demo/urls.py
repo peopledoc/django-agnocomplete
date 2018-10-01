@@ -9,13 +9,13 @@ from . import views
 
 
 urlpatterns = [
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', admin.site.urls),
 
     # Autodiscovered URLs
     url(
         r'^agnocomplete/',
         include(
-            'agnocomplete.urls',
+            ('agnocomplete.urls', 'agnocomplete'),
             namespace=get_namespace()
         )
     ),
@@ -66,6 +66,6 @@ urlpatterns = [
         name='url-proxy-with-extra'),
 
     # Mock Third Party URLs
-    url(r'^3rdparty/', include('demo.urls_proxy', namespace='url-proxy')),
+    url(r'^3rdparty/', include(('demo.urls_proxy', 'url-proxy')))
 
 ]

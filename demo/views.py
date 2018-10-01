@@ -1,6 +1,6 @@
 import logging
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.generic import CreateView, FormView, UpdateView
 from django.utils.decorators import method_decorator

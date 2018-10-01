@@ -2,7 +2,7 @@
 Autocomplete classes
 """
 import logging
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 from django.utils.encoding import force_text as text
 from django.conf import settings
 

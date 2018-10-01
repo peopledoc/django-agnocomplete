@@ -4,7 +4,7 @@ Form classes
 import pprint
 
 from django import forms
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 
 from agnocomplete import fields, widgets
 from agnocomplete.forms import UserContextFormMixin
