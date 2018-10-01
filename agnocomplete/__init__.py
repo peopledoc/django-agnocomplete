@@ -5,7 +5,7 @@ Agnocomplete, the Agnostic Autocomplete Django app.
 import logging
 
 from django.conf import settings
-from django.utils.module_loading import import_module
+from django.utils.module_loading import autodiscover_modules
 
 logger = logging.getLogger(__name__)
 
@@ -22,20 +22,7 @@ def get_namespace():
 
 def autodiscover():
     """Auto-discover INSTALLED_APPS agnocomplete modules."""
-    module_name = "autocomplete"
-    for app in settings.INSTALLED_APPS:
-        # Attempt to import the app's 'routing' module
-        module = '{}.{}'.format(app, module_name)
-        try:
-            import_module(module)
-        except ImportError as ex:
-            reason = ex.args[0]
-            if 'No module named {}'.format(module_name) in reason \
-                    or "No module named '{}'".format(module) in reason:
-                logger.info('No module named {}'.format(module))
-            else:  # re-raise - something's wrong
-                logger.warning(ex)
-                raise ImportError(ex)
+    autodiscover_modules('autocomplete')
 
 
 default_app_config = 'agnocomplete.app.AgnocompleteConfig'
