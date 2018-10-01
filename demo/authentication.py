@@ -13,7 +13,7 @@ class PersonBackend(object):
     Authenticate against the Person model.
     """
 
-    def authenticate(self, email=None):
+    def authenticate(self, request=None, email=None):
         try:
             person = Person.objects.get(email=email)
         except Person.DoesNotExist:
