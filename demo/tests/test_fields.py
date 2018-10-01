@@ -1,7 +1,7 @@
 from distutils.version import StrictVersion
 
 from django import forms, get_version
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.test import TestCase
 import six
 

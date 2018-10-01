@@ -11,6 +11,8 @@ master (unreleased)
 * Added support for python 3.6
 * Fixed User.is_authenticated() deprecation warning (Django>=2.0)
 * Fixed deprecated MIDDLEWARE_CLASSES settings
+* Fixed deprecated urls declarations
+* Fixed ForeignKey on_delete values
 
 0.12.2 (2018-03-09)
 ===================

@@ -1,7 +1,7 @@
 import json
 
 from django.test import TestCase
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils.encoding import force_text as text
 
 from .. import DATABASE, GOODAUTHTOKEN

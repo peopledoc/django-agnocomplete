@@ -31,7 +31,7 @@ class Person(models.Model):
 
 
 class FavoriteColor(models.Model):
-    person = models.ForeignKey(Person)
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
     color = models.CharField(max_length=100, choices=COLORS)
 
     def __unicode__(self):
@@ -48,7 +48,7 @@ class Tag(models.Model):
 
 
 class PersonTag(models.Model):
-    person = models.ForeignKey(Person)
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
     tags = models.ManyToManyField(Tag)
 
     def __unicode__(self):
@@ -72,7 +72,7 @@ class ContextTag(models.Model):
 
 
 class PersonContextTag(models.Model):
-    person = models.ForeignKey(Person)
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
     tags = models.ManyToManyField(ContextTag)
 
     def __unicode__(self):
