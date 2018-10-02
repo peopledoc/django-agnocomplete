@@ -2,7 +2,7 @@
 Changelog for django-agnocomplete
 =================================
 
-master (unreleased)
+0.13.0 (2018-10-02)
 ===================
 
 * Added ``doclint`` & ``flake8`` to travis builds (#99).
