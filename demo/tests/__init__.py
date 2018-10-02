@@ -34,7 +34,7 @@ class LoaddataLiveTestCase(LoaddataMixin, LiveServerTestCase):
 class RegistryTestGeneric(LoaddataTestCase):
 
     def _test_registry_keys(self, keys):
-        self.assertEqual(len(keys), 23)
+        self.assertEqual(len(keys), 24)
         self.assertIn("AutocompleteColor", keys)
         self.assertIn("AutocompleteColorExtra", keys)
         self.assertIn("AutocompletePerson", keys)
@@ -64,6 +64,7 @@ class RegistryTestGeneric(LoaddataTestCase):
         self.assertIn("AutocompleteUrlHeadersAuth", keys)
         self.assertIn("AutocompleteUrlErrors", keys)
         self.assertIn("AutocompleteUrlSimpleWithExtra", keys)
+        self.assertIn("AutocompleteUrlSkipItem", keys)
 
 
 class MockRequestUser(object):

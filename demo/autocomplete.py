@@ -12,6 +12,8 @@ from agnocomplete.core import (
     AgnocompleteModel,
     AgnocompleteUrlProxy,
 )
+from agnocomplete.exceptions import SkipItem
+
 from .models import Person, Tag, ContextTag
 from .common import COLORS
 from . import GOODAUTHTOKEN
@@ -257,6 +259,14 @@ class AutocompleteUrlSimpleWithExtra(AutocompleteUrlSimple):
         return super(AutocompleteUrlSimple, self).items(query, **kwargs)
 
 
+class AutocompleteUrlSkipItem(AutocompleteUrlSimple):
+
+    def item(self, obj):
+        if obj['label'] == 'first person':
+            raise SkipItem
+        return super(AutocompleteUrlSkipItem, self).item(obj)
+
+
 # Registration
 register(AutocompleteColor)
 register(AutocompleteColorExtra)
@@ -282,3 +292,4 @@ register(AutocompleteUrlHeadersAuth)
 register(AutocompleteUrlSimplePost)
 register(AutocompleteUrlErrors)
 register(AutocompleteUrlSimpleWithExtra)
+register(AutocompleteUrlSkipItem)

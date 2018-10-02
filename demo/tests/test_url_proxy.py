@@ -19,6 +19,7 @@ from ..autocomplete import (
     AutocompleteUrlHeadersAuth,
     AutocompleteUrlSimplePost,
     AutocompleteUrlSimpleWithExtra,
+    AutocompleteUrlSkipItem,
 )
 from .. import DATABASE, GOODAUTHTOKEN
 RESULT_DICT = [{'value': text(item['pk']), 'label': text(item['name'])} for item in DATABASE]  # noqa
@@ -291,3 +292,26 @@ class AutocompleteUrlWithExtraTest(LiveServerTestCase):
                 {'value': 'moo', 'label': 'moo'}
             ]
         )
+
+
+@override_settings(HTTP_HOST='')
+class AutocompleteUrlSkipItemTest(LiveServerTestCase):
+    def test_search(self):
+        instance = AutocompleteUrlSkipItem()
+        # "mock" Change URL by adding the host
+        search_url = instance.search_url
+        with mock.patch('demo.autocomplete.AutocompleteUrlSkipItem'
+                        '.get_search_url') as mock_auto:
+            mock_auto.return_value = self.live_server_url + search_url
+            search_result = instance.items(query='person')
+            self.assertEqual(
+                list(search_result),
+                [
+                    {"value": '2', 'label': 'second person'},
+                    {"value": '3', 'label': 'third person'},
+                    {"value": '4', 'label': 'fourth person'},
+                    {"value": '5', 'label': 'fifth person'},
+                    {"value": '6', 'label': 'sixth person'},
+                    {"value": '7', 'label': 'seventh person'}
+                ],
+            )

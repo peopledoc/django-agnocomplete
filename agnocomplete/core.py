@@ -17,7 +17,7 @@ from .constants import AGNOCOMPLETE_MIN_PAGESIZE
 from .constants import AGNOCOMPLETE_MAX_PAGESIZE
 from .constants import AGNOCOMPLETE_DEFAULT_QUERYSIZE
 from .constants import AGNOCOMPLETE_MIN_QUERYSIZE
-from .exceptions import AuthenticationRequiredAgnocompleteException
+from .exceptions import AuthenticationRequiredAgnocompleteException, SkipItem
 
 
 logger = logging.getLogger(__name__)
@@ -618,7 +618,10 @@ class AgnocompleteUrlProxy(with_metaclass(ABCMeta, AgnocompleteBase)):
         result = []
         for item in http_result:
             # Eventual result reshaping.
-            result.append(self.item(item))
+            try:
+                result.append(self.item(item))
+            except SkipItem:
+                continue
         return result
 
     def selected(self, ids):
