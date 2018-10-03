@@ -104,6 +104,28 @@ or, if things are going more complicated:
                 label='{} {}'.format(current_item['label1'], current_item['label2']),
             )
 
+
+If you need to skip fields
+++++++++++++++++++++++++++
+
+
+Sometimes, passing in a query may not provide sufficient filtering to meet requirements. In such cases, :class:`agnocomplete.exceptions.SkipItem` can be raised to prevent a given item from appearing in the final result. Please note, however, that this is not a very efficient approach, and so should only be used as a last resort. It is generally preferable to apply ``server-side`` filtering if at all possible.
+
+.. code-block:: python
+
+    from agnocomplete.exceptions import SkipItem
+
+    class AutocompleteUrlConvert(AgnocompleteUrlProxy):
+
+        def item(self, current_item):
+            if not current_item['meta'].get('is_required'):
+                raise SkipItem()
+
+            return dict(
+                value=current_item[current_item['meta']['value_field']],
+                label='{} {}'.format(current_item['label1'], current_item['label2']),
+            )
+
 If the result doesn't follow standard schema
 ++++++++++++++++++++++++++++++++++++++++++++
 
