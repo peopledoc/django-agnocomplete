@@ -5,7 +5,7 @@ Changelog for django-agnocomplete
 master (unreleased)
 ==================
 
-Nothing here yet
+* Add a way in UrlProxy widget to filter value with python (#104)
 
 0.13.0 (2018-10-02)
 ===================
