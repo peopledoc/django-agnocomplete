@@ -2,8 +2,11 @@ from distutils.version import StrictVersion
 
 from django import forms, get_version
 from django.urls import reverse
-from django.test import TestCase
+from django.test import LiveServerTestCase, TestCase, override_settings
+from django.core.exceptions import ValidationError
 import six
+
+import mock
 
 from agnocomplete import fields
 from agnocomplete.exceptions import UnregisteredAgnocompleteException
@@ -19,7 +22,9 @@ from demo.autocomplete import (
     HiddenAutocompleteURLReverse,
     AutocompleteTag,
     AutocompletePersonDomain,
+    AutocompleteUrlSkipItem,
 )
+from demo.fields import AgnocompleteUrlProxyField
 from demo.models import Tag, Person
 from demo.tests import LoaddataTestCase
 
@@ -241,3 +246,26 @@ class MultipleModelSelectTest(LoaddataTestCase):
         )
         html_form = "{}".format(form)
         self.assertNotIn('<option', html_form)
+
+
+@override_settings(HTTP_HOST='')
+class FieldUrlProxyTest(LiveServerTestCase):
+
+    def test_clean_method(self):
+        person = AgnocompleteUrlProxyField(AutocompleteUrlSkipItem)
+        search_url = person.agnocomplete.get_item_url('2')
+        with mock.patch('demo.autocomplete.AutocompleteUrlSkipItem'
+                        '.get_item_url') as mock_auto:
+            mock_auto.return_value = self.live_server_url + search_url
+            item = person.clean('2')
+
+        self.assertEqual(item, '2')
+
+    def test_clean_method_value_not_found(self):
+        # Value is filter through the `item` method
+        person = AgnocompleteUrlProxyField(AutocompleteUrlSkipItem)
+        search_url = person.agnocomplete.get_item_url('1')
+        with mock.patch('demo.autocomplete.AutocompleteUrlSkipItem'
+                        '.get_item_url') as mock_auto:
+            mock_auto.return_value = self.live_server_url + search_url
+            self.assertRaises(ValidationError, person.clean, '1')

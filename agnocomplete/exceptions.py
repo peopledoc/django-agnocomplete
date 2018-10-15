@@ -37,3 +37,10 @@ class SkipItem(Exception):
     Occurs when Item has to be skipped when building the final Payload
     """
     pass
+
+
+class ItemNotFound(Exception):
+    """
+    Occurs while searching an unexisting item on autocomplete choices.
+    """
+    pass

@@ -6,6 +6,7 @@ master (unreleased)
 ==================
 
 * Add a way in UrlProxy widget to filter value with python (#104)
+* Provide a FieldMixin in order to use with UrlProxy Autocomplete for efficient value validation (#107)
 
 0.13.0 (2018-10-02)
 ===================

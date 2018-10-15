@@ -10,6 +10,7 @@ from .core import AgnocompleteBase
 from .constants import AGNOCOMPLETE_USER_ATTRIBUTE
 from .widgets import AgnocompleteSelect, AgnocompleteMultiSelect
 from .register import get_agnocomplete_registry
+from .exceptions import ItemNotFound
 from .exceptions import UnregisteredAgnocompleteException
 
 
@@ -246,3 +247,19 @@ class AgnocompleteModelMultipleField(AgnocompleteContextQuerysetMixin,
         qs = super(AgnocompleteModelMultipleField, self).clean(pks)
 
         return qs
+
+
+class AgnocompleteUrlProxyMixin(object):
+    """
+    This mixin can be used with a field which actually using
+    :class:`agnocomplete.core.AutocompletUrlProxy`. The main purpose is to
+    provide a mechanism to validate the value through the Autocomplete.
+    """
+
+    def valid_value(self, value):
+        try:
+            self.agnocomplete.validate(value)
+        except ItemNotFound:
+            return False
+
+        return True
