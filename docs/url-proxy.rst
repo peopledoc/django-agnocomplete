@@ -105,11 +105,12 @@ or, if things are going more complicated:
             )
 
 
-If you need to skip fields
-++++++++++++++++++++++++++
+If you need to skip items
++++++++++++++++++++++++++
 
+.. versionadded:: 0.14.0
 
-Sometimes, passing in a query may not provide sufficient filtering to meet requirements. In such cases, :class:`agnocomplete.exceptions.SkipItem` can be raised to prevent a given item from appearing in the final result. Please note, however, that this is not a very efficient approach, and so should only be used as a last resort. It is generally preferable to apply ``server-side`` filtering if at all possible.
+Sometimes, passing in a query may not provide sufficient filtering to meet requirements. In such cases, :class:`agnocomplete.exceptions.SkipItem` can be raised to prevent a given item from appearing in the final result. Please note, however, that this is not a very efficient approach, and so should only be used as a last resort. It is generally preferable to apply **server-side** filtering if possible.
 
 .. code-block:: python
 

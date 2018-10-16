@@ -2,8 +2,8 @@
 Changelog for django-agnocomplete
 =================================
 
-master (unreleased)
-==================
+0.14.0 (2018-10-16)
+===================
 
 * Add a way in UrlProxy widget to filter value with python (#104)
 * Provide a FieldMixin in order to use with UrlProxy Autocomplete for efficient value validation (#107)
