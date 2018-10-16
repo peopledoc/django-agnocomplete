@@ -30,3 +30,10 @@ class ModelMultipleObjectsField(fields.AgnocompleteModelMultipleField):
         Return the created model instance.
         """
         return self.queryset.model.objects.create(**kwargs)
+
+
+class AgnocompleteUrlProxyField(fields.AgnocompleteUrlProxyMixin,
+                                fields.AgnocompleteField):
+    """
+    Demo Field to use AutocompleteUrlProxy
+    """

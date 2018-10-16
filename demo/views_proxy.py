@@ -180,3 +180,22 @@ def item(request, pk):
     response = json.dumps(result)
     logger.debug('response: `%s`', response)
     return HttpResponse(response)
+
+
+@require_GET
+def atomic_item(request, pk):
+    """
+    Similar to `item` but does not return a list
+    """
+    data = None
+    for item in DATABASE:
+        if text(item['pk']) == text(pk):
+            data = convert_data(item)
+            break
+    if not data:
+        raise Http404("Unknown item `{}`".format(pk))
+    logger.debug('3rd item search: `%s`', pk)
+    result = {'data': data}
+    response = json.dumps(result)
+    logger.debug('response: `%s`', response)
+    return HttpResponse(response)

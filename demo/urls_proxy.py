@@ -7,6 +7,8 @@ from . import views_proxy
 
 urlpatterns = [
     url(r'^item/(?P<pk>[0-9]+)$', views_proxy.item, name='item'),
+    url(r'^atomicitem/(?P<pk>[0-9]+)$', views_proxy.atomic_item,
+        name='atomic-item'),
     url(r'^simple/$', views_proxy.simple, name='simple'),
     url(r'^simple-post/$', views_proxy.simple_post, name='simple-post'),
     url(r'^convert/$', views_proxy.convert, name='convert'),

@@ -6,12 +6,14 @@ from django.urls import reverse_lazy
 from django.utils.encoding import force_text as text
 from django.conf import settings
 
+from agnocomplete.exceptions import SkipItem
 from agnocomplete.register import register
 from agnocomplete.core import (
     AgnocompleteChoices,
     AgnocompleteModel,
     AgnocompleteUrlProxy,
 )
+
 from .models import Person, Tag, ContextTag
 from .common import COLORS
 from . import GOODAUTHTOKEN
@@ -257,6 +259,22 @@ class AutocompleteUrlSimpleWithExtra(AutocompleteUrlSimple):
         return super(AutocompleteUrlSimple, self).items(query, **kwargs)
 
 
+class AutocompleteUrlSkipItem(AutocompleteUrlSimple):
+
+    data_key = 'data'
+
+    def item(self, obj):
+        if obj['label'] == 'first person':
+            raise SkipItem
+        return super(AutocompleteUrlSkipItem, self).item(obj)
+
+    def get_item_url(self, pk):
+        return '{}{}'.format(
+            getattr(settings, 'HTTP_HOST', ''),
+            reverse_lazy('url-proxy:atomic-item', args=[pk])
+        )
+
+
 # Registration
 register(AutocompleteColor)
 register(AutocompleteColorExtra)
@@ -282,3 +300,4 @@ register(AutocompleteUrlHeadersAuth)
 register(AutocompleteUrlSimplePost)
 register(AutocompleteUrlErrors)
 register(AutocompleteUrlSimpleWithExtra)
+register(AutocompleteUrlSkipItem)
