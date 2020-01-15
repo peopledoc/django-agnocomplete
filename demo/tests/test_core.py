@@ -13,6 +13,8 @@ from ..autocomplete import (
     AutocompleteColor,
     AutocompletePerson,
     AutocompletePersonLabel,
+    AutocompleteLastNameStartsWith,
+    AutocompleteFirstNameEqualsIgnoreCase,
     AutocompleteChoicesPages,
     AutocompleteChoicesPagesOverride,
     AutocompletePersonQueryset,
@@ -20,6 +22,7 @@ from ..autocomplete import (
     AutocompletePersonDomain,
 )
 from ..models import Person
+
 from . import MockRequestUser, LoaddataTestCase
 
 
@@ -154,6 +157,28 @@ class AutocompleteModelTest(LoaddataTestCase):
         self.assertEqual(Person, instance.get_model())
         instance = AutocompletePersonQueryset()
         self.assertEqual(Person, instance.get_model())
+
+    def test_field_startswith(self):
+        instance = AutocompleteLastNameStartsWith()
+        items = instance.get_queryset()
+        self.assertEqual(items.count(), 6)
+
+        items = instance.items(query='i')
+        self.assertEqual(len(items), 2)
+
+        items = instance.items(query='SKY')
+        self.assertEqual(len(items), 1)
+
+    def test_field_iexact(self):
+        instance = AutocompleteFirstNameEqualsIgnoreCase()
+        items = instance.get_queryset()
+        self.assertEqual(items.count(), 6)
+
+        items = instance.items(query='ali')
+        self.assertEqual(len(items), 0)
+
+        items = instance.items(query='alice')
+        self.assertEqual(len(items), 4)
 
     def test_final_queryset_person(self):
         instance = AutocompletePerson()

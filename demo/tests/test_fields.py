@@ -1,6 +1,4 @@
-from distutils.version import StrictVersion
-
-from django import forms, get_version
+from django import forms
 from django.urls import reverse
 from django.test import LiveServerTestCase, TestCase, override_settings
 from django.core.exceptions import ValidationError
@@ -27,13 +25,6 @@ from demo.autocomplete import (
 from demo.fields import AgnocompleteUrlProxyField
 from demo.models import Tag, Person
 from demo.tests import LoaddataTestCase
-
-
-def is_selected_attr():
-    if StrictVersion(get_version()) < StrictVersion('1.11'):
-        return 'selected="selected"'
-    else:
-        return 'selected'
 
 
 class AgnocompleteInstanceTest(TestCase):
@@ -108,7 +99,7 @@ class ModelSelectTest(LoaddataTestCase):
         # bob is selected => only bob <option>
         html_form = "{}".format(form)
         option = '<option value="{}" {}>'.format(
-            self.bob.email, is_selected_attr())
+            self.bob.email, 'selected')
         self.assertIn(
             option,
             html_form
@@ -126,7 +117,7 @@ class ModelSelectTest(LoaddataTestCase):
         )
         html_form = "{}".format(form)
         option = '<option value="{}" {}>'.format(
-            self.alice.email, is_selected_attr())
+            self.alice.email, 'selected')
         self.assertIn(option, html_form)
 
         self.assertNotIn(
@@ -192,7 +183,7 @@ class MultipleModelSelectTest(LoaddataTestCase):
         # linux is selected => only linux <option>
         html_form = "{}".format(form)
         option = '<option value="{}" {}>'.format(
-            self.alice.email, is_selected_attr())
+            self.alice.email, 'selected')
         self.assertIn(option, html_form)
 
         self.assertNotIn(
@@ -206,7 +197,7 @@ class MultipleModelSelectTest(LoaddataTestCase):
         )
         html_form = "{}".format(form)
         option = '<option value="{}" {}>'.format(
-            self.bob.email, is_selected_attr())
+            self.bob.email, 'selected')
         self.assertIn(option, html_form)
         self.assertNotIn(
             '<option value="{}">'.format(self.alice.email),
@@ -220,11 +211,11 @@ class MultipleModelSelectTest(LoaddataTestCase):
         )
         html_form = "{}".format(form)
         option = '<option value="{}" {}>'.format(
-            self.alice.email, is_selected_attr())
+            self.alice.email, 'selected')
         self.assertIn(option, html_form)
 
         option = '<option value="{}" {}>'.format(
-            self.bob.email, is_selected_attr())
+            self.bob.email, 'selected')
         self.assertIn(option, html_form)
 
     def test_render_same_key(self):
@@ -234,7 +225,7 @@ class MultipleModelSelectTest(LoaddataTestCase):
         )
         html_form = "{}".format(form)
         option = '<option value="{}" {}>{}</option>'.format(
-            self.aliceinchains.email, is_selected_attr(),
+            self.aliceinchains.email, 'selected',
             self.aliceinchains
         )
         self.assertIn(option, html_form)

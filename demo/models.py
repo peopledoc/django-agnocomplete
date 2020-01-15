@@ -1,4 +1,6 @@
 from django.db import models
+from django.utils.encoding import force_text
+
 from .common import COLORS
 
 
@@ -54,7 +56,7 @@ class PersonTag(models.Model):
     def __unicode__(self):
         return u"{} is tagged: {}".format(
             self.person,
-            u", ".join([unicode(t) for t in self.tags.all()]) or u"Nothing"
+            u", ".join([force_text(t) for t in self.tags.all()]) or u"Nothing"
         )
     __str__ = __unicode__
 
@@ -78,6 +80,6 @@ class PersonContextTag(models.Model):
     def __unicode__(self):
         return u"{} is tagged: {}".format(
             self.person,
-            u", ".join([unicode(t) for t in self.tags.all()]) or u"Nothing"
+            u", ".join([force_text(t) for t in self.tags.all()]) or u"Nothing"
         )
     __str__ = __unicode__

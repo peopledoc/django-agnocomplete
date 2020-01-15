@@ -63,6 +63,18 @@ class AutocompletePerson(AgnocompleteModel):
     query_size_min = 2
 
 
+class AutocompleteLastNameStartsWith(AgnocompleteModel):
+    model = Person
+    fields = ['^last_name']
+    query_size_min = 1
+
+
+class AutocompleteFirstNameEqualsIgnoreCase(AgnocompleteModel):
+    model = Person
+    fields = ['=first_name']
+    query_size_min = 1
+
+
 class AutocompletePersonExtra(AutocompletePerson):
 
     def build_extra_filtered_queryset(self, queryset, **kwargs):
@@ -280,6 +292,8 @@ register(AutocompleteColor)
 register(AutocompleteColorExtra)
 register(AutocompleteColorShort)
 register(AutocompletePerson)
+register(AutocompleteLastNameStartsWith)
+register(AutocompleteFirstNameEqualsIgnoreCase)
 register(AutocompletePersonExtra)
 register(AutocompletePersonShort)
 register(AutocompleteChoicesPages)

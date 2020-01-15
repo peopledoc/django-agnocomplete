@@ -28,10 +28,7 @@ class AgnocompleteMixin(object):
     """
     widget = AgnocompleteSelect
 
-    def __init__(self, klass_or_instance, user=None, *args, **kwargs):
-        self.set_agnocomplete(klass_or_instance, user)
-        super(AgnocompleteMixin, self).__init__(
-            self.agnocomplete.get_choices(), *args, **kwargs)
+    def _setup_agnocomplete_widget(self):
         # Update the widget with the target agnocomplete
         self.widget.agnocomplete = self.agnocomplete
 
@@ -122,6 +119,11 @@ class AgnocompleteField(AgnocompleteMixin, forms.ChoiceField):
     """
     Agnocomplete Field class for simple Choice fields.
     """
+    def __init__(self, agnocomplete, user=None, **kwargs):
+        self.set_agnocomplete(agnocomplete, user)
+        super(AgnocompleteField, self).__init__(
+            choices=self.agnocomplete.get_choices(), **kwargs)
+        self._setup_agnocomplete_widget()
 
 
 class AgnocompleteModelField(AgnocompleteContextQuerysetMixin,
@@ -130,6 +132,11 @@ class AgnocompleteModelField(AgnocompleteContextQuerysetMixin,
     """
     Agnocomplete Field class for Choice fields based on models / querysets.
     """
+    def __init__(self, agnocomplete, user=None, **kwargs):
+        self.set_agnocomplete(agnocomplete, user)
+        super(AgnocompleteModelField, self).__init__(
+            self.agnocomplete.get_choices(), **kwargs)
+        self._setup_agnocomplete_widget()
 
 
 class AgnocompleteMultipleMixin(AgnocompleteMixin):
@@ -139,14 +146,14 @@ class AgnocompleteMultipleMixin(AgnocompleteMixin):
     widget = AgnocompleteMultiSelect
     clean_empty = True
 
-    def __init__(self, *args, **kwargs):
-        create_arg = kwargs.pop('create', False)
-        self.create_field = kwargs.pop('create_field', False)
-        self.create = bool(self.create_field) or create_arg
-        super(AgnocompleteMultipleMixin, self).__init__(*args, **kwargs)
+    def _setup_agnocomplete_widget(self):
+        super(AgnocompleteMultipleMixin, self)._setup_agnocomplete_widget()
         # self.widget is a thing here
         self.widget.create = self.create
-        self._new_values = []
+
+    def set_create_field(self, create=False, create_field=False):
+        self.create_field = create_field
+        self.create = bool(create_field) or create
 
     @property
     def empty_value(self):
@@ -178,6 +185,13 @@ class AgnocompleteMultipleField(AgnocompleteMultipleMixin,
     """
     Agnocomplete Field class for multiple Choice fields.
     """
+    def __init__(self, agnocomplete, user=None,
+                 create=False, create_field=False, **kwargs):
+        self.set_agnocomplete(agnocomplete, user)
+        self.set_create_field(create=create, create_field=create_field)
+        super(AgnocompleteMultipleField, self).__init__(
+            choices=self.agnocomplete.get_choices(), **kwargs)
+        self._setup_agnocomplete_widget()
 
 
 class AgnocompleteModelMultipleField(AgnocompleteContextQuerysetMixin,
@@ -186,6 +200,14 @@ class AgnocompleteModelMultipleField(AgnocompleteContextQuerysetMixin,
     """
     Field class for multiple selection on Django models.
     """
+    def __init__(self, agnocomplete, user=None,
+                 create=False, create_field=False, **kwargs):
+        self.set_agnocomplete(agnocomplete, user)
+        self.set_create_field(create=create, create_field=create_field)
+        super(AgnocompleteModelMultipleField, self).__init__(
+            self.agnocomplete.get_choices(), **kwargs)
+        self._setup_agnocomplete_widget()
+        self._new_values = []
 
     @property
     def empty_value(self):
