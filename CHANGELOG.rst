@@ -5,7 +5,9 @@ Changelog for django-agnocomplete
 master (unreleased)
 ===================
 
-Nothing here yet.
+* Cleanup code related to Django 1.8, 1.9 & 1.10
+* Remove tox targets for Django 1.8, 1.9 & 1.10
+* Add support for Django 2.0, 2.1 & 2.2
 
 0.14.0 (2018-10-16)
 ===================

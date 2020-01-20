@@ -1,10 +1,6 @@
 """
 Agnocomplete Widgets
 """
-from distutils.version import StrictVersion
-
-from django import get_version
-
 from django.forms import widgets
 from django.urls import reverse_lazy
 from django.utils.encoding import force_text as text
@@ -21,10 +17,7 @@ __all__ = [
 ]
 
 
-class _AgnocompleteWidgetMixin(object):
-    """
-    Generic toolset for building Agnocomplete-ready widgets
-    """
+class AgnocompleteWidgetMixin(object):
     def _agnocomplete_build_attrs(self, attrs):
         data_url = reverse_lazy(
             '{}:agnocomplete'.format(get_namespace()),
@@ -45,62 +38,34 @@ class _AgnocompleteWidgetMixin(object):
 
         return attrs
 
+    """
+    Generic toolset for building Agnocomplete-ready widgets
+    """
+    def build_attrs(self, base_attrs, extra_attrs=None):
+        attrs = super(AgnocompleteWidgetMixin, self).build_attrs(
+            base_attrs, extra_attrs)
+        return self._agnocomplete_build_attrs(attrs)
 
-if StrictVersion(get_version()) < StrictVersion('1.11'):
-    class AgnocompleteWidgetMixin(_AgnocompleteWidgetMixin):
-        """
-        Generic toolset for building Agnocomplete-ready widgets
-        """
-        def build_attrs(self, extra_attrs=None, **kwargs):
-            attrs = super(AgnocompleteWidgetMixin, self).build_attrs(
-                extra_attrs, **kwargs)
-            return self._agnocomplete_build_attrs(attrs)
+    """
+    Render only selected options
+    """
+    def optgroups(self, name, value, attrs=None):
+        selected_ids = set(text(v) for v in value)
+        selected_choices = self.agnocomplete.selected(selected_ids)
+        options = []
+        groups = [
+            (None, options, 0)  # single unnamed group
+        ]
 
-        def render_options(self, *args):
-            # Django >= 1.10, only "selected_choices" in the arg list
-            if len(args) == 1:
-                selected_choices = args[0]
-            else:
-                # Django < 1.10 - selected_choices is the second arg.
-                _, selected_choices = args
-            selected_choices = set(text(v) for v in selected_choices)
-            selected_choices_tuples = self.agnocomplete.selected(
-                selected_choices)
-            output = []
-            for option_value, option_label in selected_choices_tuples:
-                output.append(self.render_option(
-                    selected_choices, option_value, option_label))
-            return '\n'.join(output)
-else:
-    class AgnocompleteWidgetMixin(_AgnocompleteWidgetMixin):
-        """
-        Generic toolset for building Agnocomplete-ready widgets
-        """
-        def build_attrs(self, base_attrs, extra_attrs=None):
-            attrs = super(AgnocompleteWidgetMixin, self).build_attrs(
-                base_attrs, extra_attrs)
-            return self._agnocomplete_build_attrs(attrs)
+        for option_value, option_label in selected_choices:
+            opt = self.create_option(
+                name, option_value, option_label, True, 0,
+                subindex=None, attrs=attrs,
+            )
+            opt['attrs']['selected'] = True
+            options.append(opt)
 
-        """
-        Render only selected options
-        """
-        def optgroups(self, name, value, attrs=None):
-            selected_ids = set(text(v) for v in value)
-            selected_choices = self.agnocomplete.selected(selected_ids)
-            options = []
-            groups = [
-                (None, options, 0)  # single unnamed group
-            ]
-
-            for option_value, option_label in selected_choices:
-                opt = self.create_option(
-                    name, option_value, option_label, True, 0,
-                    subindex=None, attrs=attrs,
-                )
-                opt['attrs']['selected'] = True
-                options.append(opt)
-
-            return groups
+        return groups
 
 
 class AgnocompleteSelect(AgnocompleteWidgetMixin, widgets.Select):
