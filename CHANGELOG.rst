@@ -9,6 +9,7 @@ master (unreleased)
 * Remove tox targets for Django 1.8, 1.9 & 1.10
 * Add support for Django 2.0, 2.1 & 2.2
 * Fixed Demo site.
+* Cleaned up README and other docs reflecting the newest compatibilities.
 
 0.14.0 (2018-10-16)
 ===================

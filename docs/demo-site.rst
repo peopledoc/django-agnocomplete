@@ -21,7 +21,7 @@ To be able to access it, the simple was is to:
 
 .. note::
 
-    The `serve` tox job is currenly based on Python 2.7 and Django 1.7.
+    The `serve` tox job is currenly based on Python 3.6 and Django 1.11.
 
 On the first run, this will create a sqlite database, create tables and will feed them with the initial fixtures data. Then it will launch the integrated dev server.
 
