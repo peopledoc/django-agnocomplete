@@ -5,6 +5,7 @@ __pycache__/
 .tox/
 *.sqlite3
 *.egg-info/
+.coverage
 # Docs
 docs/_build/
 # setup.py stuff
