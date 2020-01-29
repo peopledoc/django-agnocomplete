@@ -2,8 +2,8 @@
 Changelog for django-agnocomplete
 =================================
 
-master (unreleased)
-===================
+1.0.0 (2020-01-29)
+==================
 
 * Cleanup code related to Django 1.8, 1.9 & 1.10
 * Remove tox targets for Django 1.8, 1.9 & 1.10
