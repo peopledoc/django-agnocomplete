@@ -8,6 +8,7 @@ master (unreleased)
 * Confirm compatibility with Python 3.9.
 * Drop support for Django 2.0, 2.1 (#116).
 * Drop support for Python 3.5 (#114).
+* Drop support for Django 1.11 & Python 2.7 (#115).
 
 1.0.0 (2020-01-29)
 ==================
