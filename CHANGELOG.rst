@@ -6,6 +6,7 @@ master (unreleased)
 ===================
 
 * Confirm compatibility with Python 3.9.
+* Drop support for Django 2.0, 2.1 (#116).
 
 1.0.0 (2020-01-29)
 ==================
