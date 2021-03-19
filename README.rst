@@ -46,7 +46,7 @@ Install ``tox`` in your environment (it could be a virtualenv) and run:
 
 It'll run the tests for all the combinations of the following:
 
-* Python 2.7 (only with Django 1.11), 3.4, 3.5, 3.6, 3.7, 3.8.
+* Python 2.7 (only with Django 1.11), 3.5, 3.6, 3.7, 3.8, 3.9.
 * Django 1.11, 2.0, 2.1 & 2.2.
 
 and a ``flake8`` check.

@@ -5,7 +5,7 @@ Changelog for django-agnocomplete
 master (unreleased)
 ===================
 
-Nothing here yet.
+* Confirm compatibility with Python 3.9.
 
 1.0.0 (2020-01-29)
 ==================

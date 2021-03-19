@@ -203,10 +203,10 @@ class ABCTestView(TestCase):
         with self.assertRaises(TypeError) as e:
             WickedAgnocompleteJSONView()
         exception = e.exception.args[0]
-        self.assertEqual(
-            exception,
-            """Can't instantiate abstract class WickedAgnocompleteJSONView\
- with abstract methods get_dataset""")
+        self.assertIn(
+            "Can't instantiate abstract class WickedAgnocompleteJSONView",
+            str(exception),
+        )
 
 
 class JSDemoViews(TestCase):
