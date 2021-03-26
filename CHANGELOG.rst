@@ -2,8 +2,8 @@
 Changelog for django-agnocomplete
 =================================
 
-master (unreleased)
-===================
+2.0.0 (2021-03-26)
+==================
 
 * Confirm compatibility with Python 3.9.
 * Drop support for Django 2.0, 2.1 (#116).
