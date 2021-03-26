@@ -46,8 +46,8 @@ Install ``tox`` in your environment (it could be a virtualenv) and run:
 
 It'll run the tests for all the combinations of the following:
 
-* Python 2.7 (only with Django 1.11), 3.6, 3.7, 3.8, 3.9.
-* Django 1.11, 2.2.
+* Python 3.6, 3.7, 3.8, 3.9.
+* Django 2.2.
 
 and a ``flake8`` check.
 
@@ -66,7 +66,7 @@ If you need to install a debugger (let's say `ipdb`), you can use the ``TOX_EXTR
 
 .. code:: sh
 
-    $ TOX_EXTRA=ipdb tox -e py27-django110
+    $ TOX_EXTRA=ipdb tox -e py36-django22
 
 .. note::
 
