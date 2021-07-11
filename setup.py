@@ -10,7 +10,7 @@ setup(
     author='PeopleDoc Inc.',
     license='MIT',
     install_requires=[
-        'Django>=2.2,<3.0',
+        'Django>=2.2,<4.0',
         'six',
         'requests',
     ],
