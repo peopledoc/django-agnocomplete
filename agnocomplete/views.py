@@ -5,7 +5,7 @@ from six import with_metaclass
 from abc import abstractmethod, ABCMeta
 from django.core.exceptions import PermissionDenied, SuspiciousOperation
 from django.http import Http404, JsonResponse
-from django.utils.encoding import force_text as text
+from django.utils.encoding import force_str as text
 from django.utils.functional import cached_property
 from django.views.generic import View
 

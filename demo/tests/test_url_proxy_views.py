@@ -2,7 +2,7 @@ import json
 
 from django.test import TestCase
 from django.urls import reverse
-from django.utils.encoding import force_text as text
+from django.utils.encoding import force_str as text
 
 from .. import DATABASE, GOODAUTHTOKEN
 from ..views_proxy import (

@@ -1,6 +1,6 @@
 # -*- coding: utf8 -*-
 from django.urls import reverse
-from django.utils.encoding import force_text as text
+from django.utils.encoding import force_str as text
 from django.contrib.auth.models import User
 
 from agnocomplete import get_namespace

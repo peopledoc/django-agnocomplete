@@ -11,7 +11,7 @@ from django.http import (
     HttpResponseNotAllowed,
     HttpResponseServerError,
 )
-from django.utils.encoding import force_text as text
+from django.utils.encoding import force_str as text
 from django.views.decorators.http import require_GET, require_POST
 
 from . import DATABASE, GOODAUTHTOKEN
