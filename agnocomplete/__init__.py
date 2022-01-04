@@ -4,6 +4,7 @@ Agnocomplete, the Agnostic Autocomplete Django app.
 """
 import logging
 
+import django
 from django.conf import settings
 from django.utils.module_loading import autodiscover_modules
 
@@ -25,4 +26,5 @@ def autodiscover():
     autodiscover_modules('autocomplete')
 
 
-default_app_config = 'agnocomplete.app.AgnocompleteConfig'
+if django.VERSION[:2] < (3, 2):
+    default_app_config = 'agnocomplete.app.AgnocompleteConfig'
