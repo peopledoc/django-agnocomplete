@@ -9,6 +9,8 @@ from .models import Person, FavoriteColor, Tag, PersonTag
 # the registering of agnocomplete models
 from .autocomplete import logger
 
+__all__ = ['logger']
+
 
 class PersonAdmin(admin.ModelAdmin):
     pass
