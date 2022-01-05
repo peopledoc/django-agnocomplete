@@ -15,14 +15,6 @@ jobs:
       matrix:
         include:
 
-          - name: Python 3.7 / Django 3.2
-            python_version: "3.7"
-            tox_env: py37-django32
-
-          - name: Python 3.8 / Django 3.2
-            python_version: "3.8"
-            tox_env: py38-django32
-
           - name: Python 3.9 / Django 2.2
             python_version: "3.9"
             tox_env: py39-django22
@@ -35,17 +27,25 @@ jobs:
             python_version: "3.9"
             tox_env: py39-django31
 
+          - name: Python 3.7 / Django 3.2
+            python_version: "3.7"
+            tox_env: py37-django32
+
+          - name: Python 3.8 / Django 3.2
+            python_version: "3.8"
+            tox_env: py38-django32
+
           - name: Python 3.9 / Django 3.2
             python_version: "3.9"
             tox_env: py39-django32
 
-          - name: Python 3.9 / Django 4.0
-            python_version: "3.9"
-            tox_env: py39-django40
-
           - name: Python 3.10 / Django 3.2
             python_version: "3.10"
             tox_env: py310-django32
+
+          - name: Python 3.9 / Django 4.0
+            python_version: "3.9"
+            tox_env: py39-django40
 
           - name: DocLint
             python_version: "3.10"
