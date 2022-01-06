@@ -5,6 +5,12 @@ from agnocomplete import fields
 
 from .models import Person, FavoriteColor, Tag, PersonTag
 
+# Below, importing unused class from autocomplete.py to trigger
+# the registering of agnocomplete models
+from .autocomplete import logger
+
+__all__ = ['logger']
+
 
 class PersonAdmin(admin.ModelAdmin):
     pass

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
 from django.test import TestCase
-from django.utils.encoding import force_text as text
+from django.utils.encoding import force_str as text
 from django.test import override_settings
 
 from agnocomplete import constants

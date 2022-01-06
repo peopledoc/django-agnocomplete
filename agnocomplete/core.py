@@ -8,7 +8,7 @@ import logging
 
 from django.db.models import Q
 from django.core.exceptions import ImproperlyConfigured
-from django.utils.encoding import force_text as text
+from django.utils.encoding import force_str as text
 from django.conf import settings
 import requests
 

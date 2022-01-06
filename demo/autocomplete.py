@@ -3,7 +3,7 @@ Autocomplete classes
 """
 import logging
 from django.urls import reverse_lazy
-from django.utils.encoding import force_text as text
+from django.utils.encoding import force_str as text
 from django.conf import settings
 
 from agnocomplete.exceptions import SkipItem

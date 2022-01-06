@@ -22,6 +22,94 @@ from ..views_proxy import (
 from . import LoaddataTestCase, LoaddataLiveTestCase
 
 
+class ABCTestView(TestCase):
+
+    def test_AgnocompleteJSONView(self):
+
+        class WickedAgnocompleteJSONView(AgnocompleteJSONView):
+            pass
+
+        with self.assertRaises(TypeError) as e:
+            WickedAgnocompleteJSONView()
+        exception = e.exception.args[0]
+        self.assertIn(
+            "Can't instantiate abstract class WickedAgnocompleteJSONView",
+            str(exception),
+        )
+
+
+class CustomSearchTest(TestCase):
+
+    def test_widgets(self):
+        response = self.client.get(reverse('search-custom'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('form', response.context)
+        form = response.context['form']
+        self.assertIn('search_color', form.fields)
+        search_color = form.fields['search_color']
+        attrs_color = search_color.widget.build_attrs(
+            search_color.widget.attrs)
+        self.assertIn('data-url', attrs_color)
+        self.assertEqual(
+            attrs_color['data-url'],
+            reverse('hidden-autocomplete')
+        )
+
+
+class FilledFormTest(LoaddataTestCase):
+
+    def setUp(self):
+        super(FilledFormTest, self).setUp()
+        self.alice1 = Person.objects.get(pk=1)
+
+    def test_queries(self):
+        # This view should just trigger TWO queries
+        # It has ONE selected value
+        # 1. The first one is to fetch the selected value and check if it's
+        #    valid the query is a Model.objects.get(pk=pk)
+        # 2. The other is the query that fetches the selected values and feed
+        #    the rendered input
+        with self.assertNumQueries(2):
+            self.client.get(reverse('filled-form'))
+
+    def test_selected(self):
+        response = self.client.get(reverse('filled-form'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('form', response.context)
+        form = response.context['form']
+        self.assertTrue(form.is_valid())
+        cleaned_data = form.cleaned_data
+        self.assertEqual(
+            cleaned_data, {
+                "search_color": "grey",
+                "search_person": self.alice1
+            }
+        )
+
+
+class FormValidationViewTest(LoaddataTestCase):
+
+    def setUp(self):
+        super(FormValidationViewTest, self).setUp()
+        self.alice = Person.objects.get(pk=1)
+        self.bob = Person.objects.get(email__endswith='demo.com')
+        self.client.login(email=self.alice.email)
+
+    def test_post_valid(self):
+        response = self.client.post(
+            reverse('search-context'),
+            data={'search_person': self.alice.pk}
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_post_invalid(self):
+        response = self.client.post(
+            reverse('search-context'),
+            data={'search_person': self.bob.pk}
+        )
+        self.assertNotEqual(response.status_code, 200)
+
+
 class HomeTest(TestCase):
 
     def test_widgets(self):
@@ -88,53 +176,53 @@ class HomeTest(TestCase):
             self.client.get(reverse('home'))
 
 
-class FilledFormTest(LoaddataTestCase):
+class JSDemoViews(TestCase):
 
-    def setUp(self):
-        super(FilledFormTest, self).setUp()
-        self.alice1 = Person.objects.get(pk=1)
-
-    def test_queries(self):
-        # This view should just trigger TWO queries
-        # It has ONE selected value
-        # 1. The first one is to fetch the selected value and check if it's
-        #    valid the query is a Model.objects.get(pk=pk)
-        # 2. The other is the query that fetches the selected values and feed
-        #    the rendered input
-        with self.assertNumQueries(2):
-            self.client.get(reverse('filled-form'))
-
-    def test_selected(self):
-        response = self.client.get(reverse('filled-form'))
+    def test_selectize(self):
+        response = self.client.get(reverse('selectize'))
         self.assertEqual(response.status_code, 200)
-        self.assertIn('form', response.context)
-        form = response.context['form']
-        self.assertTrue(form.is_valid())
-        cleaned_data = form.cleaned_data
-        self.assertEqual(
-            cleaned_data, {
-                "search_color": "grey",
-                "search_person": self.alice1
-            }
-        )
 
-
-class CustomSearchTest(TestCase):
-
-    def test_widgets(self):
-        response = self.client.get(reverse('search-custom'))
+    def test_selectize_extra(self):
+        response = self.client.get(reverse('selectize-extra'))
         self.assertEqual(response.status_code, 200)
-        self.assertIn('form', response.context)
-        form = response.context['form']
-        self.assertIn('search_color', form.fields)
-        search_color = form.fields['search_color']
-        attrs_color = search_color.widget.build_attrs(
-            search_color.widget.attrs)
-        self.assertIn('data-url', attrs_color)
-        self.assertEqual(
-            attrs_color['data-url'],
-            reverse('hidden-autocomplete')
-        )
+
+    def test_selectize_multi(self):
+        response = self.client.get(reverse('selectize-multi'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_select2(self):
+        response = self.client.get(reverse('select2'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_jquery_autocomplete(self):
+        response = self.client.get(reverse('jquery-autocomplete'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_typeahead(self):
+        response = self.client.get(reverse('typeahead'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_context_search(self):
+        response = self.client.get(reverse('search-context'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_url_proxy_simple(self):
+        response = self.client.get(reverse('url-proxy-simple'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_url_proxy_convert(self):
+        response = self.client.get(reverse('url-proxy-convert'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_url_proxy_auth(self):
+        response = self.client.get(reverse('url-proxy-auth'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_url_proxy_with_extra(self):
+        response = self.client.get(reverse('url-proxy-with-extra'))
+        self.assertEqual(response.status_code, 200)
+
+
 
 
 class MultiSearchTest(TestCase):
@@ -191,92 +279,6 @@ class MultiSearchTest(TestCase):
         form = response.context['form']
         self.assertIn('person', form.fields)
         self.assertIn('tags', form.fields)
-
-
-class ABCTestView(TestCase):
-
-    def test_AgnocompleteJSONView(self):
-
-        class WickedAgnocompleteJSONView(AgnocompleteJSONView):
-            pass
-
-        with self.assertRaises(TypeError) as e:
-            WickedAgnocompleteJSONView()
-        exception = e.exception.args[0]
-        self.assertIn(
-            "Can't instantiate abstract class WickedAgnocompleteJSONView",
-            str(exception),
-        )
-
-
-class JSDemoViews(TestCase):
-
-    def test_selectize(self):
-        response = self.client.get(reverse('selectize'))
-        self.assertEqual(response.status_code, 200)
-
-    def test_selectize_extra(self):
-        response = self.client.get(reverse('selectize-extra'))
-        self.assertEqual(response.status_code, 200)
-
-    def test_selectize_multi(self):
-        response = self.client.get(reverse('selectize-multi'))
-        self.assertEqual(response.status_code, 200)
-
-    def test_select2(self):
-        response = self.client.get(reverse('select2'))
-        self.assertEqual(response.status_code, 200)
-
-    def test_jquery_autocomplete(self):
-        response = self.client.get(reverse('jquery-autocomplete'))
-        self.assertEqual(response.status_code, 200)
-
-    def test_typeahead(self):
-        response = self.client.get(reverse('typeahead'))
-        self.assertEqual(response.status_code, 200)
-
-    def test_context_search(self):
-        response = self.client.get(reverse('search-context'))
-        self.assertEqual(response.status_code, 200)
-
-    def test_url_proxy_simple(self):
-        response = self.client.get(reverse('url-proxy-simple'))
-        self.assertEqual(response.status_code, 200)
-
-    def test_url_proxy_convert(self):
-        response = self.client.get(reverse('url-proxy-convert'))
-        self.assertEqual(response.status_code, 200)
-
-    def test_url_proxy_auth(self):
-        response = self.client.get(reverse('url-proxy-auth'))
-        self.assertEqual(response.status_code, 200)
-
-    def test_url_proxy_with_extra(self):
-        response = self.client.get(reverse('url-proxy-with-extra'))
-        self.assertEqual(response.status_code, 200)
-
-
-class FormValidationViewTest(LoaddataTestCase):
-
-    def setUp(self):
-        super(FormValidationViewTest, self).setUp()
-        self.alice = Person.objects.get(pk=1)
-        self.bob = Person.objects.get(email__endswith='demo.com')
-        self.client.login(email=self.alice.email)
-
-    def test_post_valid(self):
-        response = self.client.post(
-            reverse('search-context'),
-            data={'search_person': self.alice.pk}
-        )
-        self.assertEqual(response.status_code, 200)
-
-    def test_post_invalid(self):
-        response = self.client.post(
-            reverse('search-context'),
-            data={'search_person': self.bob.pk}
-        )
-        self.assertNotEqual(response.status_code, 200)
 
 
 class MultipleModelSelectGeneric(LoaddataTestCase):

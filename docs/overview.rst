@@ -14,13 +14,14 @@ Include the agnocomplete URLs to your urlconf:
 
 .. code-block:: python
 
-    from django.conf.urls import include, url
+    from django.conf.urls import include
+    from django.urls import path
 
     urlpatterns = [
         # Starting here
-        url(
+        path(
             r'^agnocomplete/',
-            include('agnocomplete.urls', namespace='agnocomplete')),
+            include('agnocomplete.paths', namespace='agnocomplete')),
         # ... Continuing here...
     ]
 

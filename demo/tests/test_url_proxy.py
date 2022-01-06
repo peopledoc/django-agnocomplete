@@ -3,7 +3,7 @@ Tests for URL Proxy views
 """
 from django.test import LiveServerTestCase
 from django.test import override_settings
-from django.utils.encoding import force_text as text
+from django.utils.encoding import force_str as text
 
 import mock
 from requests.exceptions import HTTPError
