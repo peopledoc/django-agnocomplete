@@ -3,9 +3,6 @@ Agnocomplete specific form fields.
 
 """
 from django import forms
-
-import six
-
 from .core import AgnocompleteBase
 from .constants import AGNOCOMPLETE_USER_ATTRIBUTE
 from .widgets import AgnocompleteSelect, AgnocompleteMultiSelect
@@ -22,7 +19,7 @@ __all__ = [
 ]
 
 
-class AgnocompleteMixin(object):
+class AgnocompleteMixin:
     """
     Handles the Agnocomplete generic handling for fields.
     """
@@ -55,7 +52,7 @@ class AgnocompleteMixin(object):
 
         """
         # If string, use register to fetch the class
-        if isinstance(klass_or_instance, six.string_types):
+        if isinstance(klass_or_instance, str):
             registry = get_agnocomplete_registry()
             if klass_or_instance not in registry:
                 raise UnregisteredAgnocompleteException(
@@ -100,16 +97,15 @@ class AgnocompleteMixin(object):
         the user context.
         """
         self.transmit_agnocomplete_context()
-        return super(AgnocompleteMixin, self).clean(*args, **kwargs)
+        return super().clean(*args, **kwargs)
 
 
-class AgnocompleteContextQuerysetMixin(object):
+class AgnocompleteContextQuerysetMixin:
     def transmit_agnocomplete_context(self):
         """
         We'll reset the current queryset only if the user is set.
         """
-        user = super(AgnocompleteContextQuerysetMixin, self) \
-            .transmit_agnocomplete_context()
+        user = super().transmit_agnocomplete_context()
         if user:
             self.queryset = self.agnocomplete.get_queryset()
         return user
@@ -121,8 +117,7 @@ class AgnocompleteField(AgnocompleteMixin, forms.ChoiceField):
     """
     def __init__(self, agnocomplete, user=None, **kwargs):
         self.set_agnocomplete(agnocomplete, user)
-        super(AgnocompleteField, self).__init__(
-            choices=self.agnocomplete.get_choices(), **kwargs)
+        super().__init__(choices=self.agnocomplete.get_choices(), **kwargs)
         self._setup_agnocomplete_widget()
 
 
@@ -134,8 +129,7 @@ class AgnocompleteModelField(AgnocompleteContextQuerysetMixin,
     """
     def __init__(self, agnocomplete, user=None, **kwargs):
         self.set_agnocomplete(agnocomplete, user)
-        super(AgnocompleteModelField, self).__init__(
-            self.agnocomplete.get_choices(), **kwargs)
+        super().__init__(self.agnocomplete.get_choices(), **kwargs)
         self._setup_agnocomplete_widget()
 
 
@@ -147,7 +141,7 @@ class AgnocompleteMultipleMixin(AgnocompleteMixin):
     clean_empty = True
 
     def _setup_agnocomplete_widget(self):
-        super(AgnocompleteMultipleMixin, self)._setup_agnocomplete_widget()
+        super()._setup_agnocomplete_widget()
         # self.widget is a thing here
         self.widget.create = self.create
 
@@ -163,7 +157,7 @@ class AgnocompleteMultipleMixin(AgnocompleteMixin):
     def to_python(self, value):
         # Pre-clean the list value
         value = self.clear_list_value(value)
-        value = super(AgnocompleteMultipleMixin, self).to_python(value)
+        value = super().to_python(value)
         # return the new cleaned value or the default empty_value
         return value or self.empty_value
 
@@ -189,8 +183,7 @@ class AgnocompleteMultipleField(AgnocompleteMultipleMixin,
                  create=False, create_field=False, **kwargs):
         self.set_agnocomplete(agnocomplete, user)
         self.set_create_field(create=create, create_field=create_field)
-        super(AgnocompleteMultipleField, self).__init__(
-            choices=self.agnocomplete.get_choices(), **kwargs)
+        super().__init__(choices=self.agnocomplete.get_choices(), **kwargs)
         self._setup_agnocomplete_widget()
 
 
@@ -204,8 +197,7 @@ class AgnocompleteModelMultipleField(AgnocompleteContextQuerysetMixin,
                  create=False, create_field=False, **kwargs):
         self.set_agnocomplete(agnocomplete, user)
         self.set_create_field(create=create, create_field=create_field)
-        super(AgnocompleteModelMultipleField, self).__init__(
-            self.agnocomplete.get_choices(), **kwargs)
+        super().__init__(self.agnocomplete.get_choices(), **kwargs)
         self._setup_agnocomplete_widget()
         self._new_values = []
 
@@ -255,7 +247,7 @@ class AgnocompleteModelMultipleField(AgnocompleteContextQuerysetMixin,
         """
         if not self.create:
             # No new value can be created, use the regular clean field
-            return super(AgnocompleteModelMultipleField, self).clean(value)
+            return super().clean(value)
 
         # We have to do this here before the call to "super".
         # It'll be called again, but we can't find a way to "pre_clean" the
@@ -266,12 +258,12 @@ class AgnocompleteModelMultipleField(AgnocompleteContextQuerysetMixin,
         pks = [v for v in value if v.isdigit()]
         self._new_values = [v for v in value if not v.isdigit()]
 
-        qs = super(AgnocompleteModelMultipleField, self).clean(pks)
+        qs = super().clean(pks)
 
         return qs
 
 
-class AgnocompleteUrlProxyMixin(object):
+class AgnocompleteUrlProxyMixin:
     """
     This mixin can be used with a field which actually using
     :class:`agnocomplete.core.AutocompletUrlProxy`. The main purpose is to

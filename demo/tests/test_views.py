@@ -1,4 +1,3 @@
-# -*- coding: utf8 -*-
 from django.urls import reverse
 from django.utils.encoding import force_str as text
 from django.contrib.auth.models import User
@@ -9,10 +8,10 @@ from ..models import Person
 from . import RegistryTestGeneric, get_json
 
 
-class NamespaceGeneric(object):
+class NamespaceGeneric:
 
     def setUp(self):
-        super(NamespaceGeneric, self).setUp()
+        super().setUp()
         self.catalog_url_name = get_namespace() + ':catalog'
         self.ac_url_name = get_namespace() + ':agnocomplete'
 
@@ -60,7 +59,7 @@ class AutocompleteViewTestGeneric(NamespaceGeneric):
     view_key = "PLEASE DEFINE ME"
 
     def setUp(self):
-        super(AutocompleteViewTestGeneric, self).setUp()
+        super().setUp()
         self.url = reverse(self.ac_url_name, args=[self.view_key])
 
     def test_url(self):
@@ -90,7 +89,7 @@ class AutocompletePersonViewTest(AutocompleteViewTestGeneric,
     view_key = 'AutocompletePerson'
 
     def setUp(self):
-        super(AutocompletePersonViewTest, self).setUp()
+        super().setUp()
         self.alice1 = Person.objects.get(pk=1)
         self.alice2 = Person.objects.get(pk=2)
         self.bob = Person.objects.get(pk=3)

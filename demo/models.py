@@ -29,7 +29,7 @@ class Person(models.Model):
         if "update_fields" in kwargs:
             if 'last_login' in kwargs['update_fields']:
                 kwargs['update_fields'].remove('last_login')
-        return super(Person, self).save(*args, **kwargs)
+        return super().save(*args, **kwargs)
 
 
 class FavoriteColor(models.Model):
@@ -54,9 +54,9 @@ class PersonTag(models.Model):
     tags = models.ManyToManyField(Tag)
 
     def __unicode__(self):
-        return u"{} is tagged: {}".format(
+        return "{} is tagged: {}".format(
             self.person,
-            u", ".join([force_str(t) for t in self.tags.all()]) or u"Nothing"
+            ", ".join([force_str(t) for t in self.tags.all()]) or "Nothing"
         )
     __str__ = __unicode__
 
@@ -66,7 +66,7 @@ class ContextTag(models.Model):
     domain = models.CharField(max_length=100)
 
     def __unicode__(self):
-        return u"[{}] {}".format(
+        return "[{}] {}".format(
             self.domain,
             self.name
         )
@@ -78,8 +78,8 @@ class PersonContextTag(models.Model):
     tags = models.ManyToManyField(ContextTag)
 
     def __unicode__(self):
-        return u"{} is tagged: {}".format(
+        return "{} is tagged: {}".format(
             self.person,
-            u", ".join([force_str(t) for t in self.tags.all()]) or u"Nothing"
+            ", ".join([force_str(t) for t in self.tags.all()]) or "Nothing"
         )
     __str__ = __unicode__

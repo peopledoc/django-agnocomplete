@@ -59,7 +59,7 @@ class CustomSearchTest(TestCase):
 class FilledFormTest(LoaddataTestCase):
 
     def setUp(self):
-        super(FilledFormTest, self).setUp()
+        super().setUp()
         self.alice1 = Person.objects.get(pk=1)
 
     def test_queries(self):
@@ -90,7 +90,7 @@ class FilledFormTest(LoaddataTestCase):
 class FormValidationViewTest(LoaddataTestCase):
 
     def setUp(self):
-        super(FormValidationViewTest, self).setUp()
+        super().setUp()
         self.alice = Person.objects.get(pk=1)
         self.bob = Person.objects.get(email__endswith='demo.com')
         self.client.login(email=self.alice.email)
@@ -284,7 +284,7 @@ class MultiSearchTest(TestCase):
 class MultipleModelSelectGeneric(LoaddataTestCase):
 
     def setUp(self):
-        super(MultipleModelSelectGeneric, self).setUp()
+        super().setUp()
         self.alice = Person.objects.get(pk=1)
         self.other_person = Person.objects.exclude(pk=self.alice.pk)\
             .order_by('?').first()
@@ -300,8 +300,8 @@ class MultipleModelSelectTest(MultipleModelSelectGeneric):
         response = self.client.post(
             reverse('selectize-model-tag'),
             data={
-                u'person': self.alice.pk,
-                u'tags': '',
+                'person': self.alice.pk,
+                'tags': '',
             }
         )
         self.assertEqual(response.status_code, 200)
@@ -314,8 +314,8 @@ class MultipleModelSelectTest(MultipleModelSelectGeneric):
         response = self.client.post(
             reverse('selectize-model-tag'),
             data={
-                u'person': self.alice.pk,
-                u'tags': [],
+                'person': self.alice.pk,
+                'tags': [],
             }
         )
         self.assertEqual(response.status_code, 200)
@@ -327,8 +327,8 @@ class MultipleModelSelectTest(MultipleModelSelectGeneric):
         response = self.client.post(
             reverse('selectize-model-tag'),
             data={
-                u'person': self.alice.pk,
-                u'tags': [self.random.pk, self.random2.pk],
+                'person': self.alice.pk,
+                'tags': [self.random.pk, self.random2.pk],
             }
         )
         self.assertRedirects(response, reverse('home'))
@@ -341,8 +341,8 @@ class MultipleModelSelectTest(MultipleModelSelectGeneric):
         person_tag = PersonTag.objects.first()
 
         # Checks on this tags
-        all_tags = set([p.pk for p in Tag.objects.all()])
-        tags = set([t.pk for t in person_tag.tags.all()])
+        all_tags = {p.pk for p in Tag.objects.all()}
+        tags = {t.pk for t in person_tag.tags.all()}
         self.assertNotEqual(all_tags, tags)
         self.assertEqual(self.alice, person_tag.person)
 
@@ -356,8 +356,8 @@ class MultipleModelSelectTest(MultipleModelSelectGeneric):
         response = self.client.post(
             reverse('selectize-model-tag-edit', args=[person_tag.pk]),
             data={
-                u'person': self.other_person.pk,
-                u'tags': list(all_tags),
+                'person': self.other_person.pk,
+                'tags': list(all_tags),
             }
         )
         self.assertRedirects(response, reverse('home'))
@@ -366,7 +366,7 @@ class MultipleModelSelectTest(MultipleModelSelectGeneric):
         # Reload
         person_tag = PersonTag.objects.get(pk=person_tag.pk)
         # Check that the object has been modified
-        tags = set([t.pk for t in person_tag.tags.all()])
+        tags = {t.pk for t in person_tag.tags.all()}
         self.assertEqual(all_tags, tags)
         self.assertEqual(self.other_person, person_tag.person)
 
@@ -379,8 +379,8 @@ class MultipleModelSelectWithCreateTest(MultipleModelSelectGeneric):
         response = self.client.post(
             reverse('selectize-model-tag-with-create'),
             data={
-                u'person': self.alice.pk,
-                u'tags': '',
+                'person': self.alice.pk,
+                'tags': '',
             }
         )
         self.assertRedirects(response, reverse('home'))
@@ -394,8 +394,8 @@ class MultipleModelSelectWithCreateTest(MultipleModelSelectGeneric):
         response = self.client.post(
             reverse('selectize-model-tag-with-create'),
             data={
-                u'person': self.alice.pk,
-                u'tags': [],
+                'person': self.alice.pk,
+                'tags': [],
             }
         )
         self.assertRedirects(response, reverse('home'))
@@ -409,7 +409,7 @@ class MultipleModelSelectWithCreateTest(MultipleModelSelectGeneric):
         response = self.client.post(
             reverse('selectize-model-tag-with-create'),
             data={
-                u'person': self.alice.pk,
+                'person': self.alice.pk,
             }
         )
         self.assertRedirects(response, reverse('home'))
@@ -425,8 +425,8 @@ class MultipleModelSelectWithCreateTest(MultipleModelSelectGeneric):
         response = self.client.post(
             reverse('selectize-model-tag-with-create'),
             data={
-                u'person': self.alice.pk,
-                u'tags': [
+                'person': self.alice.pk,
+                'tags': [
                     self.random.pk,
                     self.random2.pk,
                     'newtag1',
@@ -452,8 +452,8 @@ class MultipleModelSelectWithCreateTest(MultipleModelSelectGeneric):
         response = self.client.post(
             reverse('selectize-model-tag-with-duplicate-create'),
             data={
-                u'person': self.alice.pk,
-                u'tags': [
+                'person': self.alice.pk,
+                'tags': [
                     self.random.pk,
                     self.random2.pk,
                     'newtag1',
@@ -474,7 +474,7 @@ class MultipleModelSelectWithCreateTest(MultipleModelSelectGeneric):
 class ContextTagTestCase(MultipleModelSelectGeneric):
 
     def setUp(self):
-        super(ContextTagTestCase, self).setUp()
+        super().setUp()
         # Login for alice
         self.client.login(email=self.alice.email)
         self.search_url = get_namespace() + ':agnocomplete'
@@ -526,8 +526,8 @@ class ContextTagTestCase(MultipleModelSelectGeneric):
         response = self.client.post(
             reverse('selectize-context-tag'),
             data={
-                u'person': self.alice.pk,
-                u'tags': [
+                'person': self.alice.pk,
+                'tags': [
                     random.pk,
                     'newtag1',
                 ],
@@ -549,7 +549,7 @@ class ContextTagTestCase(MultipleModelSelectGeneric):
 class SelectizeExtraTest(LoaddataTestCase):
 
     def setUp(self):
-        super(SelectizeExtraTest, self).setUp()
+        super().setUp()
         self.search_url = get_namespace() + ':agnocomplete'
 
     def test_context(self):

@@ -118,7 +118,7 @@ class PersonEmailSearchForm(forms.Form):
                                                   to_field_name='email')
 
 
-class UrlProxyFormMixin(object):
+class UrlProxyFormMixin:
     help_text = """
 We're not using the usual fixture here. Here's our "database":
 -------
