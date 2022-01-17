@@ -28,10 +28,10 @@ from .models import PersonTag
 logger = logging.getLogger(__name__)
 
 
-class AutoTitleMixin(object):
+class AutoTitleMixin:
 
     def get_context_data(self, **kwargs):
-        data = super(AutoTitleMixin, self).get_context_data(**kwargs)
+        data = super().get_context_data(**kwargs)
         data.update({
             "title": self.title,
         })
@@ -55,7 +55,7 @@ class FilledFormView(AutoView):
     title = "Basic view, no JS, filled form"
 
     def get_form_kwargs(self):
-        data = super(FilledFormView, self).get_form_kwargs()
+        data = super().get_form_kwargs()
         data.update({
             "data": {'search_color': 'grey', 'search_person': '1'}
         })
@@ -96,7 +96,7 @@ class SelectizeExtraView(AutoView):
     form_class = SearchFormExtra
 
     def get_context_data(self, *args, **kwargs):
-        data = super(SelectizeExtraView, self).get_context_data(
+        data = super().get_context_data(
             *args, **kwargs)
         data['selectize_with_extra'] = 'yes'
         return data
@@ -157,7 +157,7 @@ class PersonTagModelViewWithCreate(PersonTagModelView):
     # See documentation about this decorated method.
     @method_decorator(allow_create)
     def form_valid(self, form):
-        return super(PersonTagModelViewWithCreate, self).form_valid(form)
+        return super().form_valid(form)
 
 
 class PersonTagModelViewWithDuplicateCreate(PersonTagModelView):
@@ -168,8 +168,7 @@ class PersonTagModelViewWithDuplicateCreate(PersonTagModelView):
     # See documentation about this decorated method.
     @method_decorator(allow_create)
     def form_valid(self, form):
-        return super(PersonTagModelViewWithDuplicateCreate, self) \
-            .form_valid(form)
+        return super().form_valid(form)
 
 
 class PersonContextTagView(AutoTitleMixin,
@@ -181,7 +180,7 @@ class PersonContextTagView(AutoTitleMixin,
 
     @method_decorator(allow_create)
     def form_valid(self, form):
-        return super(PersonContextTagView, self).form_valid(form)
+        return super().form_valid(form)
 
     def get_success_url(self):
         return reverse('home')

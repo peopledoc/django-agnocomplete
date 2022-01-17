@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.conf import settings
 from django.test import TestCase
 from django.utils.encoding import force_str as text
@@ -233,7 +232,7 @@ class AutocompleteModelTest(LoaddataTestCase):
 class AutocompletePersonTest(LoaddataTestCase):
 
     def _set_email_field(self, instance):
-        class FakeEmailField(object):
+        class FakeEmailField:
             to_field_name = 'email'
         instance.set_agnocomplete_field(FakeEmailField())
 
@@ -263,7 +262,7 @@ class AutocompletePersonTest(LoaddataTestCase):
         condition = instance.get_queryset_filters(query="bob")
         items = qs.filter(condition)
         people = Person.objects.get(first_name='Bob')
-        label = u'{item} {mail}'.format(item=text(people), mail=people.email)
+        label = '{item} {mail}'.format(item=text(people), mail=people.email)
 
         self.assertEqual(instance.item(items.first())['label'], label)
 
@@ -427,17 +426,17 @@ class AgnoCompleteAbstractMethod(TestCase):
         )
 
 
-class CountItemCalls(object):
+class CountItemCalls:
     query_size = 1
     query_size_min = 1
 
     def __init__(self, *args, **kwargs):
-        super(CountItemCalls, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._count_item_calls = 0
 
     def item(self, current_item):
         self._count_item_calls += 1
-        return super(CountItemCalls, self).item(current_item)
+        return super().item(current_item)
 
 
 class AutocompletePersonPerformance(CountItemCalls, AutocompletePerson):
@@ -476,7 +475,7 @@ class AutocompleteUrlProxyKwargs(AgnocompleteUrlProxy):
         ]}
 
     def get_http_call_kwargs(self, query, **kwargs):
-        kw = super(AutocompleteUrlProxyKwargs, self).get_http_call_kwargs(
+        kw = super().get_http_call_kwargs(
             query, **kwargs)
         kw.update(kwargs)
         return kw

@@ -8,7 +8,7 @@ from ..admin import FavoriteColorModelForm
 class AdminTest(TestCase):
 
     def setUp(self):
-        super(AdminTest, self).setUp()
+        super().setUp()
         # create a superuser to be logged in
         self.admin = User.objects.create_superuser(
             'admin', 'admin@example.com', 'abcd1234')

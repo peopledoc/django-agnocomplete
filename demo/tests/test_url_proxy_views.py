@@ -14,7 +14,7 @@ from ..views_proxy import (
 )
 
 
-class UrlProxyGenericTest(object):
+class UrlProxyGenericTest:
     method = 'get'
     data_key = 'data'
 

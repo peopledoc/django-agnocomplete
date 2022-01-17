@@ -8,7 +8,7 @@ the user-context in the views.
 from .models import Person
 
 
-class PersonBackend(object):
+class PersonBackend:
     """
     Authenticate against the Person model.
     """

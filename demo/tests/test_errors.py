@@ -31,7 +31,7 @@ def raise_timeout(*args, **kwargs):
     raise Timeout("Timeout")
 
 
-class ErrorHandlingTest(object):
+class ErrorHandlingTest:
     expected_status = 500
 
     @property

@@ -17,7 +17,7 @@ __all__ = [
 ]
 
 
-class AgnocompleteWidgetMixin(object):
+class AgnocompleteWidgetMixin:
     def _agnocomplete_build_attrs(self, attrs):
         data_url = reverse_lazy(
             '{}:agnocomplete'.format(get_namespace()),
@@ -42,15 +42,14 @@ class AgnocompleteWidgetMixin(object):
     Generic toolset for building Agnocomplete-ready widgets
     """
     def build_attrs(self, base_attrs, extra_attrs=None):
-        attrs = super(AgnocompleteWidgetMixin, self).build_attrs(
-            base_attrs, extra_attrs)
+        attrs = super().build_attrs(base_attrs, extra_attrs)
         return self._agnocomplete_build_attrs(attrs)
 
     """
     Render only selected options
     """
     def optgroups(self, name, value, attrs=None):
-        selected_ids = set(text(v) for v in value)
+        selected_ids = {text(v) for v in value}
         selected_choices = self.agnocomplete.selected(selected_ids)
         options = []
         groups = [
@@ -89,12 +88,11 @@ class AgnocompleteMultiSelect(AgnocompleteWidgetMixin, widgets.SelectMultiple):
     A multi-selection-ready Select widget Mixin
     """
     def __init__(self, create=False, *args, **kwargs):
-        super(AgnocompleteMultiSelect, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.create = create
 
     def _agnocomplete_build_attrs(self, attrs):
-        attrs = super(AgnocompleteMultiSelect, self). \
-            _agnocomplete_build_attrs(attrs)
+        attrs = super()._agnocomplete_build_attrs(attrs)
 
         if self.create:
             attrs.update({'data-create': 'on'})
