@@ -1,7 +1,7 @@
 from .constants import AGNOCOMPLETE_USER_ATTRIBUTE
 
 
-class UserContextFormMixin(object):
+class UserContextFormMixin:
     """
     Form Mixin that passes the user context to its fields.
 
@@ -14,7 +14,7 @@ class UserContextFormMixin(object):
     """
     def __init__(self, user, *args, **kwargs):
         self.user = user
-        super(UserContextFormMixin, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         if self.user:
             for field in self.fields.values():
                 setattr(field, AGNOCOMPLETE_USER_ATTRIBUTE, self.user)

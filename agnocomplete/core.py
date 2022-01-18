@@ -2,7 +2,6 @@
 The different agnocomplete classes to be discovered
 """
 from copy import copy
-from six import with_metaclass
 from abc import abstractmethod, ABCMeta
 import logging
 
@@ -25,7 +24,7 @@ from .exceptions import ItemNotFound
 logger = logging.getLogger(__name__)
 
 
-class ClassPropertyDescriptor(object):
+class ClassPropertyDescriptor:
     """
     Toolkit class used to instanciate a class property.
     """
@@ -114,7 +113,7 @@ def load_settings_sizes():
     )
 
 
-class AgnocompleteBase(with_metaclass(ABCMeta, object)):
+class AgnocompleteBase(metaclass=ABCMeta):
     """
     Base class for Agnocomplete tools.
     """
@@ -284,7 +283,7 @@ class AgnocompleteChoices(AgnocompleteBase):
         return list(result)
 
 
-class AgnocompleteModelBase(with_metaclass(ABCMeta, AgnocompleteBase)):
+class AgnocompleteModelBase(AgnocompleteBase, metaclass=ABCMeta):
 
     model = None
     requires_authentication = False
@@ -349,7 +348,7 @@ class AgnocompleteModel(AgnocompleteModelBase):
     """
 
     def __init__(self, *args, **kwargs):
-        super(AgnocompleteModel, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.__final_queryset = None
 
     def _construct_qs_filter(self, field_name):
@@ -515,7 +514,7 @@ class AgnocompleteModel(AgnocompleteModelBase):
         return result
 
 
-class AgnocompleteUrlProxy(with_metaclass(ABCMeta, AgnocompleteBase)):
+class AgnocompleteUrlProxy(AgnocompleteBase, metaclass=ABCMeta):
     """
     This class serves as a proxy between your application and a 3rd party
     URL (typically a REST HTTP API).

@@ -2,8 +2,6 @@ from django import forms
 from django.urls import reverse
 from django.test import LiveServerTestCase, TestCase, override_settings
 from django.core.exceptions import ValidationError
-import six
-
 import mock
 
 from agnocomplete import fields
@@ -48,11 +46,6 @@ class AgnocompleteInstanceTest(TestCase):
         with self.assertRaises(UnregisteredAgnocompleteException):
             AgnocompleteField('MEUUUUUUH')
 
-    def test_unicode(self):
-        field = AgnocompleteField(six.u('AutocompleteColor'))
-        self.assertTrue(field.agnocomplete)
-        self.assertTrue(isinstance(field.agnocomplete, AutocompleteColor))
-
     def test_instance_url(self):
         field = AgnocompleteField(AutocompleteColor())
         self.assertFalse(field.agnocomplete.get_url())
@@ -84,7 +77,7 @@ class ModelSelectTest(LoaddataTestCase):
                                                to_field_name='email')
 
     def setUp(self):
-        super(ModelSelectTest, self).setUp()
+        super().setUp()
         self.alice = Person.objects.get(pk=1)
         self.bob = Person.objects.get(pk=3)
 
@@ -154,7 +147,7 @@ class MultipleModelSelectTest(LoaddataTestCase):
         )
 
     def setUp(self):
-        super(MultipleModelSelectTest, self).setUp()
+        super().setUp()
         self.alice = Person.objects.get(pk=1)
         self.bob = Person.objects.get(pk=3)
 

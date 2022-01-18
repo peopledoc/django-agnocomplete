@@ -1,7 +1,6 @@
 """
 Agnocomplete views.
 """
-from six import with_metaclass
 from abc import abstractmethod, ABCMeta
 from django.core.exceptions import PermissionDenied, SuspiciousOperation
 from django.http import Http404, JsonResponse
@@ -46,7 +45,7 @@ def get_error(exc):
     return 500, exc
 
 
-class AgnocompleteJSONView(with_metaclass(ABCMeta, View)):
+class AgnocompleteJSONView(View, metaclass=ABCMeta):
     """
     Generic toolbox for JSON-returning views
     """
@@ -94,7 +93,7 @@ class AgnocompleteJSONView(with_metaclass(ABCMeta, View)):
             )
 
 
-class RegistryMixin(object):
+class RegistryMixin:
     """
     This mixin is able to return the agnocomplete registry.
     """
@@ -106,7 +105,7 @@ class RegistryMixin(object):
         return get_agnocomplete_registry()
 
 
-class UserContextFormViewMixin(object):
+class UserContextFormViewMixin:
     """
     This mixin is injecting the context variable into the form kwargs
     """
@@ -127,7 +126,7 @@ class UserContextFormViewMixin(object):
         :meth:`get_agnocomplete_context`. Override this method to adjust it to
         your needs.
         """
-        data = super(UserContextFormViewMixin, self).get_form_kwargs()
+        data = super().get_form_kwargs()
         data.update({
             'user': self.get_agnocomplete_context(),
         })

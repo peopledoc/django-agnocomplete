@@ -1,13 +1,12 @@
-# -*- coding: utf8 -*-
 import json
 
 from django.test import TestCase, LiveServerTestCase
 from django.core.management import call_command
 
 
-class LoaddataMixin(object):
+class LoaddataMixin:
     def setUp(self):
-        super(LoaddataMixin, self).setUp()
+        super().setUp()
         # Explicitly load initial data, not loaded by default since Django 1.9
         # And keep this command quiet
         call_command("loaddata", "initial_data", verbosity=0)
@@ -69,7 +68,7 @@ class RegistryTestGeneric(LoaddataTestCase):
         self.assertIn("AutocompleteUrlSkipItem", keys)
 
 
-class MockRequestUser(object):
+class MockRequestUser:
 
     def __init__(self, email, is_authenticated):
         self.email = email

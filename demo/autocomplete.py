@@ -29,7 +29,7 @@ class AutocompleteColor(AgnocompleteChoices):
 class AutocompleteColorExtra(AutocompleteColor):
     def items(self, query, **kwargs):
         extra_argument = kwargs.get('extra_argument', None)
-        result = super(AutocompleteColorExtra, self).items(query, **kwargs)
+        result = super().items(query, **kwargs)
         # This is a very dummy usage of the extra argument
         if extra_argument:
             result.append({'value': 'EXTRA', 'label': 'EXTRA'})
@@ -91,7 +91,7 @@ class AutocompletePersonShort(AutocompletePerson):
 
 class AutocompletePersonLabel(AutocompletePerson):
     def label(self, current_item):
-        return u'{item} {mail}'.format(
+        return '{item} {mail}'.format(
             item=text(current_item), mail=current_item.email)
 
 
@@ -131,7 +131,7 @@ class AutocompletePersonDomainSpecial(AutocompletePersonDomain):
         # Introducing a new variable here, to make sure the
         # "account_registrations" property is able to fetch the matricules.
         self._selected_queryset = self.get_queryset()
-        return super(AutocompletePersonDomainSpecial, self).selected(ids)
+        return super().selected(ids)
 
 
 # Do not register this, it's for custom view demo
@@ -236,8 +236,7 @@ class AutocompleteUrlSimpleAuth(AutocompleteUrlMixin):
     url_search_string = 'url-proxy:simple-auth'
 
     def get_http_call_kwargs(self, query):
-        query_args = super(
-            AutocompleteUrlSimpleAuth, self).get_http_call_kwargs(query)
+        query_args = super().get_http_call_kwargs(query)
         query_args['auth_token'] = GOODAUTHTOKEN
         return query_args
 
@@ -278,7 +277,7 @@ class AutocompleteUrlSkipItem(AutocompleteUrlSimple):
     def item(self, obj):
         if obj['label'] == 'first person':
             raise SkipItem
-        return super(AutocompleteUrlSkipItem, self).item(obj)
+        return super().item(obj)
 
     def get_item_url(self, pk):
         return '{}{}'.format(

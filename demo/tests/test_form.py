@@ -6,7 +6,7 @@ from . import LoaddataTestCase
 class TestSearchContext(LoaddataTestCase):
 
     def setUp(self):
-        super(TestSearchContext, self).setUp()
+        super().setUp()
         self.alice = Person.objects.get(pk=1)
         self.bob = Person.objects.get(pk=3)
         self.invalid_pk = Person.objects.order_by('pk').last().pk + 1
@@ -43,7 +43,7 @@ class TestSearchContext(LoaddataTestCase):
 class TestFieldName(LoaddataTestCase):
 
     def setUp(self):
-        super(TestFieldName, self).setUp()
+        super().setUp()
         self.bob = Person.objects.get(email='bob@demo.com')
 
     def test_valid(self):
