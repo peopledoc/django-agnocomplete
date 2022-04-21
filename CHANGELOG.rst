@@ -7,6 +7,22 @@ master (unreleased)
 
 Nothing here yet.
 
+2.2.0 (2022-04-21)
+==================
+
+* Fix path warnings (#132) @alyohea
+* Publish workflow should just run on tag push (#131) @ewjoachim
+* Create CODEOWNERS (#130) @ewjoachim
+* Drop six (#129) @alyohea
+
+2.1.0 (2022-01-14)
+==================
+
+* Adding missing pyproject.toml, needed to automatically find the version (#128) @mike-perdide
+* Remove version from setup.cfg to let the GH publish action do its magic (#127) @mike-perdide
+* Update tox.ini and enable Github Actions, focusing on compatibilty with Django 3.x to 4.0 (#125) @mike-perdide
+* Attempt to make it installable with Django 3.X serie (#124) @yohanboniface
+
 2.0.0 (2021-03-26)
 ==================
 
