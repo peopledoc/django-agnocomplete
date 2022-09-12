@@ -27,4 +27,4 @@ def autodiscover():
 
 
 if django.VERSION[:2] < (3, 2):
-    default_app_config = 'agnocomplete.app.AgnocompleteConfig'
+    default_app_config = 'agnocomplete.apps.AgnocompleteConfig'
