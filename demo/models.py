@@ -10,9 +10,8 @@ class Person(models.Model):
     email = models.EmailField(max_length=100)
     location = models.CharField(max_length=100)
 
-    def __unicode__(self):
+    def __str__(self):
         return " ".join((self.first_name, self.last_name))
-    __str__ = __unicode__
 
     @property
     def is_active(self):
@@ -36,50 +35,45 @@ class FavoriteColor(models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
     color = models.CharField(max_length=100, choices=COLORS)
 
-    def __unicode__(self):
+    def __str__(self):
         return "{}'s favorite color is {}".format(self.person, self.color)
-    __str__ = __unicode__
 
 
 class Tag(models.Model):
     name = models.CharField(max_length=50)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
-    __str__ = __unicode__
 
 
 class PersonTag(models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
     tags = models.ManyToManyField(Tag)
 
-    def __unicode__(self):
+    def __str__(self):
         return "{} is tagged: {}".format(
             self.person,
             ", ".join([force_str(t) for t in self.tags.all()]) or "Nothing"
         )
-    __str__ = __unicode__
 
 
 class ContextTag(models.Model):
     name = models.CharField(max_length=50)
     domain = models.CharField(max_length=100)
 
-    def __unicode__(self):
+    def __str__(self):
         return "[{}] {}".format(
             self.domain,
             self.name
         )
-    __str__ = __unicode__
 
 
 class PersonContextTag(models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
     tags = models.ManyToManyField(ContextTag)
 
-    def __unicode__(self):
+    def __str__(self):
         return "{} is tagged: {}".format(
             self.person,
             ", ".join([force_str(t) for t in self.tags.all()]) or "Nothing"
         )
-    __str__ = __unicode__
