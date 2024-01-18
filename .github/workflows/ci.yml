@@ -27,6 +27,22 @@ jobs:
             python_version: "3.10"
             tox_env: py310-django32
 
+          - name: Python 3.8 / Django 4.2
+            python_version: "3.8"
+            tox_env: py38-django42
+
+          - name: Python 3.9 / Django 4.2
+            python_version: "3.9"
+            tox_env: py39-django42
+
+          - name: Python 3.10 / Django 4.2
+            python_version: "3.10"
+            tox_env: py310-django42
+
+          - name: Python 3.11 / Django 4.2
+            python_version: "3.11"
+            tox_env: py311-django42
+
           - name: DocLint
             python_version: "3.10"
             tox_env: doclint
