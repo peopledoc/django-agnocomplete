@@ -109,7 +109,7 @@ We're half way here: the view needs to know that, when the form & fields will be
 
         @method_decorator(allow_create)
         def form_valid(self, form):
-            return super(PersonTagModelViewWithCreate, self).form_valid(form)
+            return super().form_valid(form)
 
 .. important::
 

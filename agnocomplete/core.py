@@ -59,13 +59,13 @@ def classproperty(func):
 
     e.g::
 
-        class SafeClass(object):
+        class SafeClass:
 
             @classproperty
             def safe(cls):
                 return True
 
-        class UnsafeClass(object):
+        class UnsafeClass:
 
             @classproperty
             def safe(cls):

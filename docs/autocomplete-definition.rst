@@ -246,7 +246,7 @@ Your front-end code may send you extra arguments that are not covered by the sta
             extra = kwargs.get('extra_suff', None)
             if extra_stuff:
                 change_something_in_the_search_method(extra_stuff)
-            return super(AutocompleteColorExtra, self).items(query, **kwargs)
+            return super().items(query, **kwargs)
 
 You can also override the :meth:`get_extra_arguments()` method **in your views** to eventually filter or manipulate these extra arguments. By default, :meth:`get_extra_arguments()` grabs arguments from the GET parameters that are not the `query` value.
 
@@ -258,7 +258,7 @@ You can also override the :meth:`get_extra_arguments()` method **in your views**
         form = SearchFormExtra
 
         def get_extra_arguments(self):
-            extras = super(SelectizeExtraView, self).get_extra_arguments()
+            extras = super().get_extra_arguments()
             whitelist = ['foo', 'bar']
             extras = filter(lambda x: x[0] in whitelist, extras)
             return dict(extras)

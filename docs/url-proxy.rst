@@ -179,8 +179,7 @@ The :meth:`get_http_call_kwargs()` method is completely overridable like this:
         search_url = 'http://api.example.com/search'
 
         def get_http_call_kwargs(self, query, **kwargs):
-            query_args = super(
-                AutocompleteUrlExtraArgs, self).get_http_call_kwargs(query)
+            query_args = super().get_http_call_kwargs(query)
             query_args['auth_token'] = 'GOODAUTHTOKEN'
             return query_args
 

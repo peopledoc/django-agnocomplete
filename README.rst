@@ -3,8 +3,8 @@ Django Agnostic Autocomplete
 ============================
 
 
-.. image:: https://travis-ci.org/peopledoc/django-agnocomplete.svg?branch=master
-    :target: https://travis-ci.org/peopledoc/django-agnocomplete
+.. image:: https://github.com/peopledoc/django-agnocomplete/actions/workflows/ci.yml/badge.svg
+    :target: https://github.com/peopledoc/django-agnocomplete/actions/workflows/ci.yml
 
 
 Heavily based on `django-autocomplete-light v2 <https://github.com/yourlabs/django-autocomplete-light/>`_ workflow and concepts, this toolkit offers a front-end agnostic way to get fields for autocompletion.
